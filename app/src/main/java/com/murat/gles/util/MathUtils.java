@@ -2,37 +2,37 @@ package com.murat.gles.util;
 
 public class MathUtils {
 
-    public static class Vector {
+    public static class Vec2 {
+        public final float x, y;
+
+        public Vec2(float x, float y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    public static class Vec3 {
         public final float x, y, z;
 
-        public Vector(float x, float y, float z) {
+        public Vec3(float x, float y, float z) {
             this.x = x;
             this.y = y;
             this.z = z;
         }
+    }
 
-        public float length() {
-            return (float) java.lang.Math.sqrt((x * x) + (y * y) + (z * z));
-        }
+    public static class Vec4 {
+        public final float x, y, z, w;
 
-        public Vector crossProduct(Vector other) {
-            return new Vector((y * other.z) - (z * other.y), (z * other.x) - (x * other.z), (x * other.y) - (y * other.x));
-        }
-
-        public float dotProduct(Vector other) {
-            return x * other.x + y * other.y + z * other.z;
-        }
-
-        public Vector scale(float f) {
-            return new Vector(x * f, y * f, z * f);
-        }
-
-        public Vector add(Vector other) {
-            return new Vector(x + other.x, y + other.y, z + other.z);
+        public Vec4(float x, float y, float z, float w) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.w = w;
         }
     }
 
-    public static class Matrix {
+    public static class Mat4 {
 
         /**
          * @param matrix target matrix

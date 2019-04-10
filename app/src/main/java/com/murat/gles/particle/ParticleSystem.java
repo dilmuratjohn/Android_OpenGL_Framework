@@ -1,7 +1,5 @@
 package com.murat.gles.particle;
 
-import android.graphics.Color;
-
 import com.murat.gles.util.VertexArray;
 import com.murat.gles.util.MathUtils;
 
@@ -12,7 +10,7 @@ import static com.murat.gles.Constants.BYTES_PER_FLOAT;
 class ParticleSystem {
 
     private static final int POSITION_COMPONENT_COUNT = 3;
-    private static final int COLOR_COMPONENT_COUNT = 3;
+    private static final int COLOR_COMPONENT_COUNT = 4;
     private static final int VECTOR_COMPONENT_COUNT = 3;
     private static final int PARTICLE_START_TIME_COMPONENT_COUNT = 1;
 
@@ -37,7 +35,7 @@ class ParticleSystem {
         this.maxParticleCount = maxParticleCount;
     }
 
-    void addParticle(MathUtils.Vector position, int color, MathUtils.Vector direction, float particleStarTime) {
+    void addParticle(MathUtils.Vec3 position, MathUtils.Vec4 color, MathUtils.Vec3 direction, float particleStarTime) {
         final int particleOffset = nextParticle * TOTAL_COMPONENT_COUNT;
 
         int currentOffset = particleOffset;
@@ -54,9 +52,10 @@ class ParticleSystem {
         particles[currentOffset++] = position.x;
         particles[currentOffset++] = position.y;
         particles[currentOffset++] = position.z;
-        particles[currentOffset++] = Color.red(color) / 255f;
-        particles[currentOffset++] = Color.green(color) / 255f;
-        particles[currentOffset++] = Color.blue(color) / 255f;
+        particles[currentOffset++] = color.x;
+        particles[currentOffset++] = color.y;
+        particles[currentOffset++] = color.z;
+        particles[currentOffset++] = color.w;
         particles[currentOffset++] = direction.x;
         particles[currentOffset++] = direction.y;
         particles[currentOffset++] = direction.z;

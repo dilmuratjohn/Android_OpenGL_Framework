@@ -10,10 +10,11 @@ import static android.opengl.Matrix.setRotateEulerM;
 
 class ParticleShooter {
 
-    private final MathUtils.Vector position;
-    private final MathUtils.Vector direction;
-    private final int color;
+    private final MathUtils.Vec3 position;
+    private final MathUtils.Vec4 color;
 
+    private final float speed;
+    private final float angle;
     private final float angleVariance;
     private final float speedVariance;
 
@@ -23,11 +24,18 @@ class ParticleShooter {
     private float[] directionVector = new float[4];
     private float[] resultVector = new float[4];
 
-    ParticleShooter(MathUtils.Vector position, MathUtils.Vector direction, int color, float angleVarianceInDegrees, float speedVariance) {
-        this.position = position;
-        this.direction = direction;
-        this.color = color;
+    ParticleShooter(MathUtils.Vec3 position,
+                    MathUtils.Vec3 direction,
+                    MathUtils.Vec4 color,
+                    float angle,
+                    float speed,
+                    float angleVarianceInDegrees,
+                    float speedVariance) {
 
+        this.position = position;
+        this.color = color;
+        this.speed = speed;
+        this.angle = angle;
         this.angleVariance = angleVarianceInDegrees;
         this.speedVariance = speedVariance;
 
@@ -43,18 +51,18 @@ class ParticleShooter {
             setRotateEulerM(
                     rotationMatrix,
                     0,
-                    (random.nextFloat() - 0.5f) * angleVariance,
-                    (random.nextFloat() - 0.5f) * angleVariance,
-                    (random.nextFloat() - 0.5f) * angleVariance
+                    (random.nextFloat() - 0.5f) * angleVariance + angle,
+                    (random.nextFloat() - 0.5f) * angleVariance + angle,
+                    (random.nextFloat() - 0.5f) * angleVariance + angle
             );
 
             // use angle to create particle heading different directions
             multiplyMV(resultVector, 0, rotationMatrix, 0, directionVector, 0);
 
             // use random to differentiate speed
-            float speedAdjustment = 1f + random.nextFloat() * speedVariance;
+            float speedAdjustment = speed + random.nextFloat() * speedVariance;
 
-            MathUtils.Vector thisDirection = new MathUtils.Vector(
+            MathUtils.Vec3 thisDirection = new MathUtils.Vec3(
                     resultVector[0] * speedAdjustment,
                     resultVector[1] * speedAdjustment,
                     resultVector[2] * speedAdjustment
@@ -81,7 +89,7 @@ class ParticleShooter {
             // use random to differentiate speed
             float speedAdjustment = 1f + random.nextFloat() * speedVariance;
 
-            MathUtils.Vector thisDirection = new MathUtils.Vector(
+            MathUtils.Vec3 thisDirection = new MathUtils.Vec3(
                     resultVector[0] * speedAdjustment,
                     resultVector[1] * speedAdjustment,
                     resultVector[2] * speedAdjustment
