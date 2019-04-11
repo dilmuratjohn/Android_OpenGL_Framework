@@ -10,15 +10,13 @@ import static android.opengl.Matrix.setRotateEulerM;
 
 class ParticleShooter {
 
-    private final MathUtils.Vec3 position;
-    private final MathUtils.Vec4 color;
-
-    private final float speed;
-    private final float angle;
-    private final float angleVariance;
-    private final float speedVariance;
-
     private final Random random = new Random();
+
+    private final MathUtils.Vec3 position;
+    private final MathUtils.Vec4 mStartColor;
+    private final MathUtils.Vec4 mEndColor;
+    private final MathUtils.Vec2 speed;
+    private final MathUtils.Vec2 angle;
 
     private float[] rotationMatrix = new float[16];
     private float[] directionVector = new float[4];
@@ -26,18 +24,17 @@ class ParticleShooter {
 
     ParticleShooter(MathUtils.Vec3 position,
                     MathUtils.Vec3 direction,
-                    MathUtils.Vec4 color,
-                    float angle,
-                    float speed,
-                    float angleVarianceInDegrees,
-                    float speedVariance) {
+                    MathUtils.Vec4 startColor,
+                    MathUtils.Vec4 endColor,
+                    MathUtils.Vec2 speed,
+                    MathUtils.Vec2 angle
+                   ) {
 
         this.position = position;
-        this.color = color;
+        this.mStartColor = startColor;
+        this.mEndColor = endColor;
         this.speed = speed;
         this.angle = angle;
-        this.angleVariance = angleVarianceInDegrees;
-        this.speedVariance = speedVariance;
 
         directionVector[0] = direction.x;
         directionVector[1] = direction.y;
@@ -45,22 +42,22 @@ class ParticleShooter {
 
     }
 
-    void addParticles(ParticleSystem particleSystem, float currentTime, int count) {
+    void addParticles(ParticleSystem particleSystem, float currentTime, int count, float particleSize, MathUtils.Vec2 gravityFactor,boolean isTrack) {
         for (int i = 0; i < count; i++) {
             // create angle
             setRotateEulerM(
                     rotationMatrix,
                     0,
-                    (random.nextFloat() - 0.5f) * angleVariance + angle,
-                    (random.nextFloat() - 0.5f) * angleVariance + angle,
-                    (random.nextFloat() - 0.5f) * angleVariance + angle
+                    (random.nextFloat() - 0.5f) * angle.y + angle.x,
+                    (random.nextFloat() - 0.5f) * angle.y + angle.x,
+                    (random.nextFloat() - 0.5f) * angle.y + angle.x
             );
 
             // use angle to create particle heading different directions
             multiplyMV(resultVector, 0, rotationMatrix, 0, directionVector, 0);
 
             // use random to differentiate speed
-            float speedAdjustment = speed + random.nextFloat() * speedVariance;
+            float speedAdjustment = speed.x + random.nextFloat() * speed.y;
 
             MathUtils.Vec3 thisDirection = new MathUtils.Vec3(
                     resultVector[0] * speedAdjustment,
@@ -68,38 +65,15 @@ class ParticleShooter {
                     resultVector[2] * speedAdjustment
             );
 
-            particleSystem.addParticle(position, color, thisDirection, currentTime);
+            if (isTrack) {
+                for (int j = 0; j < 5; j++) {
+                    particleSystem.addParticle(position, mStartColor, mEndColor,thisDirection, currentTime - (0.03f * j), particleSize, gravityFactor);
+                }
+            } else {
+                particleSystem.addParticle(position, mStartColor, mEndColor, thisDirection, currentTime, particleSize, gravityFactor);
+            }
+
         }
     }
 
-    void addTrack(ParticleSystem particleSystem, float currentTime, int count) {
-        for (int i = 0; i < count; i++) {
-            // create angle
-            setRotateEulerM(
-                    rotationMatrix,
-                    0,
-                    (random.nextFloat() - 0.5f) * angleVariance,
-                    (random.nextFloat() - 0.5f) * angleVariance,
-                    (random.nextFloat() - 0.5f) * angleVariance
-            );
-
-            // use angle to create particle heading different directions
-            multiplyMV(resultVector, 0, rotationMatrix, 0, directionVector, 0);
-
-            // use random to differentiate speed
-            float speedAdjustment = 1f + random.nextFloat() * speedVariance;
-
-            MathUtils.Vec3 thisDirection = new MathUtils.Vec3(
-                    resultVector[0] * speedAdjustment,
-                    resultVector[1] * speedAdjustment,
-                    resultVector[2] * speedAdjustment
-            );
-
-            particleSystem.addParticle(position, color, thisDirection, currentTime - 0.08f);
-            particleSystem.addParticle(position, color, thisDirection, currentTime - 0.06f);
-            particleSystem.addParticle(position, color, thisDirection, currentTime - 0.04f);
-            particleSystem.addParticle(position, color, thisDirection, currentTime - 0.02f);
-            particleSystem.addParticle(position, color, thisDirection, currentTime);
-        }
-    }
 }

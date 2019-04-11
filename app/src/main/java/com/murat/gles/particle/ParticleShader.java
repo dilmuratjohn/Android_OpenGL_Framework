@@ -23,10 +23,13 @@ class ParticleShader extends Shader {
     private final int uTimeLocation;
     private final int uTextureUnitLocation;
 
+    private final int aPointSize;
     private final int aPositionLocation;
-    private final int aColorLocation;
+    private final int aStartColorLocation;
+    private final int aEndColorLocation;
     private final int aDirectionVectorLocation;
     private final int aParticleStartTimeLocation;
+    private final int aGravityFactorLocation;
 
     ParticleShader(Context context) {
         super(context, R.raw.particle_vertex_shader, R.raw.particle_fragment_shader);
@@ -35,10 +38,13 @@ class ParticleShader extends Shader {
         uTimeLocation = glGetUniformLocation(program, U_TIME);
         uTextureUnitLocation = glGetAttribLocation(program, U_TEXTURE_UNIT);
 
+        aPointSize = glGetAttribLocation(program, A_POINT_SIZE);
         aPositionLocation = glGetAttribLocation(program, A_POSITION);
-        aColorLocation = glGetAttribLocation(program, A_COLOR);
+        aStartColorLocation = glGetAttribLocation(program, A_START_COLOR);
+        aEndColorLocation = glGetAttribLocation(program, A_END_COLOR);
         aDirectionVectorLocation = glGetAttribLocation(program, A_DIRECTION_VECTOR);
         aParticleStartTimeLocation = glGetAttribLocation(program, A_PARTICLE_START_TIME);
+        aGravityFactorLocation = glGetAttribLocation(program, A_GRAVITY_FACTOR);
     }
 
     void setUniforms(float[] matrix, float elapsedTime, int textureId) {
@@ -53,15 +59,23 @@ class ParticleShader extends Shader {
         return aPositionLocation;
     }
 
-    int getColorLocation() {
-        return aColorLocation;
+    int getStartColorLocation() {
+        return aStartColorLocation;
+    }
+
+    int getEndColorLocation() {
+        return aEndColorLocation;
     }
 
     int getDirectionVectorLocation() {
         return aDirectionVectorLocation;
     }
 
-    int getParticleStartTimeLocation() {
-        return aParticleStartTimeLocation;
+    int getParticleStartTimeLocation() { return aParticleStartTimeLocation; }
+
+    int getParticleSizeLocation() { return aPointSize; }
+
+    int getGravityFactorLocation(){
+        return aGravityFactorLocation;
     }
 }

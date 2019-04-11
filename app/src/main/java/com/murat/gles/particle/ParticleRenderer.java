@@ -1,13 +1,13 @@
 package com.murat.gles.particle;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 
 import com.murat.gles.util.MathUtils;
 import com.murat.gles.util.TextureHelper;
 
 import java.util.Map;
+import java.util.Random;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -20,6 +20,8 @@ import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.glBlendFunc;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glDepthMask;
+import static android.opengl.GLES20.glDisable;
 import static android.opengl.GLES20.glEnable;
 import static android.opengl.GLES20.glViewport;
 import static android.opengl.Matrix.multiplyMM;
@@ -42,7 +44,23 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
     private ParticleSystem particleSystem;
     private ParticleShooter particleShooter;
 
+    private int mMaxParticleCount;
     private int particleTexture;
+    private int mBlendFuncSource;
+    private int mBlendFuncDestination;
+    private int mFileId;
+
+
+    private MathUtils.Vec2 mGravityFactor;
+    private MathUtils.Vec4 mStartColor;
+    private MathUtils.Vec4 mEndColor;
+    private MathUtils.Vec3 mPosition;
+    private MathUtils.Vec3 mDirection;
+    private MathUtils.Vec2 mSpeed;
+    private MathUtils.Vec2 mAngle;
+    private MathUtils.Vec2 mParticleSize;
+
+    private final Random random = new Random();
 
     ParticleRenderer(Context context) {
         this.context = context;
@@ -56,6 +74,7 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glEnable(GL_DEPTH_TEST);
+        readConfig();
         createParticle();
         mStartTime = System.currentTimeMillis();
     }
@@ -64,6 +83,7 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         glViewport(0, 0, width, height);
         MathUtils.Mat4.perspectiveProjection(projectionMatrix, 45, (float) width / (float) height, 1f, 100f);
+        setIdentityM(viewMatrix, 0);
         updateViewMatrices();
         glEnable(GL_CULL_FACE);
     }
@@ -74,69 +94,80 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
         drawParticles();
     }
 
-    private void createParticle() {
+    private void readConfig() {
         mConfig = new ParticleConfig("").getConfigMap();
-        int fileId = (int) mConfig.get("textureFileName");
-        int maxParticleCount = (int) mConfig.get("maxParticles");
+        mBlendFuncDestination = (int) mConfig.get("blendFuncDestination");
+        mBlendFuncSource = (int) mConfig.get("blendFuncSource");
+        mStartColor = new MathUtils.Vec4((float) mConfig.get("startColorRed"), (float) mConfig.get("startColorGreen"), (float) mConfig.get("startColorBlue"), (float) mConfig.get("startColorAlpha"));
+        mEndColor = new MathUtils.Vec4((float) mConfig.get("finishColorRed"), (float) mConfig.get("finishColorGreen"), (float) mConfig.get("finishColorBlue"), (float) mConfig.get("finishColorAlpha"));
+        mSpeed = new MathUtils.Vec2((float) mConfig.get("speed"), (float) mConfig.get("speedVariance"));
+        mAngle = new MathUtils.Vec2((float) mConfig.get("angle"), (float) mConfig.get("angleVariance"));
+        mFileId = (int) mConfig.get("textureFileName");
+        mMaxParticleCount = (int) mConfig.get("maxParticles");
+        mParticleSize = new MathUtils.Vec2((float) mConfig.get("startParticleSize"), (float) mConfig.get("startParticleSizeVariance"));
+        mGravityFactor = new MathUtils.Vec2((float) mConfig.get("gravityx") / 600, (float) mConfig.get("gravityy") / 600);
 
-        float speed = (float) mConfig.get("speed");
-        float angle = (float) mConfig.get("angle");
-        float speedVariance = (float) mConfig.get("speedVariance");
-        float angleVariance = (float) mConfig.get("angleVariance");
+        float startColorVarianceAlpha = (float) mConfig.get("startColorVarianceAlpha");
+        float startColorVarianceBlue = (float) mConfig.get("startColorVarianceBlue");
+        float startColorVarianceGreen = (float) mConfig.get("startColorVarianceGreen");
+        float startColorVarianceRed = (float) mConfig.get("startColorVarianceRed");
 
-        int blendFuncDestination = (int) mConfig.get("blendFuncDestination");
-        int blendFuncSource = (int) mConfig.get("blendFuncSource");
+        float endColorVarianceAlpha = (float) mConfig.get("finishColorVarianceAlpha");
+        float endColorVarianceBlue = (float) mConfig.get("finishColorVarianceBlue");
+        float endColorVarianceGreen = (float) mConfig.get("finishColorVarianceGreen");
+        float endColorVarianceRed = (float) mConfig.get("finishColorVarianceRed");
+    }
 
-        float startColorRed = (float) mConfig.get("startColorRed");
-        float startColorGreen = (float) mConfig.get("startColorGreen");
-        float startColorBlue = (float) mConfig.get("startColorBlue");
-        float startColorAlpha = (float) mConfig.get("startColorAlpha");
-
-        glEnable(GL_BLEND);
-        glBlendFunc(blendFuncSource, blendFuncDestination);
-
-        particleTexture = TextureHelper.loadTexture(context, fileId);
-
+    private void createParticle() {
+        particleTexture = TextureHelper.loadTexture(context, mFileId);
         particleShader = new ParticleShader(context);
-        particleSystem = new ParticleSystem(maxParticleCount);
+        particleSystem = new ParticleSystem(mMaxParticleCount);
         mStartTime = System.currentTimeMillis();
-
-        final MathUtils.Vec3 particleDirection = new MathUtils.Vec3(0f, 0.5f, 0f);
-
         particleShooter = new ParticleShooter(
                 new MathUtils.Vec3(0f, 0f, 0f),
-                particleDirection,
-                new MathUtils.Vec4(startColorRed, startColorGreen, startColorBlue, startColorAlpha),
-                speed,
-                angle,
-                angleVariance,
-                speedVariance
+                new MathUtils.Vec3(0f, 0.5f, 0f),
+                mStartColor,
+                mEndColor,
+                mSpeed,
+                mAngle
         );
     }
 
     private void drawParticles() {
+
         float lifeTime = (System.currentTimeMillis() - mStartTime) / 1000f;
         float duration = (int) mConfig.get("duration");
         if (lifeTime <= duration || duration <= 0) {
-            particleShooter.addParticles(particleSystem, lifeTime, 1);
+            particleShooter.addParticles(particleSystem, lifeTime, 1, mParticleSize.x, mGravityFactor, false);
         }
 
         setIdentityM(modelMatrix, 0);
-        updateMVPMatrix();
+
+        updateModelViewMatrices();
+        updateModelViewProjectionMatrix();
+
+        glDepthMask(false);
+        glEnable(GL_BLEND);
+        glBlendFunc(mBlendFuncSource, mBlendFuncDestination);
 
         particleShader.useProgram();
         particleShader.setUniforms(modelViewProjectionMatrix, lifeTime, particleTexture);
         particleSystem.bindData(particleShader);
         particleSystem.draw();
+
+        glDisable(GL_BLEND);
+        glDepthMask(true);
     }
 
     private void updateViewMatrices() {
-        setIdentityM(viewMatrix, 0);
         translateM(viewMatrix, 0, 0f, 0f, -5f);
     }
 
-    private void updateMVPMatrix() {
+    private void updateModelViewMatrices() {
         multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+    }
+
+    private void updateModelViewProjectionMatrix() {
         multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
     }
 

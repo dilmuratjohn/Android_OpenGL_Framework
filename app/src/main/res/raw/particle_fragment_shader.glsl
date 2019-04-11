@@ -1,6 +1,7 @@
 precision mediump float;
 
-varying vec4 v_Color;
+varying vec4 v_StartColor;
+varying vec4 v_End_Color;
 varying float v_ElapsedTime;
 
 uniform sampler2D u_TextureUnit;
@@ -12,6 +13,6 @@ void main() {
     if (distanceFromCenter > 0.7) {
         discard;
     } else {
-        gl_FragColor = vec4(v_Color / v_ElapsedTime) * texture2D(u_TextureUnit, gl_PointCoord);
+        gl_FragColor = vec4(v_StartColor + (v_End_Color - v_StartColor) / (v_ElapsedTime * 5.0f)) * texture2D(u_TextureUnit, gl_PointCoord);
     }
 }
