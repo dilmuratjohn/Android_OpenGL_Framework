@@ -5,13 +5,10 @@ import android.opengl.GLSurfaceView;
 
 public class ParticleView extends GLSurfaceView {
 
-    private final ParticleRenderer mRenderer;
-
-    public ParticleView(Context context){
+    public ParticleView(Context context) {
         super(context);
         setEGLContextClientVersion(2);
-        mRenderer = new ParticleRenderer(getContext());
-        setRenderer(mRenderer);
+        setRenderer(new ParticleRenderer(getContext()));
     }
 
 }

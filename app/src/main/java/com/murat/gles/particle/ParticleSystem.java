@@ -3,8 +3,8 @@ package com.murat.gles.particle;
 import com.murat.gles.util.VertexArray;
 import com.murat.gles.util.MathUtils;
 
-import static android.opengl.GLES20.GL_POINTS;
-import static android.opengl.GLES20.glDrawArrays;
+import android.opengl.GLES20;
+
 import static com.murat.gles.Constants.BYTES_PER_FLOAT;
 
 class ParticleSystem {
@@ -109,6 +109,6 @@ class ParticleSystem {
     }
 
     void draw() {
-        glDrawArrays(GL_POINTS, 0, currentParticleCount);
+        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, currentParticleCount);
     }
 }

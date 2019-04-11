@@ -12,22 +12,9 @@ import java.util.Random;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static android.opengl.GLES20.GL_BLEND;
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-import static android.opengl.GLES20.GL_CULL_FACE;
-import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
-import static android.opengl.GLES20.GL_DEPTH_TEST;
-import static android.opengl.GLES20.glBlendFunc;
-import static android.opengl.GLES20.glClear;
-import static android.opengl.GLES20.glClearColor;
-import static android.opengl.GLES20.glDepthMask;
-import static android.opengl.GLES20.glDisable;
-import static android.opengl.GLES20.glEnable;
-import static android.opengl.GLES20.glViewport;
-import static android.opengl.Matrix.multiplyMM;
-import static android.opengl.Matrix.rotateM;
-import static android.opengl.Matrix.setIdentityM;
-import static android.opengl.Matrix.translateM;
+import android.opengl.GLES20;
+
+import android.opengl.Matrix;
 
 public class ParticleRenderer implements GLSurfaceView.Renderer {
 
@@ -72,8 +59,8 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        glEnable(GL_DEPTH_TEST);
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         readConfig();
         createParticle();
         mStartTime = System.currentTimeMillis();
@@ -81,16 +68,16 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        glViewport(0, 0, width, height);
+        GLES20.glViewport(0, 0, width, height);
         MathUtils.Mat4.perspectiveProjection(projectionMatrix, 45, (float) width / (float) height, 1f, 100f);
-        setIdentityM(viewMatrix, 0);
+        Matrix.setIdentityM(viewMatrix, 0);
         updateViewMatrices();
-        glEnable(GL_CULL_FACE);
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         drawParticles();
     }
 
@@ -100,12 +87,12 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
         mBlendFuncSource = (int) mConfig.get("blendFuncSource");
         mStartColor = new MathUtils.Vec4((float) mConfig.get("startColorRed"), (float) mConfig.get("startColorGreen"), (float) mConfig.get("startColorBlue"), (float) mConfig.get("startColorAlpha"));
         mEndColor = new MathUtils.Vec4((float) mConfig.get("finishColorRed"), (float) mConfig.get("finishColorGreen"), (float) mConfig.get("finishColorBlue"), (float) mConfig.get("finishColorAlpha"));
-        mSpeed = new MathUtils.Vec2((float) mConfig.get("speed"), (float) mConfig.get("speedVariance"));
+        mSpeed = new MathUtils.Vec2((float) mConfig.get("speed") / 10, (float) mConfig.get("speedVariance") / 10);
         mAngle = new MathUtils.Vec2((float) mConfig.get("angle"), (float) mConfig.get("angleVariance"));
         mFileId = (int) mConfig.get("textureFileName");
         mMaxParticleCount = (int) mConfig.get("maxParticles");
         mParticleSize = new MathUtils.Vec2((float) mConfig.get("startParticleSize"), (float) mConfig.get("startParticleSizeVariance"));
-        mGravityFactor = new MathUtils.Vec2((float) mConfig.get("gravityx") / 600, (float) mConfig.get("gravityy") / 600);
+        mGravityFactor = new MathUtils.Vec2((float) mConfig.get("gravityx") / 500, (float) mConfig.get("gravityy") / 500);
 
         float startColorVarianceAlpha = (float) mConfig.get("startColorVarianceAlpha");
         float startColorVarianceBlue = (float) mConfig.get("startColorVarianceBlue");
@@ -141,34 +128,34 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
             particleShooter.addParticles(particleSystem, lifeTime, 1, mParticleSize.x, mGravityFactor, false);
         }
 
-        setIdentityM(modelMatrix, 0);
+        Matrix.setIdentityM(modelMatrix, 0);
 
         updateModelViewMatrices();
         updateModelViewProjectionMatrix();
 
-        glDepthMask(false);
-        glEnable(GL_BLEND);
-        glBlendFunc(mBlendFuncSource, mBlendFuncDestination);
+        GLES20.glDepthMask(false);
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(mBlendFuncSource, mBlendFuncDestination);
 
         particleShader.useProgram();
         particleShader.setUniforms(modelViewProjectionMatrix, lifeTime, particleTexture);
         particleSystem.bindData(particleShader);
         particleSystem.draw();
 
-        glDisable(GL_BLEND);
-        glDepthMask(true);
+        GLES20.glDisable(GLES20.GL_BLEND);
+        GLES20.glDepthMask(true);
     }
 
     private void updateViewMatrices() {
-        translateM(viewMatrix, 0, 0f, 0f, -5f);
+        Matrix.translateM(viewMatrix, 0, 0f, 0f, -5f);
     }
 
     private void updateModelViewMatrices() {
-        multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
     }
 
     private void updateModelViewProjectionMatrix() {
-        multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
+        Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
     }
 
 }

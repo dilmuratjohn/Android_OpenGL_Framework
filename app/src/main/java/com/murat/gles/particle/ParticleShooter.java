@@ -28,7 +28,7 @@ class ParticleShooter {
                     MathUtils.Vec4 endColor,
                     MathUtils.Vec2 speed,
                     MathUtils.Vec2 angle
-                   ) {
+    ) {
 
         this.position = position;
         this.mStartColor = startColor;
@@ -42,7 +42,7 @@ class ParticleShooter {
 
     }
 
-    void addParticles(ParticleSystem particleSystem, float currentTime, int count, float particleSize, MathUtils.Vec2 gravityFactor,boolean isTrack) {
+    void addParticles(ParticleSystem particleSystem, float currentTime, int count, float particleSize, MathUtils.Vec2 gravityFactor, boolean isTrack) {
         for (int i = 0; i < count; i++) {
             // create angle
             setRotateEulerM(
@@ -67,7 +67,7 @@ class ParticleShooter {
 
             if (isTrack) {
                 for (int j = 0; j < 5; j++) {
-                    particleSystem.addParticle(position, mStartColor, mEndColor,thisDirection, currentTime - (0.03f * j), particleSize, gravityFactor);
+                    particleSystem.addParticle(position, mStartColor, mEndColor, thisDirection, currentTime - (0.03f * j), particleSize, gravityFactor);
                 }
             } else {
                 particleSystem.addParticle(position, mStartColor, mEndColor, thisDirection, currentTime, particleSize, gravityFactor);

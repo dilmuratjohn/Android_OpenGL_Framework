@@ -10,15 +10,15 @@ class ParticleConfig {
 
     ParticleConfig(String path) {
         config = new HashMap<>();
-        config.put("angle", 90f);
-        config.put("angleVariance", 10f);
-        config.put("speed", 54f);
-        config.put("speedVariance", 3f);
+        config.put("angle", 0f);
+        config.put("angleVariance", 45f);
+        config.put("speed", 1f);
+        config.put("speedVariance", 5f);
         config.put("blendFuncDestination", 1);
         config.put("blendFuncSource", 770);
-        config.put("maxParticles", 322);
+        config.put("maxParticles", 1000);
         config.put("duration", -15);
-        config.put("startParticleSize", 120f);
+        config.put("startParticleSize", 125f);
         config.put("startColorAlpha", 1f);
         config.put("startColorBlue", 0f);
         config.put("startColorGreen", 1f);
@@ -27,8 +27,8 @@ class ParticleConfig {
         config.put("finishColorBlue", 1f);
         config.put("finishColorGreen", 0f);
         config.put("finishColorRed", 1f);
-        config.put("gravityx", 0f);
-        config.put("gravityy", -440f);
+        config.put("gravityx", 500f);
+        config.put("gravityy", -500f);
         //TODO finish below...
         config.put("startColorVarianceAlpha", 0f);
         config.put("startColorVarianceBlue", 0f);

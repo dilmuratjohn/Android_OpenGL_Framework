@@ -13,23 +13,17 @@ import com.murat.gles.particle.ParticleView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private GLSurfaceView glSurfaceView;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        glSurfaceView = new GLSurfaceView(getApplicationContext());
-
         boolean support = isSupportES20();
         if (support) {
-            glSurfaceView = new ParticleView(this);
+            GLSurfaceView glSurfaceView = new ParticleView(this);
             setContentView(glSurfaceView);
         } else {
             Toast.makeText(this, "Your device Does not support OpenGL ES 2.0", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public boolean isSupportES20() {
