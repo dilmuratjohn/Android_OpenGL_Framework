@@ -77,12 +77,11 @@ class ParticleSystem {
         particles[currentOffset++] = direction.y;
         particles[currentOffset++] = direction.z;
         particles[currentOffset++] = particleStarTime;
-        particles[currentOffset++] = particleSize;
+        particles[currentOffset++] = particleSize * 5;
         particles[currentOffset++] = gravityFactor.x;
         particles[currentOffset++] = gravityFactor.y;
 
         vertexArray.updateBuffer(particles, particleOffset, TOTAL_COMPONENT_COUNT);
-
     }
 
     void bindData(ParticleShader program) {

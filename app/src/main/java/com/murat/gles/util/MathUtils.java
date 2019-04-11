@@ -3,26 +3,37 @@ package com.murat.gles.util;
 public class MathUtils {
 
     public static class Vec2 {
-        public final float x, y;
+        public float x, y;
 
         public Vec2(float x, float y) {
             this.x = x;
             this.y = y;
         }
+
+        public void add(Vec2 source) {
+            this.x += source.x;
+            this.y += source.y;
+        }
     }
 
     public static class Vec3 {
-        public final float x, y, z;
+        public float x, y, z;
 
         public Vec3(float x, float y, float z) {
             this.x = x;
             this.y = y;
             this.z = z;
         }
+
+        public void add(Vec3 source) {
+            this.x += source.x;
+            this.y += source.y;
+            this.z += source.z;
+        }
     }
 
     public static class Vec4 {
-        public final float x, y, z, w;
+        public float x, y, z, w;
 
         public Vec4(float x, float y, float z, float w) {
             this.x = x;
@@ -30,6 +41,14 @@ public class MathUtils {
             this.z = z;
             this.w = w;
         }
+
+        public void add(Vec4 source) {
+            this.x += source.x;
+            this.y += source.y;
+            this.z += source.z;
+            this.w += source.w;
+        }
+
     }
 
     public static class Mat4 {
