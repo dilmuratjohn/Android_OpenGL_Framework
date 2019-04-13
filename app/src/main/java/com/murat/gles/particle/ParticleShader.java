@@ -19,7 +19,7 @@ class ParticleShader extends Shader {
     private final int aPositionLocation;
     private final int aStartColorLocation;
     private final int aEndColorLocation;
-    private final int aSpeed;
+    private final int aSpeedLocation;
     private final int aParticleStartTimeLocation;
     private final int aForceLocation;
     private final int aRotationLocation;
@@ -38,6 +38,7 @@ class ParticleShader extends Shader {
     private static final String A_FORCE = "a_Force";
     private static final String A_ROTATION = "a_Rotation";
 
+
     ParticleShader(Context context) {
         super(context, R.raw.particle_vertex_shader, R.raw.particle_fragment_shader);
 
@@ -49,7 +50,7 @@ class ParticleShader extends Shader {
         aPositionLocation = GLES20.glGetAttribLocation(program, A_POSITION);
         aStartColorLocation = GLES20.glGetAttribLocation(program, A_START_COLOR);
         aEndColorLocation = GLES20.glGetAttribLocation(program, A_END_COLOR);
-        aSpeed = GLES20.glGetAttribLocation(program, A_SPEED);
+        aSpeedLocation = GLES20.glGetAttribLocation(program, A_SPEED);
         aParticleStartTimeLocation = GLES20.glGetAttribLocation(program, A_PARTICLE_START_TIME);
         aForceLocation = GLES20.glGetAttribLocation(program, A_FORCE);
         aRotationLocation = GLES20.glGetAttribLocation(program, A_ROTATION);
@@ -76,7 +77,7 @@ class ParticleShader extends Shader {
     }
 
     int getSpeedLocation() {
-        return aSpeed;
+        return aSpeedLocation;
     }
 
     int getParticleStartTimeLocation() {

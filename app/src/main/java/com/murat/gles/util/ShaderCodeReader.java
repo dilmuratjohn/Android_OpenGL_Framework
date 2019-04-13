@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-class TextResourceReader {
+class ShaderCodeReader {
 
     static String readTextFileFromResource(Context context, int id) {
         StringBuilder content = new StringBuilder();

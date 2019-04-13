@@ -16,14 +16,14 @@ public class TextureHelper {
         final int[] textureObjectIds = new int[1];
         GLES20.glGenTextures(1, textureObjectIds, 0);
         if (textureObjectIds[0] == 0) {
-            Log.w(TAG_ERROR, "error generating texture.");
+            Log.e(TAG_ERROR, "error generating texture.");
             return 0;
         }
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
         final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
         if (bitmap == null) {
-            Log.w(TAG_ERROR, "resource : " + resourceId + " can not be decoded into bitmap.");
+            Log.e(TAG_ERROR, "resource : " + resourceId + " can not be decoded into bitmap.");
             GLES20.glDeleteTextures(1, textureObjectIds, 0);
             return 0;
         }
@@ -35,6 +35,11 @@ public class TextureHelper {
         GLES20.glGenerateMipmap(GLES20.GL_TEXTURE_2D);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
         return textureObjectIds[0];
+    }
+
+    public static int loadTexture(Context context, String resourceName){
+        int resourceId = context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
+        return loadTexture(context, resourceId);
     }
 
 }

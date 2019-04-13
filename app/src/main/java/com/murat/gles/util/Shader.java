@@ -10,8 +10,8 @@ public class Shader {
 
     public Shader(Context context, int vertex, int fragment) {
         program = ShaderHelper.createProgram(
-                TextResourceReader.readTextFileFromResource(context, vertex),
-                TextResourceReader.readTextFileFromResource(context, fragment)
+                ShaderCodeReader.readTextFileFromResource(context, vertex),
+                ShaderCodeReader.readTextFileFromResource(context, fragment)
         );
     }
 
