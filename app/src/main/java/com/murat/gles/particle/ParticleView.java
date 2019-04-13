@@ -8,7 +8,8 @@ public class ParticleView extends GLSurfaceView {
     public ParticleView(Context context) {
         super(context);
         setEGLContextClientVersion(2);
-        setRenderer(new ParticleRenderer(getContext()));
+        ParticleRenderer renderer = new ParticleRenderer(getContext());
+        setRenderer(renderer);
     }
 
 }

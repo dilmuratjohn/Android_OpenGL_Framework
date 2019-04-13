@@ -19,7 +19,7 @@ class ParticleConfig {
             "  \"textureFileName\" : \"particle_texture.png\",\n" +
             "  \"finishParticleSizeVariance\" : 65,\n" +
             "  \"startColorVarianceBlue\" : 1,\n" +
-            "  \"duration\" : -1,\n" +
+            "  \"duration\" : 3,\n" +
             "  \"emitterType\" : 0,\n" +
             "  \"maxRadiusVariance\" : 0,\n" +
             "  \"rotationStartVariance\" : 660,\n" +

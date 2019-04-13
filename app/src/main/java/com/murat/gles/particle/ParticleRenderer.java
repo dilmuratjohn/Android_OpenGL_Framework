@@ -84,6 +84,7 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
             mParticleShooter.updateColor();
             mParticleShooter.updateParticleSize();
             mParticleShooter.updateRotation();
+            mParticleShooter.updateParticleForce();
             mParticleShooter.addParticles(mParticleSystem, lifeTime);
         }
 

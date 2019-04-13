@@ -80,7 +80,7 @@ class ParticleSystem {
         particles[currentOffset++] = direction.y;
         particles[currentOffset++] = direction.z;
         particles[currentOffset++] = particleStarTime;
-        particles[currentOffset++] = particleSize * 10;
+        particles[currentOffset++] = particleSize;
         particles[currentOffset++] = force.x;
         particles[currentOffset++] = force.y;
         particles[currentOffset++] = force.z;
