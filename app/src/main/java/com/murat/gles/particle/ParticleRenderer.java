@@ -80,11 +80,7 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
         float duration = Bean.duration;
 
         if (lifeTime <= duration || duration <= 0) {
-            mParticleShooter.updatePosition();
-            mParticleShooter.updateColor();
-            mParticleShooter.updateParticleSize();
-            mParticleShooter.updateRotation();
-            mParticleShooter.updateParticleForce();
+            mParticleShooter.update();
             mParticleShooter.addParticles(mParticleSystem, lifeTime);
         }
 

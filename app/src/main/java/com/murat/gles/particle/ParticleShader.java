@@ -19,7 +19,7 @@ class ParticleShader extends Shader {
     private final int aPositionLocation;
     private final int aStartColorLocation;
     private final int aEndColorLocation;
-    private final int aDirectionVectorLocation;
+    private final int aSpeed;
     private final int aParticleStartTimeLocation;
     private final int aForceLocation;
     private final int aRotationLocation;
@@ -32,10 +32,10 @@ class ParticleShader extends Shader {
     private static final String A_START_COLOR = "a_Start_Color";
     private static final String A_END_COLOR = "a_End_Color";
     private static final String A_TEXTURE_COORDINATES = "a_TextureCoordinates";
-    private static final String A_DIRECTION_VECTOR = "a_DirectionVector";
+    private static final String A_SPEED = "a_Speed";
     private static final String A_PARTICLE_START_TIME = "a_ParticleStartTime";
     private static final String A_POINT_SIZE = "a_PointSize";
-    private static final String A_Force = "a_Force";
+    private static final String A_FORCE = "a_Force";
     private static final String A_ROTATION = "a_Rotation";
 
     ParticleShader(Context context) {
@@ -49,9 +49,9 @@ class ParticleShader extends Shader {
         aPositionLocation = GLES20.glGetAttribLocation(program, A_POSITION);
         aStartColorLocation = GLES20.glGetAttribLocation(program, A_START_COLOR);
         aEndColorLocation = GLES20.glGetAttribLocation(program, A_END_COLOR);
-        aDirectionVectorLocation = GLES20.glGetAttribLocation(program, A_DIRECTION_VECTOR);
+        aSpeed = GLES20.glGetAttribLocation(program, A_SPEED);
         aParticleStartTimeLocation = GLES20.glGetAttribLocation(program, A_PARTICLE_START_TIME);
-        aForceLocation = GLES20.glGetAttribLocation(program, A_Force);
+        aForceLocation = GLES20.glGetAttribLocation(program, A_FORCE);
         aRotationLocation = GLES20.glGetAttribLocation(program, A_ROTATION);
     }
 
@@ -75,8 +75,8 @@ class ParticleShader extends Shader {
         return aEndColorLocation;
     }
 
-    int getDirectionVectorLocation() {
-        return aDirectionVectorLocation;
+    int getSpeedLocation() {
+        return aSpeed;
     }
 
     int getParticleStartTimeLocation() {

@@ -11,7 +11,7 @@ class ParticleSystem {
 
     private static final int POSITION_COMPONENT_COUNT = 3;
     private static final int COLOR_COMPONENT_COUNT = 4;
-    private static final int VECTOR_COMPONENT_COUNT = 3;
+    private static final int VECTOR_COMPONENT_COUNT = 2;
     private static final int PARTICLE_START_TIME_COMPONENT_COUNT = 1;
     private static final int PARTICLE_SIZE_COMPONENT_COUNT = 1;
     private static final int GRAVITY_FACTOR_COMPONENT_COUNT = 4;
@@ -46,7 +46,7 @@ class ParticleSystem {
             MathUtils.Vec3 position,
             MathUtils.Vec4 startColor,
             MathUtils.Vec4 endColor,
-            MathUtils.Vec3 direction,
+            MathUtils.Vec2 speed,
             float particleStarTime,
             float particleSize,
             MathUtils.Vec4 force,
@@ -76,9 +76,8 @@ class ParticleSystem {
         particles[currentOffset++] = endColor.y;
         particles[currentOffset++] = endColor.z;
         particles[currentOffset++] = endColor.w;
-        particles[currentOffset++] = direction.x;
-        particles[currentOffset++] = direction.y;
-        particles[currentOffset++] = direction.z;
+        particles[currentOffset++] = speed.x;
+        particles[currentOffset++] = speed.y;
         particles[currentOffset++] = particleStarTime;
         particles[currentOffset++] = particleSize;
         particles[currentOffset++] = force.x;
@@ -98,7 +97,7 @@ class ParticleSystem {
         dataOffset += COLOR_COMPONENT_COUNT;
         vertexArray.setVertexAttribPointer(dataOffset, program.getEndColorLocation(), COLOR_COMPONENT_COUNT, STRIDE);
         dataOffset += COLOR_COMPONENT_COUNT;
-        vertexArray.setVertexAttribPointer(dataOffset, program.getDirectionVectorLocation(), VECTOR_COMPONENT_COUNT, STRIDE);
+        vertexArray.setVertexAttribPointer(dataOffset, program.getSpeedLocation(), VECTOR_COMPONENT_COUNT, STRIDE);
         dataOffset += VECTOR_COMPONENT_COUNT;
         vertexArray.setVertexAttribPointer(dataOffset, program.getParticleStartTimeLocation(), PARTICLE_START_TIME_COMPONENT_COUNT, STRIDE);
         dataOffset += PARTICLE_START_TIME_COMPONENT_COUNT;

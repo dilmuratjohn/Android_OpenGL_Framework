@@ -1,12 +1,9 @@
 package com.murat.gles.particle;
 
-import android.opengl.Matrix;
-
 import com.murat.gles.util.MathUtils;
 
 import java.util.Random;
 
-import static android.opengl.Matrix.setRotateEulerM;
 import static com.murat.gles.particle.ParticleConfig.Bean;
 
 
@@ -32,7 +29,7 @@ class ParticleShooter {
         z -> angle
         w -> angle variance
      */
-    private MathUtils.Vec4 mVelocity;
+    private MathUtils.Vec2 mVelocity;
 
     /*
         x -> gravity x
@@ -46,12 +43,7 @@ class ParticleShooter {
     */
     private MathUtils.Vec2 mParticleSize;
 
-    private MathUtils.Vec3 mDirection;
-
     private MathUtils.Vec2 mRotation;
-
-    private float[] rotationMatrix = new float[16];
-    private float[] directionVector = new float[4];
 
     ParticleShooter() {
         init();
@@ -60,71 +52,60 @@ class ParticleShooter {
     private void init() {
         mStartColor = new MathUtils.Vec4(Bean.startColorRed, Bean.startColorGreen, Bean.startColorBlue, Bean.startColorAlpha);
         mEndColor = new MathUtils.Vec4(Bean.finishColorRed, Bean.finishColorGreen, Bean.finishColorBlue, Bean.finishColorAlpha);
-        mVelocity = new MathUtils.Vec4(Bean.speed / 10, Bean.speedVariance / 10, Bean.angle, Bean.angleVariance);
+        mVelocity = new MathUtils.Vec2(Bean.speed, Bean.speedVariance);
         mParticleSize = new MathUtils.Vec2(Bean.startParticleSize, Bean.startParticleSizeVariance);
-        mForce = new MathUtils.Vec4(Bean.gravityx / 500, Bean.gravityy / 500, Bean.tangentialAcceleration  / 500, Bean.radialAcceleration  / 500);
+        mForce = new MathUtils.Vec4(Bean.gravityx, Bean.gravityy, Bean.tangentialAcceleration, Bean.radialAcceleration);
         mRotation = new MathUtils.Vec2(nextRandomRotation(), 0f);
-
-        directionVector[0] = (float) Math.cos(mVelocity.z) * mVelocity.x;
-        directionVector[1] = (float) Math.sin(mVelocity.z) * mVelocity.x;
-        directionVector[2] = 0.0f;
-
     }
 
-    void updateParticleSize() {
+    void update() {
+        updatePosition();
+        updateColor();
+        updateParticleSize();
+        updateRotation();
+        updateParticleForce();
+        updateVelocity();
+    }
+
+    void addParticles(ParticleSystem particleSystem, float lifeTime) {
+        particleSystem.addParticle(mPosition, mStartColor, mEndColor, mVelocity, lifeTime, mParticleSize.x, mForce, mRotation);
+    }
+
+    private void updateParticleSize() {
         mParticleSize.x = nextRandomSize();
     }
 
-    void updateParticleForce(){
+    private void updateParticleForce() {
         mForce.z = nextRandomForce();
         mForce.w = nextRandomForce();
     }
 
-    void updatePosition() {
+    private void updatePosition() {
         mPosition = nextRandomPosition(RandomPosition.Top);
     }
 
-    void updateRotation() {
+    private void updateVelocity() {
+        mVelocity.x = nextRandomVelocity();
+    }
+
+    private void updateRotation() {
         mRotation.x = nextRandomRotation();
     }
 
-    void updateColor() {
+    private void updateColor() {
         MathUtils.Vec4 color = nextRandomColor();
         updateStartColor(color);
         updateEndColor(color);
     }
 
-    void updateStartColor(MathUtils.Vec4 color) {
+    private void updateStartColor(MathUtils.Vec4 color) {
         this.mStartColor = color;
     }
 
-    void updateEndColor(MathUtils.Vec4 color) {
+    private void updateEndColor(MathUtils.Vec4 color) {
         this.mEndColor = color;
     }
 
-    void addParticles(ParticleSystem particleSystem, float lifeTime) {
-        Matrix.setIdentityM(rotationMatrix, 0);
-        // create angle
-        setRotateEulerM(
-                rotationMatrix,
-                0,
-                (random.nextFloat() - 0.5f) * mVelocity.w,
-                (random.nextFloat() - 0.5f) * mVelocity.w,
-                0f
-        );
-
-        // use random to differentiate speed2222
-        float speedAdjustment = random.nextFloat() * mVelocity.y;
-
-        mDirection = new MathUtils.Vec3(
-                rotationMatrix[0] * speedAdjustment,
-                rotationMatrix[1] * speedAdjustment,
-                rotationMatrix[2]
-        );
-
-        particleSystem.addParticle(mPosition, mStartColor, mEndColor, mDirection, lifeTime, mParticleSize.x, mForce, mRotation);
-
-    }
 
     private enum RandomPosition {
         Top, Bottom, Lift, Right, MidHorizontal, MidVertical, Default
@@ -133,7 +114,7 @@ class ParticleShooter {
     private MathUtils.Vec3 nextRandomPosition(RandomPosition position) {
         switch (position) {
             case Top:
-                return new MathUtils.Vec3(4.0f * random.nextFloat() - 2.0f, 2.0f, 1.0f);
+                return new MathUtils.Vec3(2f * random.nextFloat() - 1f, 2.0f, 1.0f);
             case Lift:
                 return new MathUtils.Vec3(-1.0f, 2.0f * random.nextFloat() - 1.0f, 1.0f);
             case Right:
@@ -162,8 +143,12 @@ class ParticleShooter {
         return 2f * random.nextFloat() - 1f;
     }
 
-    private float nextRandomForce(){
-        return 2f * random.nextFloat() - 1f;
+    private float nextRandomForce() {
+        return (2f * random.nextFloat() - 1f) * mPosition.x > 0 ? 1f : -1f;
+    }
+
+    private float nextRandomVelocity() {
+        return Bean.speed + (Bean.speedVariance * (2.0f * random.nextFloat() - 1.0f));
     }
 
 }
