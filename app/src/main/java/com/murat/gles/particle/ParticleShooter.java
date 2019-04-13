@@ -60,9 +60,9 @@ class ParticleShooter {
     private void init() {
         mStartColor = new MathUtils.Vec4(Bean.startColorRed, Bean.startColorGreen, Bean.startColorBlue, Bean.startColorAlpha);
         mEndColor = new MathUtils.Vec4(Bean.finishColorRed, Bean.finishColorGreen, Bean.finishColorBlue, Bean.finishColorAlpha);
-        mVelocity = new MathUtils.Vec4(Bean.speed / 10, Bean.speedVariance / 10, Bean.angle, Bean.angleVariance);
+        mVelocity = new MathUtils.Vec4(Bean.speed, Bean.speedVariance, Bean.angle, Bean.angleVariance);
         mParticleSize = new MathUtils.Vec2(Bean.startParticleSize, Bean.startParticleSizeVariance);
-        mForce = new MathUtils.Vec4(Bean.gravityx / 500, Bean.gravityy / 500, Bean.tangentialAcceleration  / 500, Bean.radialAcceleration  / 500);
+        mForce = new MathUtils.Vec4(Bean.gravityx, Bean.gravityy, Bean.tangentialAcceleration, Bean.radialAcceleration);
         mRotation = new MathUtils.Vec2(nextRandomRotation(), 0f);
 
         directionVector[0] = (float) Math.cos(mVelocity.z) * mVelocity.x;
@@ -163,7 +163,8 @@ class ParticleShooter {
     }
 
     private float nextRandomForce(){
-        return 2f * random.nextFloat() - 1f;
+        return (2f * random.nextFloat() - 1f) * mPosition.x > 0 ? 1f : -1f;
+
     }
 
 }

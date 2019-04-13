@@ -19,15 +19,15 @@ void main() {
     v_StartColor = a_Start_Color;
     v_End_Color = a_End_Color;
     v_ElapsedTime = u_Time - a_ParticleStartTime;
-    v_Rotation = v_ElapsedTime * a_Rotation;
+//    v_Rotation = v_ElapsedTime * a_Rotation;
 
     vec4 force = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     vec3 currentPosition = a_Position + (a_DirectionVector * v_ElapsedTime);
-
-    if (a_Force.x != 0.0f) force.x = 0.3f * v_ElapsedTime * v_ElapsedTime / a_Force.x;
-    if (a_Force.y != 0.0f) force.y = 0.3f * v_ElapsedTime * v_ElapsedTime / a_Force.y;
-    if (a_Force.z != 0.0f) force.z = 0.1f * v_ElapsedTime / a_Force.z;
-    if (a_Force.w != 0.0f) force.w = 0.1f * v_ElapsedTime / a_Force.w;
+    float timeSq = v_ElapsedTime * v_ElapsedTime;
+    if (a_Force.x != 0.0f) force.x = 0.01f *timeSq * a_Force.x;
+    if (a_Force.y != 0.0f) force.y = 0.01f *timeSq * a_Force.y;
+    if (a_Force.z != 0.0f) force.z = v_ElapsedTime  * a_Force.z;
+    if (a_Force.w != 0.0f) force.w = v_ElapsedTime  * a_Force.w;
 
     // Gravity Verticle
     currentPosition.x += force.x;
