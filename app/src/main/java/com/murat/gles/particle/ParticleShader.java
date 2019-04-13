@@ -21,7 +21,8 @@ class ParticleShader extends Shader {
     private final int aEndColorLocation;
     private final int aDirectionVectorLocation;
     private final int aParticleStartTimeLocation;
-    private final int aGravityFactorLocation;
+    private final int aForceLocation;
+    private final int aRotationLocation;
 
     private static final String U_MATRIX = "u_Matrix";
     private static final String U_TEXTURE_UNIT = "u_TextureUnit";
@@ -34,7 +35,8 @@ class ParticleShader extends Shader {
     private static final String A_DIRECTION_VECTOR = "a_DirectionVector";
     private static final String A_PARTICLE_START_TIME = "a_ParticleStartTime";
     private static final String A_POINT_SIZE = "a_PointSize";
-    private static final String A_GRAVITY_FACTOR = "a_GravityFactor";
+    private static final String A_Force = "a_Force";
+    private static final String A_ROTATION = "a_Rotation";
 
     ParticleShader(Context context) {
         super(context, R.raw.particle_vertex_shader, R.raw.particle_fragment_shader);
@@ -49,7 +51,8 @@ class ParticleShader extends Shader {
         aEndColorLocation = GLES20.glGetAttribLocation(program, A_END_COLOR);
         aDirectionVectorLocation = GLES20.glGetAttribLocation(program, A_DIRECTION_VECTOR);
         aParticleStartTimeLocation = GLES20.glGetAttribLocation(program, A_PARTICLE_START_TIME);
-        aGravityFactorLocation = GLES20.glGetAttribLocation(program, A_GRAVITY_FACTOR);
+        aForceLocation = GLES20.glGetAttribLocation(program, A_Force);
+        aRotationLocation = GLES20.glGetAttribLocation(program, A_ROTATION);
     }
 
     void setUniforms(float[] matrix, float elapsedTime, int textureId) {
@@ -84,7 +87,11 @@ class ParticleShader extends Shader {
         return aPointSize;
     }
 
-    int getGravityFactorLocation() {
-        return aGravityFactorLocation;
+    int getForceLocation() {
+        return aForceLocation;
+    }
+
+    int getRotationLocation(){
+        return aRotationLocation;
     }
 }

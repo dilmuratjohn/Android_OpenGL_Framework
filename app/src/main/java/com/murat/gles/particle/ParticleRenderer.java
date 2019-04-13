@@ -7,8 +7,6 @@ import com.murat.gles.util.MathUtils;
 import com.murat.gles.util.TextureHelper;
 import com.murat.particles.R;
 
-import java.util.Random;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -36,9 +34,7 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
     private int mBlendFuncSource;
     private int mBlendFuncDestination;
     private int mFileId = R.drawable.particle_texture;
-
     private long mStartTime;
-    private final Random random = new Random();
 
     ParticleRenderer(Context context) {
         this.context = context;
@@ -48,7 +44,7 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        createParticle();
+        initParticle();
         mStartTime = System.currentTimeMillis();
     }
 
@@ -64,10 +60,10 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        drawParticles();
+        drawParticle();
     }
 
-    private void createParticle() {
+    private void initParticle() {
         mBlendFuncDestination = Bean.blendFuncDestination;
         mBlendFuncSource = Bean.blendFuncSource;
         mParticleTexture = TextureHelper.loadTexture(context, mFileId);
@@ -78,14 +74,16 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
         mParticleSystem.bindData(mParticleShader);
     }
 
-    private void drawParticles() {
+    private void drawParticle() {
 
         float lifeTime = (System.currentTimeMillis() - mStartTime) / 1000f;
         float duration = Bean.duration;
+
         if (lifeTime <= duration || duration <= 0) {
             mParticleShooter.updatePosition();
             mParticleShooter.updateColor();
             mParticleShooter.updateParticleSize();
+            mParticleShooter.updateRotation();
             mParticleShooter.addParticles(mParticleSystem, lifeTime);
         }
 
@@ -96,7 +94,6 @@ public class ParticleRenderer implements GLSurfaceView.Renderer {
         GLES20.glDepthMask(false);
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(mBlendFuncSource, mBlendFuncDestination);
-
 
         mParticleShader.setUniforms(modelViewProjectionMatrix, lifeTime, mParticleTexture);
         mParticleSystem.draw();

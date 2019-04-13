@@ -53,7 +53,7 @@ class ParticleConfig {
             "  \"radialAcceleration\" : -58,\n" +
             "  \"rotationEndVariance\" : 0,\n" +
             "  \"sourcePositiony\" : 1282.6923076923076,\n" +
-            "  \"angle\" : -90,\n" +
+            "  \"angle\" : 90,\n" +
             "  \"startColorAlpha\" : 1,\n" +
             "  \"startParticleSizeVariance\" : 59,\n" +
             "  \"speed\" : 680\n" +

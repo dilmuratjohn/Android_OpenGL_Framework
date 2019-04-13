@@ -14,7 +14,8 @@ class ParticleSystem {
     private static final int VECTOR_COMPONENT_COUNT = 3;
     private static final int PARTICLE_START_TIME_COMPONENT_COUNT = 1;
     private static final int PARTICLE_SIZE_COMPONENT_COUNT = 1;
-    private static final int GRAVITY_FACTOR_COMPONENT_COUNT = 2;
+    private static final int GRAVITY_FACTOR_COMPONENT_COUNT = 4;
+    private static final int ROTATION_COMPONENT_COUNT = 1;
 
     private static final int TOTAL_COMPONENT_COUNT =
             POSITION_COMPONENT_COUNT
@@ -23,7 +24,8 @@ class ParticleSystem {
                     + VECTOR_COMPONENT_COUNT
                     + PARTICLE_START_TIME_COMPONENT_COUNT
                     + PARTICLE_SIZE_COMPONENT_COUNT
-                    + GRAVITY_FACTOR_COMPONENT_COUNT;
+                    + GRAVITY_FACTOR_COMPONENT_COUNT
+                    + ROTATION_COMPONENT_COUNT;
 
     private static final int STRIDE = TOTAL_COMPONENT_COUNT * BYTES_PER_FLOAT;
 
@@ -47,7 +49,8 @@ class ParticleSystem {
             MathUtils.Vec3 direction,
             float particleStarTime,
             float particleSize,
-            MathUtils.Vec2 gravityFactor
+            MathUtils.Vec4 force,
+            MathUtils.Vec2 rotation
     ) {
         final int particleOffset = nextParticle * TOTAL_COMPONENT_COUNT;
 
@@ -77,9 +80,12 @@ class ParticleSystem {
         particles[currentOffset++] = direction.y;
         particles[currentOffset++] = direction.z;
         particles[currentOffset++] = particleStarTime;
-        particles[currentOffset++] = particleSize * 5;
-        particles[currentOffset++] = gravityFactor.x;
-        particles[currentOffset++] = gravityFactor.y;
+        particles[currentOffset++] = particleSize * 10;
+        particles[currentOffset++] = force.x;
+        particles[currentOffset++] = force.y;
+        particles[currentOffset++] = force.z;
+        particles[currentOffset++] = force.w;
+        particles[currentOffset++] = rotation.x;
 
         vertexArray.updateBuffer(particles, particleOffset, TOTAL_COMPONENT_COUNT);
     }
@@ -88,23 +94,19 @@ class ParticleSystem {
         int dataOffset = 0;
         vertexArray.setVertexAttribPointer(dataOffset, program.getPositionLocation(), POSITION_COMPONENT_COUNT, STRIDE);
         dataOffset += POSITION_COMPONENT_COUNT;
-
         vertexArray.setVertexAttribPointer(dataOffset, program.getStartColorLocation(), COLOR_COMPONENT_COUNT, STRIDE);
         dataOffset += COLOR_COMPONENT_COUNT;
-
         vertexArray.setVertexAttribPointer(dataOffset, program.getEndColorLocation(), COLOR_COMPONENT_COUNT, STRIDE);
         dataOffset += COLOR_COMPONENT_COUNT;
-
         vertexArray.setVertexAttribPointer(dataOffset, program.getDirectionVectorLocation(), VECTOR_COMPONENT_COUNT, STRIDE);
         dataOffset += VECTOR_COMPONENT_COUNT;
-
         vertexArray.setVertexAttribPointer(dataOffset, program.getParticleStartTimeLocation(), PARTICLE_START_TIME_COMPONENT_COUNT, STRIDE);
         dataOffset += PARTICLE_START_TIME_COMPONENT_COUNT;
-
         vertexArray.setVertexAttribPointer(dataOffset, program.getParticleSizeLocation(), PARTICLE_SIZE_COMPONENT_COUNT, STRIDE);
         dataOffset += PARTICLE_SIZE_COMPONENT_COUNT;
-
-        vertexArray.setVertexAttribPointer(dataOffset, program.getGravityFactorLocation(), GRAVITY_FACTOR_COMPONENT_COUNT, STRIDE);
+        vertexArray.setVertexAttribPointer(dataOffset, program.getForceLocation(), GRAVITY_FACTOR_COMPONENT_COUNT, STRIDE);
+        dataOffset += GRAVITY_FACTOR_COMPONENT_COUNT;
+        vertexArray.setVertexAttribPointer(dataOffset, program.getRotationLocation(), ROTATION_COMPONENT_COUNT, STRIDE);
     }
 
     void draw() {
