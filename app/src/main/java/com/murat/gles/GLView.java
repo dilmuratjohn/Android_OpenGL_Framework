@@ -1,4 +1,4 @@
-package com.murat.gles.particle;
+package com.murat.gles;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
