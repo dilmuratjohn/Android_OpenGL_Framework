@@ -83,6 +83,7 @@ public class ParticleShooter implements Renderable {
     private long mStartTime;
     private float mDuration;
     private float mLifeTime;
+    private int mEmissionRate;
 
     public ParticleShooter(String json) {
         mParticleBean = new Gson().fromJson(json, ParticleBean.class);
@@ -93,6 +94,7 @@ public class ParticleShooter implements Renderable {
         mForce = new MathUtils.Vec4(mParticleBean.gravityx, mParticleBean.gravityy, mParticleBean.tangentialAcceleration, mParticleBean.radialAcceleration);
         mRotation = new MathUtils.Vec2(nextRandomRotation(), 0f);
         mDuration = mParticleBean.duration;
+        mEmissionRate = 3;
         particles = new float[mParticleBean.maxParticles * TOTAL_COMPONENT_COUNT];
         vertexArray = new VertexArray(particles);
         this.maxParticleCount = mParticleBean.maxParticles;
@@ -112,8 +114,10 @@ public class ParticleShooter implements Renderable {
 
 
         if (mLifeTime <= mDuration || mDuration <= 0) {
-            update();
-            load();
+            for (int i = 0; i < mEmissionRate; i++) {
+                update();
+                load();
+            }
         }
 
         GLES20.glDepthMask(false);
