@@ -1,10 +1,7 @@
-package com.murat.gles.particle;
+package com.murat.gles;
 
-import com.google.gson.Gson;
-
-class ParticleConfig {
-
-    private static final String JSON = "{\n" +
+public class Config {
+    public static final String JSON = "{\n" +
             "  \"finishColorVarianceBlue\" : 1,\n" +
             "  \"rotatePerSecondVariance\" : 0,\n" +
             "  \"finishColorBlue\" : 1,\n" +
@@ -16,7 +13,7 @@ class ParticleConfig {
             "  \"sourcePositionVariancey\" : 60,\n" +
             "  \"rotatePerSecond\" : 0,\n" +
             "  \"startColorBlue\" : 1,\n" +
-            "  \"textureFileName\" : \"particle_texture.png\",\n" +
+            "  \"textureFileName\" : \"particle_texture\",\n" +
             "  \"finishParticleSizeVariance\" : 65,\n" +
             "  \"startColorVarianceBlue\" : 1,\n" +
             "  \"duration\" : 3,\n" +
@@ -58,9 +55,4 @@ class ParticleConfig {
             "  \"startParticleSizeVariance\" : 59,\n" +
             "  \"speed\" : 680\n" +
             "}";
-    public final static ParticleBean Bean = new Gson().fromJson(JSON, ParticleBean.class);
-
-    private ParticleConfig() {
-    }
-
 }

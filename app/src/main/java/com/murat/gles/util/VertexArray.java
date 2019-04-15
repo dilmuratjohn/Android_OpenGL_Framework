@@ -14,15 +14,12 @@ public class VertexArray {
 
     private final FloatBuffer floatBuffer;
 
-    private final float[] vData;
-
     public VertexArray(float[] vertexData) {
         floatBuffer = ByteBuffer
                 .allocateDirect(vertexData.length * BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
                 .put(vertexData);
-        vData = vertexData;
     }
 
     public void setVertexAttribPointer(int dataOffset, int attributeLocation, int componentCount, int stride) {
@@ -36,17 +33,6 @@ public class VertexArray {
         floatBuffer.position(start);
         floatBuffer.put(vertexData, start, count);
         floatBuffer.position(0);
-    }
-
-    @NonNull
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        for (float f : vData) {
-            sb.append(f).append(", ");
-        }
-        sb.append("}\n");
-        return sb.toString();
     }
 
 }

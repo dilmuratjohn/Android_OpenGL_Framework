@@ -4,7 +4,7 @@ uniform float u_Time;
 attribute vec3 a_Position;
 attribute vec4 a_Start_Color;
 attribute vec4 a_End_Color;
-attribute vec3 a_DirectionVector;
+attribute vec2 a_Speed;
 attribute float a_ParticleStartTime;
 attribute float a_PointSize;
 attribute vec4 a_Force;
@@ -19,16 +19,20 @@ void main() {
     v_StartColor = a_Start_Color;
     v_End_Color = a_End_Color;
     v_ElapsedTime = u_Time - a_ParticleStartTime;
-//    v_Rotation = v_ElapsedTime * a_Rotation;
+    v_Rotation = v_ElapsedTime * a_Rotation * 5.0f;
 
     vec4 force = vec4(0.0f, 0.0f, 0.0f, 0.0f);
-    vec3 currentPosition = a_Position + (a_DirectionVector * v_ElapsedTime);
-    float timeSq = v_ElapsedTime * v_ElapsedTime;
-    if (a_Force.x != 0.0f) force.x = 0.01f *timeSq * a_Force.x;
-    if (a_Force.y != 0.0f) force.y = 0.01f *timeSq * a_Force.y;
-    if (a_Force.z != 0.0f) force.z = v_ElapsedTime  * a_Force.z;
-    if (a_Force.w != 0.0f) force.w = v_ElapsedTime  * a_Force.w;
+    vec3 currentPosition = a_Position;
+    float timeSquare = v_ElapsedTime * v_ElapsedTime;
+    float gravityCorrection = 0.01f;
+    float accelCorrection = 0.7f;
+    if (a_Force.x != 0.0f) force.x = (a_Speed.x * v_ElapsedTime + timeSquare * a_Force.x) * gravityCorrection;
+    if (a_Force.y != 0.0f) force.y = (timeSquare * a_Force.y) * gravityCorrection;
+    if (a_Force.z != 0.0f) force.z = (v_ElapsedTime * a_Force.z) * accelCorrection;
+    if (a_Force.w != 0.0f) force.w = (v_ElapsedTime * a_Force.w) * accelCorrection;
 
+    // Origin Speed
+//    currentPosition.x += v_ElapsedTime * 0.5f;
     // Gravity Verticle
     currentPosition.x += force.x;
     // Gravity Horizontal

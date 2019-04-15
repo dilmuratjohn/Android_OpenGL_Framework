@@ -1,18 +1,47 @@
 package com.murat.gles.particle;
 
-import android.opengl.Matrix;
+import android.content.Context;
+import android.opengl.GLES20;
 
+import com.google.gson.Gson;
+import com.murat.gles.util.Renderable;
 import com.murat.gles.util.MathUtils;
+import com.murat.gles.util.TextureHelper;
+import com.murat.gles.util.VertexArray;
 
 import java.util.Random;
 
-import static android.opengl.Matrix.setRotateEulerM;
-import static com.murat.gles.particle.ParticleConfig.Bean;
+import static com.murat.gles.Constants.BYTES_PER_FLOAT;
 
-
-class ParticleShooter {
+public class ParticleShooter implements Renderable {
 
     private final Random random = new Random();
+    private static final int POSITION_COMPONENT_COUNT = 3;
+    private static final int COLOR_COMPONENT_COUNT = 4;
+    private static final int VECTOR_COMPONENT_COUNT = 2;
+    private static final int PARTICLE_START_TIME_COMPONENT_COUNT = 1;
+    private static final int PARTICLE_SIZE_COMPONENT_COUNT = 1;
+    private static final int GRAVITY_FACTOR_COMPONENT_COUNT = 4;
+    private static final int ROTATION_COMPONENT_COUNT = 1;
+
+    private static final int TOTAL_COMPONENT_COUNT =
+            POSITION_COMPONENT_COUNT
+                    + COLOR_COMPONENT_COUNT
+                    + COLOR_COMPONENT_COUNT
+                    + VECTOR_COMPONENT_COUNT
+                    + PARTICLE_START_TIME_COMPONENT_COUNT
+                    + PARTICLE_SIZE_COMPONENT_COUNT
+                    + GRAVITY_FACTOR_COMPONENT_COUNT
+                    + ROTATION_COMPONENT_COUNT;
+
+    private static final int STRIDE = TOTAL_COMPONENT_COUNT * BYTES_PER_FLOAT;
+
+    private final float[] particles;
+    private final VertexArray vertexArray;
+    private final int maxParticleCount;
+
+    private int currentParticleCount;
+    private int nextParticle;
 
     private MathUtils.Vec3 mPosition;
 
@@ -32,7 +61,7 @@ class ParticleShooter {
         z -> angle
         w -> angle variance
      */
-    private MathUtils.Vec4 mVelocity;
+    private MathUtils.Vec2 mVelocity;
 
     /*
         x -> gravity x
@@ -46,108 +75,171 @@ class ParticleShooter {
     */
     private MathUtils.Vec2 mParticleSize;
 
-    private MathUtils.Vec3 mDirection;
-
     private MathUtils.Vec2 mRotation;
 
-    private float[] rotationMatrix = new float[16];
-    private float[] directionVector = new float[4];
+    private ParticleBean mParticleBean;
+    private ParticleShader mParticleShader;
+    private int mParticleTexture;
+    private long mStartTime;
+    private float mDuration;
+    private float mLifeTime;
+    private int mEmissionRate;
 
-    ParticleShooter() {
-        init();
-    }
-
-    private void init() {
-        mStartColor = new MathUtils.Vec4(Bean.startColorRed, Bean.startColorGreen, Bean.startColorBlue, Bean.startColorAlpha);
-        mEndColor = new MathUtils.Vec4(Bean.finishColorRed, Bean.finishColorGreen, Bean.finishColorBlue, Bean.finishColorAlpha);
-        mVelocity = new MathUtils.Vec4(Bean.speed, Bean.speedVariance, Bean.angle, Bean.angleVariance);
-        mParticleSize = new MathUtils.Vec2(Bean.startParticleSize, Bean.startParticleSizeVariance);
-        mForce = new MathUtils.Vec4(Bean.gravityx, Bean.gravityy, Bean.tangentialAcceleration, Bean.radialAcceleration);
+    public ParticleShooter(String json) {
+        mParticleBean = new Gson().fromJson(json, ParticleBean.class);
+        mStartColor = new MathUtils.Vec4(mParticleBean.startColorRed, mParticleBean.startColorGreen, mParticleBean.startColorBlue, mParticleBean.startColorAlpha);
+        mEndColor = new MathUtils.Vec4(mParticleBean.finishColorRed, mParticleBean.finishColorGreen, mParticleBean.finishColorBlue, mParticleBean.finishColorAlpha);
+        mVelocity = new MathUtils.Vec2(mParticleBean.speed, mParticleBean.speedVariance);
+        mParticleSize = new MathUtils.Vec2(mParticleBean.startParticleSize, mParticleBean.startParticleSizeVariance);
+        mForce = new MathUtils.Vec4(mParticleBean.gravityx, mParticleBean.gravityy, mParticleBean.tangentialAcceleration, mParticleBean.radialAcceleration);
         mRotation = new MathUtils.Vec2(nextRandomRotation(), 0f);
-
-        directionVector[0] = (float) Math.cos(mVelocity.z) * mVelocity.x;
-        directionVector[1] = (float) Math.sin(mVelocity.z) * mVelocity.x;
-        directionVector[2] = 0.0f;
-
+        mDuration = mParticleBean.duration;
+        mEmissionRate = 3;
+        particles = new float[mParticleBean.maxParticles * TOTAL_COMPONENT_COUNT];
+        vertexArray = new VertexArray(particles);
+        this.maxParticleCount = mParticleBean.maxParticles;
     }
 
-    void updateParticleSize() {
+    public void bind(Context context) {
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        mParticleTexture = TextureHelper.loadTexture(context, mParticleBean.textureFileName);
+        mParticleShader = new ParticleShader(context);
+        mParticleShader.useProgram();
+        bindData(mParticleShader);
+        mStartTime = System.currentTimeMillis();
+    }
+
+    public void render(float[] mvp) {
+        mLifeTime = (System.currentTimeMillis() - mStartTime) / 1000f;
+
+
+        if (mLifeTime <= mDuration || mDuration <= 0) {
+            for (int i = 0; i < mEmissionRate; i++) {
+                update();
+                load();
+            }
+        }
+
+        GLES20.glDepthMask(false);
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(mParticleBean.blendFuncSource, mParticleBean.blendFuncDestination);
+
+        mParticleShader.setUniforms(mvp, mLifeTime, mParticleTexture);
+        draw();
+
+        GLES20.glDisable(GLES20.GL_BLEND);
+        GLES20.glDepthMask(true);
+    }
+
+    private void update() {
+        updatePosition();
+        updateColor();
+        updateParticleSize();
+        updateRotation();
+        updateParticleForce();
+        updateVelocity();
+    }
+
+    private void draw() {
+        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, currentParticleCount);
+    }
+
+    private void load() {
+
+        final int particleOffset = nextParticle * TOTAL_COMPONENT_COUNT;
+
+        int currentOffset = particleOffset;
+        nextParticle++;
+
+        if (currentParticleCount < maxParticleCount) {
+            currentParticleCount++;
+        }
+
+        if (nextParticle == maxParticleCount) {
+            nextParticle = 0;
+        }
+
+        particles[currentOffset++] = mPosition.x;
+        particles[currentOffset++] = mPosition.y;
+        particles[currentOffset++] = mPosition.z;
+        particles[currentOffset++] = mStartColor.x;
+        particles[currentOffset++] = mStartColor.y;
+        particles[currentOffset++] = mStartColor.z;
+        particles[currentOffset++] = mStartColor.w;
+        particles[currentOffset++] = mEndColor.x;
+        particles[currentOffset++] = mEndColor.y;
+        particles[currentOffset++] = mEndColor.z;
+        particles[currentOffset++] = mEndColor.w;
+        particles[currentOffset++] = mVelocity.x;
+        particles[currentOffset++] = mVelocity.y;
+        particles[currentOffset++] = mLifeTime;
+        particles[currentOffset++] = mParticleSize.x;
+        particles[currentOffset++] = mForce.x;
+        particles[currentOffset++] = mForce.y;
+        particles[currentOffset++] = mForce.z;
+        particles[currentOffset++] = mForce.w;
+        particles[currentOffset++] = mRotation.x;
+
+        vertexArray.updateBuffer(particles, particleOffset, TOTAL_COMPONENT_COUNT);
+    }
+
+    private void bindData(ParticleShader program) {
+        int dataOffset = 0;
+        vertexArray.setVertexAttribPointer(dataOffset, program.getPositionLocation(), POSITION_COMPONENT_COUNT, STRIDE);
+        dataOffset += POSITION_COMPONENT_COUNT;
+        vertexArray.setVertexAttribPointer(dataOffset, program.getStartColorLocation(), COLOR_COMPONENT_COUNT, STRIDE);
+        dataOffset += COLOR_COMPONENT_COUNT;
+        vertexArray.setVertexAttribPointer(dataOffset, program.getEndColorLocation(), COLOR_COMPONENT_COUNT, STRIDE);
+        dataOffset += COLOR_COMPONENT_COUNT;
+        vertexArray.setVertexAttribPointer(dataOffset, program.getSpeedLocation(), VECTOR_COMPONENT_COUNT, STRIDE);
+        dataOffset += VECTOR_COMPONENT_COUNT;
+        vertexArray.setVertexAttribPointer(dataOffset, program.getParticleStartTimeLocation(), PARTICLE_START_TIME_COMPONENT_COUNT, STRIDE);
+        dataOffset += PARTICLE_START_TIME_COMPONENT_COUNT;
+        vertexArray.setVertexAttribPointer(dataOffset, program.getParticleSizeLocation(), PARTICLE_SIZE_COMPONENT_COUNT, STRIDE);
+        dataOffset += PARTICLE_SIZE_COMPONENT_COUNT;
+        vertexArray.setVertexAttribPointer(dataOffset, program.getForceLocation(), GRAVITY_FACTOR_COMPONENT_COUNT, STRIDE);
+        dataOffset += GRAVITY_FACTOR_COMPONENT_COUNT;
+        vertexArray.setVertexAttribPointer(dataOffset, program.getRotationLocation(), ROTATION_COMPONENT_COUNT, STRIDE);
+    }
+
+
+    private void updateParticleSize() {
         mParticleSize.x = nextRandomSize();
     }
 
-    void updateParticleForce(){
+    private void updateParticleForce() {
         mForce.z = nextRandomForce();
         mForce.w = nextRandomForce();
     }
 
-    void updatePosition() {
-        mPosition = nextRandomPosition(RandomPosition.Top);
+    private void updatePosition() {
+        mPosition = nextRandomPosition();
     }
 
-    void updateRotation() {
+    private void updateVelocity() {
+        mVelocity.x = nextRandomVelocity();
+    }
+
+    private void updateRotation() {
         mRotation.x = nextRandomRotation();
     }
 
-    void updateColor() {
+    private void updateColor() {
         MathUtils.Vec4 color = nextRandomColor();
         updateStartColor(color);
         updateEndColor(color);
     }
 
-    void updateStartColor(MathUtils.Vec4 color) {
+    private void updateStartColor(MathUtils.Vec4 color) {
         this.mStartColor = color;
     }
 
-    void updateEndColor(MathUtils.Vec4 color) {
+    private void updateEndColor(MathUtils.Vec4 color) {
         this.mEndColor = color;
     }
 
-    void addParticles(ParticleSystem particleSystem, float lifeTime) {
-        Matrix.setIdentityM(rotationMatrix, 0);
-        // create angle
-        setRotateEulerM(
-                rotationMatrix,
-                0,
-                (random.nextFloat() - 0.5f) * mVelocity.w,
-                (random.nextFloat() - 0.5f) * mVelocity.w,
-                0f
-        );
-
-        // use random to differentiate speed2222
-        float speedAdjustment = random.nextFloat() * mVelocity.y;
-
-        mDirection = new MathUtils.Vec3(
-                rotationMatrix[0] * speedAdjustment,
-                rotationMatrix[1] * speedAdjustment,
-                rotationMatrix[2]
-        );
-
-        particleSystem.addParticle(mPosition, mStartColor, mEndColor, mDirection, lifeTime, mParticleSize.x, mForce, mRotation);
-
-    }
-
-    private enum RandomPosition {
-        Top, Bottom, Lift, Right, MidHorizontal, MidVertical, Default
-    }
-
-    private MathUtils.Vec3 nextRandomPosition(RandomPosition position) {
-        switch (position) {
-            case Top:
-                return new MathUtils.Vec3(4.0f * random.nextFloat() - 2.0f, 2.0f, 1.0f);
-            case Lift:
-                return new MathUtils.Vec3(-1.0f, 2.0f * random.nextFloat() - 1.0f, 1.0f);
-            case Right:
-                return new MathUtils.Vec3(1.0f, 2.0f * random.nextFloat() - 1.0f, 1.0f);
-            case Bottom:
-                return new MathUtils.Vec3(4.0f * random.nextFloat() - 2.0f, -1.5f, 1.0f);
-            case MidVertical:
-                return new MathUtils.Vec3(0.0f, 2.0f * random.nextFloat() - 1.0f, 1.0f);
-            case MidHorizontal:
-                return new MathUtils.Vec3(4.0f * random.nextFloat() - 2.0f, 0.0f, 1.0f);
-            case Default:
-                return new MathUtils.Vec3(0.0f, 0.0f, 0.0f);
-        }
-        return new MathUtils.Vec3(0.0f, 0.0f, 0.0f);
+    private MathUtils.Vec3 nextRandomPosition() {
+        return new MathUtils.Vec3(2f * random.nextFloat() - 1f, 0.3f * random.nextFloat() + 2f, 1.0f);
     }
 
     private MathUtils.Vec4 nextRandomColor() {
@@ -155,16 +247,19 @@ class ParticleShooter {
     }
 
     private float nextRandomSize() {
-        return random.nextFloat() * Bean.startParticleSize * 5f;
+        return random.nextFloat() * mParticleBean.startParticleSize * 5f;
     }
 
     private float nextRandomRotation() {
-        return 2f * random.nextFloat() - 1f;
+        return (2f * random.nextFloat() - 1f);
     }
 
-    private float nextRandomForce(){
+    private float nextRandomForce() {
         return (2f * random.nextFloat() - 1f) * mPosition.x > 0 ? 1f : -1f;
+    }
 
+    private float nextRandomVelocity() {
+        return mParticleBean.speed + (mParticleBean.speedVariance * (2.0f * random.nextFloat() - 1.0f));
     }
 
 }
