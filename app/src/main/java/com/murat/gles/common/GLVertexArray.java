@@ -1,6 +1,4 @@
-package com.murat.gles.util;
-
-import android.support.annotation.NonNull;
+package com.murat.gles.common;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -8,13 +6,13 @@ import java.nio.FloatBuffer;
 
 import android.opengl.GLES20;
 
-import static com.murat.gles.Constants.BYTES_PER_FLOAT;
+import static com.murat.gles.common.GLConstants.BYTES_PER_FLOAT;
 
-public class VertexArray {
+public class GLVertexArray {
 
     private final FloatBuffer floatBuffer;
 
-    public VertexArray(float[] vertexData) {
+    public GLVertexArray(float[] vertexData) {
         floatBuffer = ByteBuffer
                 .allocateDirect(vertexData.length * BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder())

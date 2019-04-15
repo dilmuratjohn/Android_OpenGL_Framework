@@ -1,4 +1,4 @@
-package com.murat.gles.util;
+package com.murat.gles.common;
 
 import android.app.ActivityManager;
 import android.content.Context;

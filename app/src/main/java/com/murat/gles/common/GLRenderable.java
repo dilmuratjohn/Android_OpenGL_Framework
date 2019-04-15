@@ -1,8 +1,9 @@
-package com.murat.gles.util;
+package com.murat.gles.common;
 
 import android.content.Context;
 
-public interface Renderable {
+public interface GLRenderable {
     void bind(Context context);
+
     void render(float[] mvp);
 }

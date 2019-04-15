@@ -1,6 +1,6 @@
-package com.murat.gles.util;
+package com.murat.gles.common;
 
-public class MathUtils {
+public class GLMathUtils {
 
     public static class Vec2 {
         public float x, y;

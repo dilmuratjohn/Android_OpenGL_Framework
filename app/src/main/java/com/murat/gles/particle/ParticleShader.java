@@ -2,14 +2,13 @@ package com.murat.gles.particle;
 
 import android.content.Context;
 
-
-import com.murat.gles.util.Shader;
+import com.murat.gles.common.GLShader;
 import com.murat.particles.R;
 
 import android.opengl.GLES20;
 
 
-class ParticleShader extends Shader {
+class ParticleShader extends GLShader {
 
     private final int uMatrixLocation;
     private final int uTimeLocation;
@@ -92,7 +91,7 @@ class ParticleShader extends Shader {
         return aForceLocation;
     }
 
-    int getRotationLocation(){
+    int getRotationLocation() {
         return aRotationLocation;
     }
 }

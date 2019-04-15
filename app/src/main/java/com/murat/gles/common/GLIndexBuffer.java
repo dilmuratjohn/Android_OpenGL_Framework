@@ -1,4 +1,4 @@
-package com.murat.gles.util;
+package com.murat.gles.common;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -6,14 +6,14 @@ import java.nio.ShortBuffer;
 
 import android.opengl.GLES20;
 
-import static com.murat.gles.Constants.BYTES_PER_SHORT;
+import static com.murat.gles.common.GLConstants.BYTES_PER_SHORT;
 
 
-public class IndexBuffer {
+public class GLIndexBuffer {
 
     private final int bufferId;
 
-    public IndexBuffer(short[] vertexData) {
+    public GLIndexBuffer(short[] vertexData) {
         final int[] buffers = new int[1];
         GLES20.glGenBuffers(buffers.length, buffers, 0);
         if (buffers[0] == 0) {

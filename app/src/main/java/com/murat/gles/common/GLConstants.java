@@ -1,6 +1,6 @@
-package com.murat.gles;
+package com.murat.gles.common;
 
-public class Constants {
+public class GLConstants {
 
     public static final int BYTES_PER_FLOAT = 4;
     public static final int BYTES_PER_SHORT = 2;

@@ -7,8 +7,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.murat.gles.common.GLView;
+import com.murat.gles.particle.ParticleConfig;
 import com.murat.gles.particle.ParticleShooter;
-import com.murat.gles.util.GLUtils;
+import com.murat.gles.common.GLUtils;
 import com.murat.particles.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -23,14 +25,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_start).setOnClickListener(this);
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_start: {
                 if (mSupport) {
                     GLView view = new GLView(this);
-                    ParticleShooter particleShooter = new ParticleShooter(Config.JSON);
+                    ParticleShooter particleShooter = new ParticleShooter(ParticleConfig.JSON);
                     view.removeAll();
                     view.add(particleShooter, "particle");
                     FrameLayout frameLayout = findViewById(R.id.frame);

@@ -1,9 +1,9 @@
-package com.murat.gles.util;
+package com.murat.gles.common;
 
 import android.opengl.GLES20;
 import android.util.Log;
 
-class ShaderHelper {
+class GLShaderHelper {
 
     private static final String TAG_ERROR = "[Error] -> ";
 

@@ -1,10 +1,7 @@
-package com.murat.gles;
+package com.murat.gles.common;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-
-import com.murat.gles.util.MathUtils;
-import com.murat.gles.util.Renderable;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -32,9 +29,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         mRenderMap = new HashMap<>();
     }
 
-    private Map<String, Renderable> mRenderMap;
+    private Map<String, GLRenderable> mRenderMap;
 
-    public void add(Renderable renderer, String name) {
+    public void add(GLRenderable renderer, String name) {
         mRenderMap.put(name, renderer);
     }
 
@@ -42,21 +39,21 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         mRenderMap.remove(name);
     }
 
-    public void removeAll(){
+    public void removeAll() {
         mRenderMap.clear();
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        for (Map.Entry<String, Renderable> renderer : mRenderMap.entrySet())
+        for (Map.Entry<String, GLRenderable> renderer : mRenderMap.entrySet())
             renderer.getValue().bind(this.context);
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
-        MathUtils.Mat4.perspectiveProjection(projectionMatrix, 45, (float) width / (float) height, 1f, 100f);
+        GLMathUtils.Mat4.perspectiveProjection(projectionMatrix, 45, (float) width / (float) height, 1f, 100f);
         Matrix.setIdentityM(viewMatrix, 0);
         Matrix.translateM(viewMatrix, 0, 0f, 0f, -5f);
     }
@@ -67,7 +64,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
         Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
-        for (Map.Entry<String, Renderable> renderer : mRenderMap.entrySet())
+        for (Map.Entry<String, GLRenderable> renderer : mRenderMap.entrySet())
             renderer.getValue().render(modelViewProjectionMatrix);
     }
 }

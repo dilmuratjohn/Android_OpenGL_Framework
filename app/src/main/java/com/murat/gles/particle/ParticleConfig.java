@@ -1,6 +1,7 @@
-package com.murat.gles;
+package com.murat.gles.particle;
 
-public class Config {
+public class ParticleConfig {
+
     public static final String JSON = "{\n" +
             "  \"finishColorVarianceBlue\" : 1,\n" +
             "  \"rotatePerSecondVariance\" : 0,\n" +
@@ -55,4 +56,5 @@ public class Config {
             "  \"startParticleSizeVariance\" : 59,\n" +
             "  \"speed\" : 680\n" +
             "}";
+
 }

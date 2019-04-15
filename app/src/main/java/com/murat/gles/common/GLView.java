@@ -1,13 +1,12 @@
-package com.murat.gles;
+package com.murat.gles.common;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 
-import com.murat.gles.util.Renderable;
-
 public class GLView extends GLSurfaceView {
 
     GLRenderer mRenderer;
+
     public GLView(Context context) {
         super(context);
         setEGLContextClientVersion(2);
@@ -15,15 +14,15 @@ public class GLView extends GLSurfaceView {
         setRenderer(mRenderer);
     }
 
-    public void add(Renderable renderer, String name){
+    public void add(GLRenderable renderer, String name) {
         mRenderer.add(renderer, name);
     }
 
-    public void remove(String name){
+    public void remove(String name) {
         mRenderer.remove(name);
     }
 
-    public void removeAll(){
+    public void removeAll() {
         mRenderer.removeAll();
     }
 

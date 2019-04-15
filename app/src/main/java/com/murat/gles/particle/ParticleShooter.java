@@ -4,16 +4,16 @@ import android.content.Context;
 import android.opengl.GLES20;
 
 import com.google.gson.Gson;
-import com.murat.gles.util.Renderable;
-import com.murat.gles.util.MathUtils;
-import com.murat.gles.util.TextureHelper;
-import com.murat.gles.util.VertexArray;
+import com.murat.gles.common.GLRenderable;
+import com.murat.gles.common.GLMathUtils;
+import com.murat.gles.common.GLTextureHelper;
+import com.murat.gles.common.GLVertexArray;
 
 import java.util.Random;
 
-import static com.murat.gles.Constants.BYTES_PER_FLOAT;
+import static com.murat.gles.common.GLConstants.BYTES_PER_FLOAT;
 
-public class ParticleShooter implements Renderable {
+public class ParticleShooter implements GLRenderable {
 
     private final Random random = new Random();
     private static final int POSITION_COMPONENT_COUNT = 3;
@@ -37,13 +37,13 @@ public class ParticleShooter implements Renderable {
     private static final int STRIDE = TOTAL_COMPONENT_COUNT * BYTES_PER_FLOAT;
 
     private final float[] particles;
-    private final VertexArray vertexArray;
+    private final GLVertexArray vertexArray;
     private final int maxParticleCount;
 
     private int currentParticleCount;
     private int nextParticle;
 
-    private MathUtils.Vec3 mPosition;
+    private GLMathUtils.Vec3 mPosition;
 
     /*
         x -> red
@@ -51,9 +51,9 @@ public class ParticleShooter implements Renderable {
         z -> blue
         w -> alpha
     */
-    private MathUtils.Vec4 mStartColor;
+    private GLMathUtils.Vec4 mStartColor;
 
-    private MathUtils.Vec4 mEndColor;
+    private GLMathUtils.Vec4 mEndColor;
 
     /*
         x -> speed
@@ -61,21 +61,21 @@ public class ParticleShooter implements Renderable {
         z -> angle
         w -> angle variance
      */
-    private MathUtils.Vec2 mVelocity;
+    private GLMathUtils.Vec2 mVelocity;
 
     /*
         x -> gravity x
         y -> gravity y
     */
-    private MathUtils.Vec4 mForce;
+    private GLMathUtils.Vec4 mForce;
 
     /*
         x -> size
         y -> variance
     */
-    private MathUtils.Vec2 mParticleSize;
+    private GLMathUtils.Vec2 mParticleSize;
 
-    private MathUtils.Vec2 mRotation;
+    private GLMathUtils.Vec2 mRotation;
 
     private ParticleBean mParticleBean;
     private ParticleShader mParticleShader;
@@ -87,22 +87,22 @@ public class ParticleShooter implements Renderable {
 
     public ParticleShooter(String json) {
         mParticleBean = new Gson().fromJson(json, ParticleBean.class);
-        mStartColor = new MathUtils.Vec4(mParticleBean.startColorRed, mParticleBean.startColorGreen, mParticleBean.startColorBlue, mParticleBean.startColorAlpha);
-        mEndColor = new MathUtils.Vec4(mParticleBean.finishColorRed, mParticleBean.finishColorGreen, mParticleBean.finishColorBlue, mParticleBean.finishColorAlpha);
-        mVelocity = new MathUtils.Vec2(mParticleBean.speed, mParticleBean.speedVariance);
-        mParticleSize = new MathUtils.Vec2(mParticleBean.startParticleSize, mParticleBean.startParticleSizeVariance);
-        mForce = new MathUtils.Vec4(mParticleBean.gravityx, mParticleBean.gravityy, mParticleBean.tangentialAcceleration, mParticleBean.radialAcceleration);
-        mRotation = new MathUtils.Vec2(nextRandomRotation(), 0f);
+        mStartColor = new GLMathUtils.Vec4(mParticleBean.startColorRed, mParticleBean.startColorGreen, mParticleBean.startColorBlue, mParticleBean.startColorAlpha);
+        mEndColor = new GLMathUtils.Vec4(mParticleBean.finishColorRed, mParticleBean.finishColorGreen, mParticleBean.finishColorBlue, mParticleBean.finishColorAlpha);
+        mVelocity = new GLMathUtils.Vec2(mParticleBean.speed, mParticleBean.speedVariance);
+        mParticleSize = new GLMathUtils.Vec2(mParticleBean.startParticleSize, mParticleBean.startParticleSizeVariance);
+        mForce = new GLMathUtils.Vec4(mParticleBean.gravityx, mParticleBean.gravityy, mParticleBean.tangentialAcceleration, mParticleBean.radialAcceleration);
+        mRotation = new GLMathUtils.Vec2(nextRandomRotation(), 0f);
         mDuration = mParticleBean.duration;
         mEmissionRate = 3;
         particles = new float[mParticleBean.maxParticles * TOTAL_COMPONENT_COUNT];
-        vertexArray = new VertexArray(particles);
+        vertexArray = new GLVertexArray(particles);
         this.maxParticleCount = mParticleBean.maxParticles;
     }
 
     public void bind(Context context) {
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        mParticleTexture = TextureHelper.loadTexture(context, mParticleBean.textureFileName);
+        mParticleTexture = GLTextureHelper.loadTexture(context, mParticleBean.textureFileName);
         mParticleShader = new ParticleShader(context);
         mParticleShader.useProgram();
         bindData(mParticleShader);
@@ -225,25 +225,25 @@ public class ParticleShooter implements Renderable {
     }
 
     private void updateColor() {
-        MathUtils.Vec4 color = nextRandomColor();
+        GLMathUtils.Vec4 color = nextRandomColor();
         updateStartColor(color);
         updateEndColor(color);
     }
 
-    private void updateStartColor(MathUtils.Vec4 color) {
+    private void updateStartColor(GLMathUtils.Vec4 color) {
         this.mStartColor = color;
     }
 
-    private void updateEndColor(MathUtils.Vec4 color) {
+    private void updateEndColor(GLMathUtils.Vec4 color) {
         this.mEndColor = color;
     }
 
-    private MathUtils.Vec3 nextRandomPosition() {
-        return new MathUtils.Vec3(2f * random.nextFloat() - 1f, 0.3f * random.nextFloat() + 2f, 1.0f);
+    private GLMathUtils.Vec3 nextRandomPosition() {
+        return new GLMathUtils.Vec3(2f * random.nextFloat() - 1f, 0.3f * random.nextFloat() + 2f, 1.0f);
     }
 
-    private MathUtils.Vec4 nextRandomColor() {
-        return new MathUtils.Vec4(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat());
+    private GLMathUtils.Vec4 nextRandomColor() {
+        return new GLMathUtils.Vec4(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat());
     }
 
     private float nextRandomSize() {

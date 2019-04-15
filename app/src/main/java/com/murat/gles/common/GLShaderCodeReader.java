@@ -1,4 +1,4 @@
-package com.murat.gles.util;
+package com.murat.gles.common;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-class ShaderCodeReader {
+class GLShaderCodeReader {
 
     static String readTextFileFromResource(Context context, int id) {
         StringBuilder content = new StringBuilder();

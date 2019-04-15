@@ -1,4 +1,4 @@
-package com.murat.gles.util;
+package com.murat.gles.common;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -8,7 +8,7 @@ import android.opengl.GLUtils;
 import android.util.Log;
 
 
-public class TextureHelper {
+public class GLTextureHelper {
 
     private static final String TAG_ERROR = "[Error] -> ";
 
@@ -37,7 +37,7 @@ public class TextureHelper {
         return textureObjectIds[0];
     }
 
-    public static int loadTexture(Context context, String resourceName){
+    public static int loadTexture(Context context, String resourceName) {
         int resourceId = context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
         return loadTexture(context, resourceId);
     }
