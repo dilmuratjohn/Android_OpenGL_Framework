@@ -31,6 +31,6 @@ void main() {
 
     // Translate the point back to its original position and use that point
     // to get your texture color.
-    vec4 color = vec4(v_StartColor + (v_End_Color - v_StartColor) / (v_ElapsedTime * 3.5f)) * texture2D(u_TextureUnit, centeredPoint + center);
+    vec4 color = vec4(v_StartColor + (v_End_Color - v_StartColor) / (v_ElapsedTime * 3.5)) * texture2D(u_TextureUnit, centeredPoint + center);
     gl_FragColor =color;
 }

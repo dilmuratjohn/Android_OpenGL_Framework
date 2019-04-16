@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class GLTextureHelper {
 
-    private static final String TAG_ERROR = "[Error] -> ";
+    private static final String TAG_ERROR = "[OpenGL Error] -> ";
 
     public static int loadTexture(Context context, int resourceId) {
         final int[] textureObjectIds = new int[1];

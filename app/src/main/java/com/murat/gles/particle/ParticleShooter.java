@@ -102,7 +102,7 @@ public class ParticleShooter implements GLRenderable {
 
     public void bind(Context context) {
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        mParticleTexture = GLTextureHelper.loadTexture(context, mParticleBean.textureFileName);
+        mParticleTexture = GLTextureHelper.loadTexture(context, mParticleBean.textureFileName.split("\\.")[0]);
         mParticleShader = new ParticleShader(context);
         mParticleShader.useProgram();
         bindData(mParticleShader);
