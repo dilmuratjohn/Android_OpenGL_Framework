@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -24,13 +25,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.main);
         mGLFrame = findViewById(R.id.frame);
         mSupport = GLUtils.isSupportES20(this);
-        findViewById(R.id.btn_start).setOnClickListener(this);
+        findViewById(R.id.frame).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_start: {
+            case R.id.frame: {
                 if (mSupport) {
                     mGLFrame.removeAllViews();
                     GLView view = new GLView(this);
