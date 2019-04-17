@@ -89,7 +89,7 @@ public class ParticleShooter implements GLRenderable {
         mParticleBean = new Gson().fromJson(json, ParticleBean.class);
         mStartColor = new GLMathUtils.Vec4(mParticleBean.startColorRed, mParticleBean.startColorGreen, mParticleBean.startColorBlue, mParticleBean.startColorAlpha);
         mEndColor = new GLMathUtils.Vec4(mParticleBean.finishColorRed, mParticleBean.finishColorGreen, mParticleBean.finishColorBlue, mParticleBean.finishColorAlpha);
-        mVelocity = new GLMathUtils.Vec2(mParticleBean.speed, mParticleBean.speedVariance);
+        mVelocity = new GLMathUtils.Vec2(mParticleBean.speed, mParticleBean.angle);
         mParticleSize = new GLMathUtils.Vec2(mParticleBean.startParticleSize, mParticleBean.startParticleSizeVariance);
         mForce = new GLMathUtils.Vec4(mParticleBean.gravityx, mParticleBean.gravityy, mParticleBean.tangentialAcceleration, mParticleBean.radialAcceleration);
         mRotation = new GLMathUtils.Vec2(nextRandomRotation(), 0f);
