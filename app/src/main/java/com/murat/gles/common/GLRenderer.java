@@ -53,7 +53,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
-        GLMathUtils.Mat4.perspectiveProjection(projectionMatrix, 45, (float) width / (float) height, 1f, 100f);
+        Matrix.perspectiveM(projectionMatrix, 0,45, (float) width / (float) height, 1f, 100f);
         Matrix.setIdentityM(viewMatrix, 0);
         Matrix.translateM(viewMatrix, 0, 0f, 0f, -5f);
     }

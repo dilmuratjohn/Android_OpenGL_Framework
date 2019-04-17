@@ -5,7 +5,6 @@ import android.opengl.GLES20;
 
 import com.google.gson.Gson;
 import com.murat.gles.common.GLRenderable;
-import com.murat.gles.common.GLMathUtils;
 import com.murat.gles.common.GLTextureHelper;
 import com.murat.gles.common.GLVertexArray;
 
@@ -38,12 +37,12 @@ public class ParticleShooter implements GLRenderable {
 
     private final float[] particles;
     private final GLVertexArray vertexArray;
-    private final int maxParticleCount;
+    private final int maxParticleCount1i;
 
     private int currentParticleCount;
     private int nextParticle;
 
-    private GLMathUtils.Vec3 mPosition;
+    private float[] mPosition4f = new float[4];
 
     /*
         x -> red
@@ -51,9 +50,9 @@ public class ParticleShooter implements GLRenderable {
         z -> blue
         w -> alpha
     */
-    private GLMathUtils.Vec4 mStartColor;
+    private float[] mStartColor4f = new float[4];
 
-    private GLMathUtils.Vec4 mEndColor;
+    private float[] mEndColor4f = new float[4];
 
     /*
         x -> speed
@@ -61,43 +60,57 @@ public class ParticleShooter implements GLRenderable {
         z -> angle
         w -> angle variance
      */
-    private GLMathUtils.Vec2 mVelocity;
+    private float[] mVelocity2f = new float[2];
 
     /*
         x -> gravity x
         y -> gravity y
     */
-    private GLMathUtils.Vec4 mForce;
+    private float[] mForce4f = new float[4];
 
     /*
         x -> size
         y -> variance
     */
-    private GLMathUtils.Vec2 mParticleSize;
+    private float[] mParticleSize1f = new float[1];
 
-    private GLMathUtils.Vec2 mRotation;
+    private float[] mParticleSizeVariance = new float[1];
+
+    private float[] mRotation1f = new float[1];
 
     private ParticleBean mParticleBean;
     private ParticleShader mParticleShader;
     private int mParticleTexture;
     private long mStartTime;
-    private float mDuration;
+    private float mDuration1f;
     private float mLifeTime;
-    private int mEmissionRate;
+    private int mEmissionRate1i;
 
     public ParticleShooter(String json) {
         mParticleBean = new Gson().fromJson(json, ParticleBean.class);
-        mStartColor = new GLMathUtils.Vec4(mParticleBean.startColorRed, mParticleBean.startColorGreen, mParticleBean.startColorBlue, mParticleBean.startColorAlpha);
-        mEndColor = new GLMathUtils.Vec4(mParticleBean.finishColorRed, mParticleBean.finishColorGreen, mParticleBean.finishColorBlue, mParticleBean.finishColorAlpha);
-        mVelocity = new GLMathUtils.Vec2(mParticleBean.speed, mParticleBean.angle);
-        mParticleSize = new GLMathUtils.Vec2(mParticleBean.startParticleSize, mParticleBean.startParticleSizeVariance);
-        mForce = new GLMathUtils.Vec4(mParticleBean.gravityx, mParticleBean.gravityy, mParticleBean.tangentialAcceleration, mParticleBean.radialAcceleration);
-        mRotation = new GLMathUtils.Vec2(nextRandomRotation(), 0f);
-        mDuration = mParticleBean.duration;
-        mEmissionRate = 3;
+        mStartColor4f[0] = mParticleBean.startColorRed;
+        mStartColor4f[1] = mParticleBean.startColorGreen;
+        mStartColor4f[2] = mParticleBean.startColorBlue;
+        mStartColor4f[3] = mParticleBean.startColorAlpha;
+        mEndColor4f[0] = mParticleBean.finishColorRed;
+        mEndColor4f[1] = mParticleBean.finishColorGreen;
+        mEndColor4f[2] = mParticleBean.finishColorBlue;
+        mEndColor4f[3] = mParticleBean.finishColorAlpha;
+        mVelocity2f[0] = mParticleBean.speed;
+        mVelocity2f[1] = mParticleBean.angle;
+        mParticleSize1f[0] = mParticleBean.startParticleSize;
+        mParticleSizeVariance[0] = mParticleBean.startParticleSizeVariance;
+        mForce4f[0] = mParticleBean.gravityx;
+        mForce4f[1] = mParticleBean.gravityy;
+        mForce4f[2] = mParticleBean.tangentialAcceleration;
+        mForce4f[3] = mParticleBean.radialAcceleration;
+        mRotation1f[0] = nextRandomRotation1f();
+        maxParticleCount1i = mParticleBean.maxParticles;
+        mDuration1f = mParticleBean.duration;
+        mEmissionRate1i = 3;
+
         particles = new float[mParticleBean.maxParticles * TOTAL_COMPONENT_COUNT];
         vertexArray = new GLVertexArray(particles);
-        this.maxParticleCount = mParticleBean.maxParticles;
     }
 
     public void bind(Context context) {
@@ -113,8 +126,8 @@ public class ParticleShooter implements GLRenderable {
         mLifeTime = (System.currentTimeMillis() - mStartTime) / 1000f;
 
 
-        if (mLifeTime <= mDuration || mDuration <= 0) {
-            for (int i = 0; i < mEmissionRate; i++) {
+        if (mLifeTime <= mDuration1f || mDuration1f <= 0) {
+            for (int i = 0; i < mEmissionRate1i; i++) {
                 update();
                 load();
             }
@@ -151,34 +164,34 @@ public class ParticleShooter implements GLRenderable {
         int currentOffset = particleOffset;
         nextParticle++;
 
-        if (currentParticleCount < maxParticleCount) {
+        if (currentParticleCount < maxParticleCount1i) {
             currentParticleCount++;
         }
 
-        if (nextParticle == maxParticleCount) {
+        if (nextParticle == maxParticleCount1i) {
             nextParticle = 0;
         }
 
-        particles[currentOffset++] = mPosition.x;
-        particles[currentOffset++] = mPosition.y;
-        particles[currentOffset++] = mPosition.z;
-        particles[currentOffset++] = mStartColor.x;
-        particles[currentOffset++] = mStartColor.y;
-        particles[currentOffset++] = mStartColor.z;
-        particles[currentOffset++] = mStartColor.w;
-        particles[currentOffset++] = mEndColor.x;
-        particles[currentOffset++] = mEndColor.y;
-        particles[currentOffset++] = mEndColor.z;
-        particles[currentOffset++] = mEndColor.w;
-        particles[currentOffset++] = mVelocity.x;
-        particles[currentOffset++] = mVelocity.y;
+        particles[currentOffset++] = mPosition4f[0];
+        particles[currentOffset++] = mPosition4f[1];
+        particles[currentOffset++] = mPosition4f[2];
+        particles[currentOffset++] = mStartColor4f[0];
+        particles[currentOffset++] = mStartColor4f[1];
+        particles[currentOffset++] = mStartColor4f[2];
+        particles[currentOffset++] = mStartColor4f[3];
+        particles[currentOffset++] = mEndColor4f[0];
+        particles[currentOffset++] = mEndColor4f[1];
+        particles[currentOffset++] = mEndColor4f[2];
+        particles[currentOffset++] = mEndColor4f[3];
+        particles[currentOffset++] = mVelocity2f[0];
+        particles[currentOffset++] = mVelocity2f[1];
         particles[currentOffset++] = mLifeTime;
-        particles[currentOffset++] = mParticleSize.x;
-        particles[currentOffset++] = mForce.x;
-        particles[currentOffset++] = mForce.y;
-        particles[currentOffset++] = mForce.z;
-        particles[currentOffset++] = mForce.w;
-        particles[currentOffset++] = mRotation.x;
+        particles[currentOffset++] = mParticleSize1f[0];
+        particles[currentOffset++] = mForce4f[0];
+        particles[currentOffset++] = mForce4f[1];
+        particles[currentOffset++] = mForce4f[2];
+        particles[currentOffset++] = mForce4f[3];
+        particles[currentOffset++] = mRotation1f[0];
 
         vertexArray.updateBuffer(particles, particleOffset, TOTAL_COMPONENT_COUNT);
     }
@@ -204,61 +217,61 @@ public class ParticleShooter implements GLRenderable {
 
 
     private void updateParticleSize() {
-        mParticleSize.x = nextRandomSize();
+        mParticleSize1f[0] = nextRandomSize();
     }
 
     private void updateParticleForce() {
-        mForce.z = nextRandomForce();
-        mForce.w = nextRandomForce();
+        mForce4f[2] = nextRandomForce1f();
+        mForce4f[3] = nextRandomForce1f();
     }
 
     private void updatePosition() {
-        mPosition = nextRandomPosition();
+        mPosition4f = nextRandomPosition3f();
     }
 
     private void updateVelocity() {
-        mVelocity.x = nextRandomVelocity();
+        mVelocity2f[0] = nextRandomVelocity1f();
     }
 
     private void updateRotation() {
-        mRotation.x = nextRandomRotation();
+        mRotation1f[0] = nextRandomRotation1f();
     }
 
     private void updateColor() {
-        GLMathUtils.Vec4 color = nextRandomColor();
+        float[] color = nextRandomColor4f();
         updateStartColor(color);
         updateEndColor(color);
     }
 
-    private void updateStartColor(GLMathUtils.Vec4 color) {
-        this.mStartColor = color;
+    private void updateStartColor(float[] color) {
+        this.mStartColor4f = color;
     }
 
-    private void updateEndColor(GLMathUtils.Vec4 color) {
-        this.mEndColor = color;
+    private void updateEndColor(float[] color) {
+        this.mEndColor4f = color;
     }
 
-    private GLMathUtils.Vec3 nextRandomPosition() {
-        return new GLMathUtils.Vec3(2f * random.nextFloat() - 1f, 0.3f * random.nextFloat() + 2f, 1.0f);
+    private float[] nextRandomPosition3f() {
+        return new float[]{3f * random.nextFloat() - 1.5f, 0.3f * random.nextFloat() + 1.5f, 1.0f};
     }
 
-    private GLMathUtils.Vec4 nextRandomColor() {
-        return new GLMathUtils.Vec4(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat());
+    private float[] nextRandomColor4f() {
+        return new float[]{random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat()};
     }
 
     private float nextRandomSize() {
         return random.nextFloat() * mParticleBean.startParticleSize * 5f;
     }
 
-    private float nextRandomRotation() {
+    private float nextRandomRotation1f() {
         return (2f * random.nextFloat() - 1f);
     }
 
-    private float nextRandomForce() {
-        return (2f * random.nextFloat() - 1f) * mPosition.x > 0 ? 1f : -1f;
+    private float nextRandomForce1f() {
+        return (2f * random.nextFloat() - 1f) * mPosition4f[0] > 0 ? 1f : -1f;
     }
 
-    private float nextRandomVelocity() {
+    private float nextRandomVelocity1f() {
         return mParticleBean.speed + (mParticleBean.speedVariance * (2.0f * random.nextFloat() - 1.0f));
     }
 
