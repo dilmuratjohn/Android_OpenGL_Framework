@@ -1,7 +1,10 @@
 package com.murat.gles.particle;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.opengl.GLES20;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.murat.gles.common.GLRenderable;
@@ -13,6 +16,9 @@ import java.util.Random;
 import static com.murat.gles.common.GLConstants.BYTES_PER_FLOAT;
 
 public class ParticleShooter implements GLRenderable {
+
+    private final float Designed_Width = 720.0f;
+    private final float Designed_Height = 1208.0f;
 
     private final Random random = new Random();
     private static final int POSITION_COMPONENT_COUNT = 3;
@@ -86,7 +92,11 @@ public class ParticleShooter implements GLRenderable {
     private float mLifeTime;
     private int mEmissionRate1i;
 
-    public ParticleShooter(String json) {
+    public ParticleShooter(Activity activity, String json) {
+
+        Point windowSize = new Point();
+        activity.getWindowManager().getDefaultDisplay().getSize(windowSize);
+        Log.e("Murat", "Width: " + windowSize.x + "Height: " + windowSize.y);
         mParticleBean = new Gson().fromJson(json, ParticleBean.class);
         mStartColor4f[0] = mParticleBean.startColorRed;
         mStartColor4f[1] = mParticleBean.startColorGreen;
@@ -98,7 +108,7 @@ public class ParticleShooter implements GLRenderable {
         mEndColor4f[3] = mParticleBean.finishColorAlpha;
         mVelocity2f[0] = mParticleBean.speed;
         mVelocity2f[1] = mParticleBean.angle;
-        mParticleSize1f[0] = mParticleBean.startParticleSize;
+        mParticleSize1f[0] = mParticleBean.startParticleSize * windowSize.y / Designed_Height  ;
         mParticleSizeVariance[0] = mParticleBean.startParticleSizeVariance;
         mForce4f[0] = mParticleBean.gravityx;
         mForce4f[1] = mParticleBean.gravityy;
@@ -252,7 +262,7 @@ public class ParticleShooter implements GLRenderable {
     }
 
     private float[] nextRandomPosition3f() {
-        return new float[]{3f * random.nextFloat() - 1.5f, 0.3f * random.nextFloat() + 1.5f, 1.0f};
+        return new float[]{2f * random.nextFloat() - 1f, 0.3f * random.nextFloat() + 2f, 1.0f};
     }
 
     private float[] nextRandomColor4f() {
@@ -260,7 +270,7 @@ public class ParticleShooter implements GLRenderable {
     }
 
     private float nextRandomSize() {
-        return random.nextFloat() * mParticleBean.startParticleSize * 5f;
+        return (mParticleBean.startParticleSizeVariance * 2f * random.nextFloat() - mParticleBean.startParticleSizeVariance);
     }
 
     private float nextRandomRotation1f() {

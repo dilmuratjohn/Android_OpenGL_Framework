@@ -42,5 +42,5 @@ void main() {
     currentPosition.y += force.w* correction2;
 
     gl_Position = u_Matrix * vec4(currentPosition, 1.0);
-    gl_PointSize = a_PointSize;
+    gl_PointSize = a_PointSize * 1.5;
 }

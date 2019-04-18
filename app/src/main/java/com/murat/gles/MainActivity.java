@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     view.removeAll();
                     String config = FileUtils.getJSONStringFromResource(getApplicationContext(), R.raw.particle_ribbon);
                     if (!TextUtils.isEmpty(config)) {
-                        ParticleShooter particleRibbon = new ParticleShooter(config);
+                        ParticleShooter particleRibbon = new ParticleShooter(this,config);
                         view.add(particleRibbon, "particle_ribbon");
                         mGLFrame.addView(view);
                     }
