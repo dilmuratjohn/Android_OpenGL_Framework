@@ -12,7 +12,7 @@ public class GLTextureHelper {
 
     private static final String TAG_ERROR = "[OpenGL Error] -> ";
 
-    public static int loadTexture(Context context, int resourceId) {
+    static int create(Context context, int resourceId) {
         final int[] textureObjectIds = new int[1];
         GLES20.glGenTextures(1, textureObjectIds, 0);
         if (textureObjectIds[0] == 0) {
@@ -37,9 +37,9 @@ public class GLTextureHelper {
         return textureObjectIds[0];
     }
 
-    public static int loadTexture(Context context, String resourceName) {
+    static int create(Context context, String resourceName) {
         int resourceId = context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
-        return loadTexture(context, resourceId);
+        return create(context, resourceId);
     }
 
 }

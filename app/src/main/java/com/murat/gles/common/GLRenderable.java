@@ -3,7 +3,8 @@ package com.murat.gles.common;
 import android.content.Context;
 
 public interface GLRenderable {
-    void bind(Context context);
-
+    void init(Context context);
+    void bind();
+    void unbind();
     void render(float[] mvp);
 }

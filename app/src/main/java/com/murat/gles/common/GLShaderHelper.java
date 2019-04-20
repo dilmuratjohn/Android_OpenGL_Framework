@@ -1,11 +1,38 @@
 package com.murat.gles.common;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.opengl.GLES20;
 import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 class GLShaderHelper {
 
     private static final String TAG_ERROR = "[OpenGL Error] -> ";
+
+    private static String parse(Context context, int id) {
+        StringBuilder content = new StringBuilder();
+        try {
+            InputStream inputStream = context.getResources().openRawResource(id);
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String nextLine;
+            while ((nextLine = bufferedReader.readLine()) != null) {
+                content.append(nextLine);
+                content.append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        } catch (Resources.NotFoundException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return content.toString();
+    }
 
     private static int compile(int type, String shaderCode) {
         final int id = GLES20.glCreateShader(type);
@@ -46,16 +73,21 @@ class GLShaderHelper {
         }
     }
 
-    static int createProgram(String vertexShaderSource, String fragmentShaderSource) {
+    static int create(Context context, int vertexShaderSourceId, int fragmentShaderSourceId) {
 
         final int program = GLES20.glCreateProgram();
         if (program == 0) {
             Log.e(TAG_ERROR, "error creating program.");
         }
-        int vertexShader = compile(GLES20.GL_VERTEX_SHADER, vertexShaderSource);
-        int fragmentShader = compile(GLES20.GL_FRAGMENT_SHADER, fragmentShaderSource);
+
+        String vertexShaderCode = parse(context, vertexShaderSourceId);
+        String fragmentShaderCode = parse(context, fragmentShaderSourceId);
+        int vertexShader = compile(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+        int fragmentShader = compile(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
         link(program, vertexShader, fragmentShader);
         validate(program);
+        GLES20.glDeleteShader(vertexShader);
+        GLES20.glDeleteShader(fragmentShader);
         return program;
     }
 

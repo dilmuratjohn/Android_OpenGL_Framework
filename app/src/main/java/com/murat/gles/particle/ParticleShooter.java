@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.murat.gles.common.GLRenderable;
+import com.murat.gles.common.GLShader;
+import com.murat.gles.common.GLTexture;
 import com.murat.gles.common.GLTextureHelper;
 import com.murat.gles.common.GLVertexArray;
 
@@ -42,7 +44,7 @@ public class ParticleShooter implements GLRenderable {
     private static final int STRIDE = TOTAL_COMPONENT_COUNT * BYTES_PER_FLOAT;
 
     private final float[] particles;
-    private final GLVertexArray vertexArray;
+    private final GLVertexArray mVertexArray;
     private final int maxParticleCount1i;
 
     private int currentParticleCount;
@@ -86,7 +88,7 @@ public class ParticleShooter implements GLRenderable {
 
     private ParticleBean mParticleBean;
     private ParticleShader mParticleShader;
-    private int mParticleTexture;
+    private GLTexture  mParticleTexture;
     private long mStartTime;
     private float mDuration1f;
     private float mLifeTime;
@@ -108,7 +110,7 @@ public class ParticleShooter implements GLRenderable {
         mEndColor4f[3] = mParticleBean.finishColorAlpha;
         mVelocity2f[0] = mParticleBean.speed;
         mVelocity2f[1] = mParticleBean.angle;
-        mParticleSize1f[0] = mParticleBean.startParticleSize * windowSize.y / Designed_Height  ;
+        mParticleSize1f[0] = mParticleBean.startParticleSize * windowSize.y / Designed_Height;
         mParticleSizeVariance[0] = mParticleBean.startParticleSizeVariance;
         mForce4f[0] = mParticleBean.gravityx;
         mForce4f[1] = mParticleBean.gravityy;
@@ -116,23 +118,32 @@ public class ParticleShooter implements GLRenderable {
         mForce4f[3] = mParticleBean.radialAcceleration;
         mRotation1f[0] = nextRandomRotation1f();
         maxParticleCount1i = mParticleBean.maxParticles;
-        mDuration1f = mParticleBean.duration;
+        mDuration1f = -1.0f;//mParticleBean.duration;
         mEmissionRate1i = 3;
 
         particles = new float[mParticleBean.maxParticles * TOTAL_COMPONENT_COUNT];
-        vertexArray = new GLVertexArray(particles);
+        mVertexArray = new GLVertexArray(particles);
     }
 
-    public void bind(Context context) {
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        mParticleTexture = GLTextureHelper.loadTexture(context, mParticleBean.textureFileName.split("\\.")[0]);
+    public void init(Context context){
+        mParticleTexture = new GLTexture(context, mParticleBean.textureFileName.split("\\.")[0]);
         mParticleShader = new ParticleShader(context);
-        mParticleShader.useProgram();
-        bindData(mParticleShader);
         mStartTime = System.currentTimeMillis();
     }
 
+    public void bind(){
+        mParticleShader.bind();
+        mParticleTexture.bind();
+        bindData(mParticleShader);
+    }
+
+    public void unbind(){
+        mParticleShader.unbind();
+        mParticleTexture.unbind();
+    }
+
     public void render(float[] mvp) {
+
         mLifeTime = (System.currentTimeMillis() - mStartTime) / 1000f;
 
 
@@ -143,15 +154,14 @@ public class ParticleShooter implements GLRenderable {
             }
         }
 
-        GLES20.glDepthMask(false);
+        mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), mvp);
+        mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mLifeTime);
+        mParticleShader.setUniform1i(mParticleShader.getTextureLocation(), 0);
+
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(mParticleBean.blendFuncSource, mParticleBean.blendFuncDestination);
-
-        mParticleShader.setUniforms(mvp, mLifeTime, mParticleTexture);
-        draw();
-
+        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, currentParticleCount);
         GLES20.glDisable(GLES20.GL_BLEND);
-        GLES20.glDepthMask(true);
     }
 
     private void update() {
@@ -161,10 +171,6 @@ public class ParticleShooter implements GLRenderable {
         updateRotation();
         updateParticleForce();
         updateVelocity();
-    }
-
-    private void draw() {
-        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, currentParticleCount);
     }
 
     private void load() {
@@ -203,26 +209,26 @@ public class ParticleShooter implements GLRenderable {
         particles[currentOffset++] = mForce4f[3];
         particles[currentOffset++] = mRotation1f[0];
 
-        vertexArray.updateBuffer(particles, particleOffset, TOTAL_COMPONENT_COUNT);
+        mVertexArray.updateBuffer(particles, particleOffset, TOTAL_COMPONENT_COUNT);
     }
 
     private void bindData(ParticleShader program) {
         int dataOffset = 0;
-        vertexArray.setVertexAttribPointer(dataOffset, program.getPositionLocation(), POSITION_COMPONENT_COUNT, STRIDE);
+        mVertexArray.setVertexAttribPointer(dataOffset, program.getPositionLocation(), POSITION_COMPONENT_COUNT, STRIDE);
         dataOffset += POSITION_COMPONENT_COUNT;
-        vertexArray.setVertexAttribPointer(dataOffset, program.getStartColorLocation(), COLOR_COMPONENT_COUNT, STRIDE);
+        mVertexArray.setVertexAttribPointer(dataOffset, program.getStartColorLocation(), COLOR_COMPONENT_COUNT, STRIDE);
         dataOffset += COLOR_COMPONENT_COUNT;
-        vertexArray.setVertexAttribPointer(dataOffset, program.getEndColorLocation(), COLOR_COMPONENT_COUNT, STRIDE);
+        mVertexArray.setVertexAttribPointer(dataOffset, program.getEndColorLocation(), COLOR_COMPONENT_COUNT, STRIDE);
         dataOffset += COLOR_COMPONENT_COUNT;
-        vertexArray.setVertexAttribPointer(dataOffset, program.getSpeedLocation(), VECTOR_COMPONENT_COUNT, STRIDE);
+        mVertexArray.setVertexAttribPointer(dataOffset, program.getSpeedLocation(), VECTOR_COMPONENT_COUNT, STRIDE);
         dataOffset += VECTOR_COMPONENT_COUNT;
-        vertexArray.setVertexAttribPointer(dataOffset, program.getParticleStartTimeLocation(), PARTICLE_START_TIME_COMPONENT_COUNT, STRIDE);
+        mVertexArray.setVertexAttribPointer(dataOffset, program.getParticleStartTimeLocation(), PARTICLE_START_TIME_COMPONENT_COUNT, STRIDE);
         dataOffset += PARTICLE_START_TIME_COMPONENT_COUNT;
-        vertexArray.setVertexAttribPointer(dataOffset, program.getParticleSizeLocation(), PARTICLE_SIZE_COMPONENT_COUNT, STRIDE);
+        mVertexArray.setVertexAttribPointer(dataOffset, program.getParticleSizeLocation(), PARTICLE_SIZE_COMPONENT_COUNT, STRIDE);
         dataOffset += PARTICLE_SIZE_COMPONENT_COUNT;
-        vertexArray.setVertexAttribPointer(dataOffset, program.getForceLocation(), GRAVITY_FACTOR_COMPONENT_COUNT, STRIDE);
+        mVertexArray.setVertexAttribPointer(dataOffset, program.getForceLocation(), GRAVITY_FACTOR_COMPONENT_COUNT, STRIDE);
         dataOffset += GRAVITY_FACTOR_COMPONENT_COUNT;
-        vertexArray.setVertexAttribPointer(dataOffset, program.getRotationLocation(), ROTATION_COMPONENT_COUNT, STRIDE);
+        mVertexArray.setVertexAttribPointer(dataOffset, program.getRotationLocation(), ROTATION_COMPONENT_COUNT, STRIDE);
     }
 
 
