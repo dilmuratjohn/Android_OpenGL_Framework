@@ -118,31 +118,34 @@ public class ParticleShooter implements GLRenderable {
         mForce4f[3] = mParticleBean.radialAcceleration;
         mRotation1f[0] = nextRandomRotation1f();
         maxParticleCount1i = mParticleBean.maxParticles;
-        mDuration1f = -1.0f;//mParticleBean.duration;
+        mDuration1f = mParticleBean.duration;
         mEmissionRate1i = 3;
 
         particles = new float[mParticleBean.maxParticles * TOTAL_COMPONENT_COUNT];
         mVertexArray = new GLVertexArray(particles);
     }
 
-    public void init(Context context){
+    public GLRenderable init(Context context){
         mParticleTexture = new GLTexture(context, mParticleBean.textureFileName.split("\\.")[0]);
         mParticleShader = new ParticleShader(context);
         mStartTime = System.currentTimeMillis();
+        return this;
     }
 
-    public void bind(){
+    public GLRenderable bind(){
         mParticleShader.bind();
         mParticleTexture.bind();
         bindData(mParticleShader);
+        return this;
     }
 
-    public void unbind(){
+    public GLRenderable unbind(){
         mParticleShader.unbind();
         mParticleTexture.unbind();
+        return this;
     }
 
-    public void render(float[] mvp) {
+    public GLRenderable render(float[] mvp) {
 
         mLifeTime = (System.currentTimeMillis() - mStartTime) / 1000f;
 
@@ -162,6 +165,7 @@ public class ParticleShooter implements GLRenderable {
         GLES20.glBlendFunc(mParticleBean.blendFuncSource, mParticleBean.blendFuncDestination);
         GLES20.glDrawArrays(GLES20.GL_POINTS, 0, currentParticleCount);
         GLES20.glDisable(GLES20.GL_BLEND);
+        return this;
     }
 
     private void update() {

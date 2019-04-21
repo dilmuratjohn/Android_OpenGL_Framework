@@ -63,10 +63,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
         Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
-        for (GLRenderable renderer : mRenderLine) {
-            renderer.bind();
-            renderer.render(modelViewProjectionMatrix);
-            renderer.unbind();
-        }
+        for (GLRenderable renderer : mRenderLine)
+            renderer.bind().render(modelViewProjectionMatrix).unbind();
     }
 }
