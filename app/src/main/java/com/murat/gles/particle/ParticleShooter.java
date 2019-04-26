@@ -203,7 +203,7 @@ public class ParticleShooter implements GLRenderable {
         dataOffset += Speed_Component_Count;
         mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getAngleLocation(), Angle_Component_Count, Stride);
         dataOffset += Angle_Component_Count;
-        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getParticleStartTimeLocation(), Particle_Start_Time_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getStartTimeLocation(), Particle_Start_Time_Component_Count, Stride);
         dataOffset += Particle_Start_Time_Component_Count;
         mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getStartSizeLocation(), Start_Size_Component_Count, Stride);
         dataOffset += Start_Size_Component_Count;
@@ -213,7 +213,7 @@ public class ParticleShooter implements GLRenderable {
         dataOffset += Gravity_Component_Count;
         mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getRotationLocation(), Rotation_Component_Count, Stride);
         dataOffset += Rotation_Component_Count;
-        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getParticleLifeTimeLocation(), Particle_Life_Time_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getLifeTimeLocation(), Particle_Life_Time_Component_Count, Stride);
     }
 
 

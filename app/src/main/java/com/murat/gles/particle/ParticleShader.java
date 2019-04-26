@@ -20,8 +20,8 @@ class ParticleShader extends GLShader {
     private final int aSpeedLocation;
     private final int aStartSize;
     private final int aEndSize;
-    private final int aParticleStartTimeLocation;
-    private final int aParticleLifeTimeLocation;
+    private final int aStartTimeLocation;
+    private final int aLifeTimeLocation;
     private final int aForceLocation;
     private final int aRotationLocation;
     private final int aAngleLocation;
@@ -31,16 +31,16 @@ class ParticleShader extends GLShader {
     private static final String U_Time = "u_Time";
 
     private static final String A_Position = "a_Position";
-    private static final String A_Start_Color = "a_StartColor";
-    private static final String A_End_Color = "a_EndColor";
+    private static final String A_StartColor = "a_StartColor";
+    private static final String A_EndColor = "a_EndColor";
     private static final String A_Speed = "a_Speed";
     private static final String A_Angle = "a_Angle";
-    private static final String A_Start_Time = "a_ParticleStartTime";
-    private static final String A_Start_Size = "a_StartSize";
-    private static final String A_End_Size = "a_EndSize";
-    private static final String A_Force = "a_Gravity";
+    private static final String A_StartTime = "a_StartTime";
+    private static final String A_StartSize = "a_StartSize";
+    private static final String A_EndSize = "a_EndSize";
+    private static final String A_Gravity = "a_Gravity";
     private static final String A_Rotation = "a_Rotation";
-    private static final String A_Life_Time = "a_ParticleLifeTime";
+    private static final String A_LifeTime = "a_LifeTime";
 
 
     ParticleShader(Context context) {
@@ -51,16 +51,16 @@ class ParticleShader extends GLShader {
         uTextureUnitLocation = GLES20.glGetUniformLocation(mProgram, U_Texture_Unit);
 
         aPositionLocation = GLES20.glGetAttribLocation(mProgram, A_Position);
-        aStartSize = GLES20.glGetAttribLocation(mProgram, A_Start_Size);
-        aEndSize = GLES20.glGetAttribLocation(mProgram, A_End_Size);
-        aStartColorLocation = GLES20.glGetAttribLocation(mProgram, A_Start_Color);
-        aEndColorLocation = GLES20.glGetAttribLocation(mProgram, A_End_Color);
+        aStartSize = GLES20.glGetAttribLocation(mProgram, A_StartSize);
+        aEndSize = GLES20.glGetAttribLocation(mProgram, A_EndSize);
+        aStartColorLocation = GLES20.glGetAttribLocation(mProgram, A_StartColor);
+        aEndColorLocation = GLES20.glGetAttribLocation(mProgram, A_EndColor);
         aSpeedLocation = GLES20.glGetAttribLocation(mProgram, A_Speed);
         aAngleLocation = GLES20.glGetAttribLocation(mProgram, A_Angle);
-        aParticleStartTimeLocation = GLES20.glGetAttribLocation(mProgram, A_Start_Time);
-        aForceLocation = GLES20.glGetAttribLocation(mProgram, A_Force);
+        aStartTimeLocation = GLES20.glGetAttribLocation(mProgram, A_StartTime);
+        aForceLocation = GLES20.glGetAttribLocation(mProgram, A_Gravity);
         aRotationLocation = GLES20.glGetAttribLocation(mProgram, A_Rotation);
-        aParticleLifeTimeLocation = GLES20.glGetAttribLocation(mProgram, A_Life_Time);
+        aLifeTimeLocation = GLES20.glGetAttribLocation(mProgram, A_LifeTime);
     }
 
     int getMatrixLocation() {
@@ -91,8 +91,8 @@ class ParticleShader extends GLShader {
         return aSpeedLocation;
     }
 
-    int getParticleStartTimeLocation() {
-        return aParticleStartTimeLocation;
+    int getStartTimeLocation() {
+        return aStartTimeLocation;
     }
 
     int getStartSizeLocation() {
@@ -111,8 +111,8 @@ class ParticleShader extends GLShader {
         return aRotationLocation;
     }
 
-    int getParticleLifeTimeLocation() {
-        return aParticleLifeTimeLocation;
+    int getLifeTimeLocation() {
+        return aLifeTimeLocation;
     }
 
     int getAngleLocation() {
