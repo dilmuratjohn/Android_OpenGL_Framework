@@ -7,7 +7,8 @@ attribute vec4 a_EndColor;
 attribute float a_Speed;
 attribute float a_Angle;
 attribute float a_ParticleStartTime;
-attribute float a_PointSize;
+attribute float a_StartSize;
+attribute float a_EndSize;
 attribute vec2 a_Gravity;
 attribute vec2 a_Rotation;
 attribute float a_ParticleLifeTime;
@@ -34,5 +35,5 @@ void main() {
     currentPosition.y -= timeSquare * a_Gravity.y;
 
     gl_Position = u_Matrix * vec4(currentPosition, 1.0);
-    gl_PointSize = a_PointSize;
+    gl_PointSize = a_StartSize + v_ElapsedTime * (a_EndSize - a_StartSize) / v_ParticleLifeTime;
 }

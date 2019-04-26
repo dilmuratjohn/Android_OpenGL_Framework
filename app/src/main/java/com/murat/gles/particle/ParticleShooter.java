@@ -18,7 +18,8 @@ public class ParticleShooter implements GLRenderable {
     private static final int Speed_Component_Count = 1;
     private static final int Angle_Component_Count = 1;
     private static final int Particle_Start_Time_Component_Count = 1;
-    private static final int Particle_Size_Component_Count = 1;
+    private static final int Start_Size_Component_Count = 1;
+    private static final int End_Size_Component_Count = 1;
     private static final int Gravity_Component_Count = 2;
     private static final int Rotation_Component_Count = 2;
     private static final int Particle_Life_Time_Component_Count = 1;
@@ -29,7 +30,8 @@ public class ParticleShooter implements GLRenderable {
                     + Speed_Component_Count
                     + Angle_Component_Count
                     + Particle_Start_Time_Component_Count
-                    + Particle_Size_Component_Count
+                    + Start_Size_Component_Count
+                    + End_Size_Component_Count
                     + Gravity_Component_Count
                     + Rotation_Component_Count
                     + Particle_Life_Time_Component_Count;
@@ -46,7 +48,8 @@ public class ParticleShooter implements GLRenderable {
     private float[] mEndColor4f = new float[4];
     private float mSpeed1f;
     private float mParticleLifeTime1f;
-    private float mParticleSize1f;
+    private float mStartSize1f;
+    private float mEndSize1f;
     private float[] mRotation2f = new float[2];
     private float[][] mColorSet;
     private boolean mColorSetEnable;
@@ -139,7 +142,7 @@ public class ParticleShooter implements GLRenderable {
         updateColor();
         updateParticleSize();
         updateRotation();
-        updateVelocity();
+        updateSpeed();
         updateAngle();
         updateParticleLifeTime();
     }
@@ -174,7 +177,8 @@ public class ParticleShooter implements GLRenderable {
         particles[currentOffset++] = mSpeed1f;
         particles[currentOffset++] = mAngle1f;
         particles[currentOffset++] = mDeltaTime1f / 1000.0f;
-        particles[currentOffset++] = mParticleSize1f;
+        particles[currentOffset++] = mStartSize1f;
+        particles[currentOffset++] = mEndSize1f;
         particles[currentOffset++] = mParticleBean.gravityx;
         particles[currentOffset++] = mParticleBean.gravityy;
         particles[currentOffset++] = mRotation2f[0];
@@ -198,8 +202,10 @@ public class ParticleShooter implements GLRenderable {
         dataOffset += Angle_Component_Count;
         vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getParticleStartTimeLocation(), Particle_Start_Time_Component_Count, Stride);
         dataOffset += Particle_Start_Time_Component_Count;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getParticleSizeLocation(), Particle_Size_Component_Count, Stride);
-        dataOffset += Particle_Size_Component_Count;
+        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getStartSizeLocation(), Start_Size_Component_Count, Stride);
+        dataOffset += Start_Size_Component_Count;
+        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getEndSizeLocation(), End_Size_Component_Count, Stride);
+        dataOffset += End_Size_Component_Count;
         vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getForceLocation(), Gravity_Component_Count, Stride);
         dataOffset += Gravity_Component_Count;
         vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getRotationLocation(), Rotation_Component_Count, Stride);
@@ -209,14 +215,15 @@ public class ParticleShooter implements GLRenderable {
 
 
     private void updateParticleSize() {
-        mParticleSize1f = nextRandomSize();
+        mStartSize1f = nextRandomStartSize();
+        mEndSize1f = nextRandomEndSize();
     }
 
     private void updatePosition() {
         mPosition4f = nextRandomPosition4f();
     }
 
-    private void updateVelocity() {
+    private void updateSpeed() {
         mSpeed1f = nextRandomSpeed1f();
     }
 
@@ -263,7 +270,7 @@ public class ParticleShooter implements GLRenderable {
     private float[] nextRandomPosition4f() {
         return new float[]{
                 Utils.nextRandomInRange(1.0f, -1.0f),
-                Utils.nextRandomInRange(0.7f, 1.0f),
+                Utils.nextRandomInRange(0.5f, 1.0f),
                 1.0f,
                 1.0f
         };
@@ -294,8 +301,12 @@ public class ParticleShooter implements GLRenderable {
         };
     }
 
-    private float nextRandomSize() {
+    private float nextRandomStartSize() {
         return mParticleBean.startParticleSize + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.startParticleSizeVariance;
+    }
+
+    private float nextRandomEndSize() {
+        return mParticleBean.finishParticleSize + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.finishParticleSizeVariance;
     }
 
     private float[] nextRandomRotation2f() {
