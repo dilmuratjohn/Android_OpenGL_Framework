@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 
-import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -36,9 +35,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mGLFrame.removeAllViews();
                     GLView view = new GLView(this);
                     view.removeAll();
-                    String config = FileUtils.getJSONStringFromResource(getApplicationContext(), R.raw.particle_ribbon);
+                    String config = Utils.getJSONStringFromResource(getApplicationContext(), R.raw.particle_ribbon);
                     if (!TextUtils.isEmpty(config)) {
-                        ParticleShooter particleRibbon = new ParticleShooter(this,config);
+                        ParticleShooter particleRibbon = new ParticleShooter(config);
                         view.add(particleRibbon);
                         mGLFrame.addView(view);
                     }

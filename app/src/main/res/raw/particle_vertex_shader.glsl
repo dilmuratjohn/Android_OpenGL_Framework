@@ -2,45 +2,36 @@ uniform mat4 u_Matrix;
 uniform float u_Time;
 
 attribute vec3 a_Position;
-attribute vec4 a_Start_Color;
-attribute vec4 a_End_Color;
-attribute vec2 a_Speed;
+attribute vec4 a_StartColor;
+attribute vec4 a_EndColor;
+attribute float a_Speed;
 attribute float a_ParticleStartTime;
 attribute float a_PointSize;
-attribute vec4 a_Force;
-attribute float a_Rotation;
+attribute vec2 a_Gravity;
+attribute vec2 a_Rotation;
+attribute float a_ParticleLifeTime;
 
 varying vec4 v_StartColor;
 varying vec4 v_End_Color;
 varying float v_ElapsedTime;
 varying float v_Rotation;
-
+varying float v_ParticleLifeTime;
 
 void main() {
-    v_StartColor = a_Start_Color;
-    v_End_Color = a_End_Color;
+    v_StartColor = a_StartColor;
+    v_End_Color = a_EndColor;
     v_ElapsedTime = u_Time - a_ParticleStartTime;
-    v_Rotation = v_ElapsedTime * a_Rotation * 7.0;
-
-    vec4 force = vec4(0.0, 0.0, 0.0, 0.0);
+    v_ParticleLifeTime = a_ParticleLifeTime;
+    v_Rotation = a_Rotation.x;
     vec3 currentPosition = a_Position;
-    float timeSquare = v_ElapsedTime * v_ElapsedTime;
-    float correction1 = 0.0017;
-    float correction2 = 0.5;
-    if (a_Force.x != 0.0) force.x = (a_Speed.x * cos(radians(a_Speed.y)) * v_ElapsedTime + timeSquare * a_Force.x);
-    if (a_Force.y != 0.0) force.y = (a_Speed.x * sin(radians(a_Speed.y)) * v_ElapsedTime + timeSquare * a_Force.y);
-    if (a_Force.z != 0.0 && force.y != 0.0) force.z = v_ElapsedTime * (cos(atan(force.x/force.y)) * a_Force.z + sin(atan(force.x/force.y)) * a_Force.w);
-    if (a_Force.w != 0.0 && force.x != 0.0) force.w = v_ElapsedTime * (cos(atan(force.y/force.x)) * a_Force.w + sin(atan(force.y/force.x)) * a_Force.z);
 
-    // Gravity Verticle
-    currentPosition.x += force.x* correction1;
-    // Gravity Horizontal
-    currentPosition.y += force.y* correction1;
-    //  Accel Tangential
-    currentPosition.x += force.z* correction2;
-    //  Accel Radial
-    currentPosition.y += force.w* correction2;
+    currentPosition.x -= a_Speed * cos(radians(a_Rotation.x)) * v_ElapsedTime;
+    currentPosition.y -= a_Speed * sin(radians(a_Rotation.x)) * v_ElapsedTime;
+
+    float timeSquare = v_ElapsedTime * v_ElapsedTime;
+    currentPosition.x -= timeSquare * a_Gravity.x;
+    currentPosition.y -= timeSquare * a_Gravity.y;
 
     gl_Position = u_Matrix * vec4(currentPosition, 1.0);
-    gl_PointSize = a_PointSize * 1.5;
+    gl_PointSize = a_PointSize;
 }

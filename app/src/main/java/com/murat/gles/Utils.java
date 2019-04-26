@@ -6,8 +6,9 @@ import android.content.Context;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Random;
 
-public class FileUtils {
+public class Utils {
 
     public static String getJSONStringFromResource(Context context, int id) {
         try {
@@ -25,6 +26,20 @@ public class FileUtils {
         }
 
         return null;
+    }
+
+    private static Random Utils = new Random();
+
+    public static float nextRandomInRange(float start, float end) {
+        return (end - start) * Utils.nextFloat() + start;
+    }
+
+    public static int nextRandomInRange(int start, int end) {
+        return (int) ((end - start) * Utils.nextFloat() + start);
+    }
+
+    public static float nextFloat(){
+        return Utils.nextFloat();
     }
 
 }

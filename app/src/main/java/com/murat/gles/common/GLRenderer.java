@@ -30,21 +30,22 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     private ArrayList<GLRenderable> mRenderLine;
 
-    void add(GLRenderable renderer) {
+    public void add(GLRenderable renderer) {
         mRenderLine.add(renderer);
     }
 
-    void remove(int index) {
-        mRenderLine.remove(index);
+    public void remove(int index) {
+        if (index <= 0 && index < mRenderLine.size())
+            mRenderLine.remove(index);
     }
 
-    void removeAll() {
+    public void clear() {
         mRenderLine.clear();
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         for (GLRenderable renderer : mRenderLine)
             renderer.init(this.context);
     }
@@ -52,17 +53,17 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
-        Matrix.perspectiveM(projectionMatrix, 0, 45, (float) width / (float) height, 1f, 100f);
+        Matrix.setIdentityM(modelMatrix, 0);
         Matrix.setIdentityM(viewMatrix, 0);
         Matrix.translateM(viewMatrix, 0, 0f, 0f, -5f);
+        Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        Matrix.perspectiveM(projectionMatrix, 0, 45, (float) width / (float) height, 1f, 100f);
+        Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-        Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
         for (GLRenderable renderer : mRenderLine)
             renderer.bind().render(modelViewProjectionMatrix).unbind();
     }

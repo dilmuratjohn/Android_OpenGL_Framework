@@ -1,5 +1,8 @@
 package com.murat.gles.particle;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 public class ParticleBean {
 
     public float finishColorVarianceBlue;
@@ -54,5 +57,7 @@ public class ParticleBean {
     public float startColorAlpha;
     public float startParticleSizeVariance;
     public float speed;
+
+    public ArrayList<Map<String, Float>> colorSet;
 
 }

@@ -23,7 +23,7 @@ public class GLView extends GLSurfaceView {
     }
 
     public void removeAll() {
-        mRenderer.removeAll();
+        mRenderer.clear();
     }
 
 }
