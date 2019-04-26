@@ -10,7 +10,7 @@
   "sourcePositionVariancey" : 60,
   "rotatePerSecond" : 0,
   "startColorBlue" : 1,
-  "textureFileName" : "particle_ribbon.png",
+  "textureFileName" : "particle_texture_ribbon.png",
   "finishParticleSizeVariance" : 65,
   "startColorVarianceBlue" : 1,
   "duration" : 0.95999999999999996,

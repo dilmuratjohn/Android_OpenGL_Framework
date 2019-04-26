@@ -35,11 +35,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mGLFrame.removeAllViews();
                     GLView view = new GLView(this);
                     view.removeAll();
-                    String config = Utils.getJSONStringFromResource(getApplicationContext(), R.raw.particle_ribbon);
-                    if (!TextUtils.isEmpty(config)) {
-                        ParticleShooter particleRibbon = new ParticleShooter(config);
+                    mGLFrame.addView(view);
+
+                    String config1 = Utils.getJSONStringFromResource(getApplicationContext(), R.raw.particle_ribbon);
+                    String config2 = Utils.getJSONStringFromResource(getApplicationContext(), R.raw.particle_heal);
+                    String config3 = Utils.getJSONStringFromResource(getApplicationContext(), R.raw.particle_meteor);
+                    if (!TextUtils.isEmpty(config1)) {
+                        ParticleShooter particleRibbon = new ParticleShooter(config1);
                         view.add(particleRibbon);
-                        mGLFrame.addView(view);
+                    }
+                    if (!TextUtils.isEmpty(config2)) {
+                        ParticleShooter particleRibbon = new ParticleShooter(config2);
+                        view.add(particleRibbon);
+                    }
+                    if (!TextUtils.isEmpty(config3)) {
+                        ParticleShooter particleRibbon = new ParticleShooter(config3);
+                        view.add(particleRibbon);
                     }
                 } else {
                     Toast.makeText(this, "Your device Does not support OpenGL ES 2.0", Toast.LENGTH_SHORT).show();
