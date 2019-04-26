@@ -36,13 +36,13 @@ public class ParticleShooter implements GLRenderable {
                     + Rotation_Component_Count
                     + Particle_Life_Time_Component_Count;
     private static final int Stride = Total_Component_Count * GLConstants.BYTES_PER_FLOAT;
-    private final float[] particles;
-    private final GLVertexArray vertexArray;
+    private final float[] mParticleData;
+    private final GLVertexArray mVertexArray;
     private ParticleBean mParticleBean;
     private ParticleShader mParticleShader;
     private GLTexture mParticleTexture;
-    private int currentParticleCount;
-    private int nextParticle;
+    private int mCurrentParticleCount;
+    private int mNextParticle;
     private float[] mPosition4f = new float[4];
     private float[] mStartColor4f = new float[4];
     private float[] mEndColor4f = new float[4];
@@ -55,15 +55,16 @@ public class ParticleShooter implements GLRenderable {
     private boolean mColorSetEnable;
     private long mStartTime1f;
     private float mDeltaTime1f;
-    private int mEmissionRate1i;
+    private int mEmitCount1i;
     private float mAngle1f;
+
+    private int mEmitCounter1i;
 
     public ParticleShooter(String json) {
         mParticleBean = new Gson().fromJson(json, ParticleBean.class);
-        mEmissionRate1i = 3;
+        mParticleData = new float[mParticleBean.maxParticles * Total_Component_Count];
+        mVertexArray = new GLVertexArray(mParticleData);
         initColorSet();
-        particles = new float[mParticleBean.maxParticles * Total_Component_Count];
-        vertexArray = new GLVertexArray(particles);
     }
 
     private void initColorSet() {
@@ -83,7 +84,6 @@ public class ParticleShooter implements GLRenderable {
             } catch (Exception e) {
                 setColorSetEnable(false);
             }
-
         }
     }
 
@@ -119,9 +119,8 @@ public class ParticleShooter implements GLRenderable {
         mDeltaTime1f = (System.currentTimeMillis() - mStartTime1f) / 1000f;
 
         if (mDeltaTime1f <= mParticleBean.duration || mParticleBean.duration <= 0) {
-            for (int i = 0; i < mEmissionRate1i; i++) {
-                update();
-                load();
+            for (int i = 0; i <= mEmitCount1i; i++) {
+                add();
             }
         }
 
@@ -131,11 +130,55 @@ public class ParticleShooter implements GLRenderable {
 
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(mParticleBean.blendFuncSource, mParticleBean.blendFuncDestination);
-        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, currentParticleCount);
+        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, mCurrentParticleCount);
         GLES20.glDisable(GLES20.GL_BLEND);
 
         return this;
     }
+
+
+    private void add() {
+        update();
+
+        final int particleOffset = mNextParticle * Total_Component_Count;
+
+        int currentOffset = particleOffset;
+        mNextParticle++;
+
+        if (mCurrentParticleCount < mParticleBean.maxParticles) {
+            mCurrentParticleCount++;
+        }
+
+        if (mNextParticle == mParticleBean.maxParticles) {
+            mNextParticle = 0;
+        }
+
+        mParticleData[currentOffset++] = mPosition4f[0];
+        mParticleData[currentOffset++] = mPosition4f[1];
+        mParticleData[currentOffset++] = mPosition4f[2];
+        mParticleData[currentOffset++] = mPosition4f[3];
+        mParticleData[currentOffset++] = mStartColor4f[0];
+        mParticleData[currentOffset++] = mStartColor4f[1];
+        mParticleData[currentOffset++] = mStartColor4f[2];
+        mParticleData[currentOffset++] = mStartColor4f[3];
+        mParticleData[currentOffset++] = mEndColor4f[0];
+        mParticleData[currentOffset++] = mEndColor4f[1];
+        mParticleData[currentOffset++] = mEndColor4f[2];
+        mParticleData[currentOffset++] = mEndColor4f[3];
+        mParticleData[currentOffset++] = mSpeed1f;
+        mParticleData[currentOffset++] = mAngle1f;
+        mParticleData[currentOffset++] = mDeltaTime1f / 1000.0f;
+        mParticleData[currentOffset++] = mStartSize1f;
+        mParticleData[currentOffset++] = mEndSize1f;
+        mParticleData[currentOffset++] = mParticleBean.gravityx;
+        mParticleData[currentOffset++] = mParticleBean.gravityy;
+        mParticleData[currentOffset++] = mRotation2f[0];
+        mParticleData[currentOffset++] = mRotation2f[1];
+        mParticleData[currentOffset++] = mParticleLifeTime1f;
+
+        mVertexArray.updateBuffer(mParticleData, particleOffset, Total_Component_Count);
+    }
+
 
     private void update() {
         updatePosition();
@@ -145,72 +188,32 @@ public class ParticleShooter implements GLRenderable {
         updateSpeed();
         updateAngle();
         updateParticleLifeTime();
-    }
-
-    private void load() {
-
-        final int particleOffset = nextParticle * Total_Component_Count;
-
-        int currentOffset = particleOffset;
-        nextParticle++;
-
-        if (currentParticleCount < mParticleBean.maxParticles) {
-            currentParticleCount++;
-        }
-
-        if (nextParticle == mParticleBean.maxParticles) {
-            nextParticle = 0;
-        }
-
-        particles[currentOffset++] = mPosition4f[0];
-        particles[currentOffset++] = mPosition4f[1];
-        particles[currentOffset++] = mPosition4f[2];
-        particles[currentOffset++] = mPosition4f[3];
-        particles[currentOffset++] = mStartColor4f[0];
-        particles[currentOffset++] = mStartColor4f[1];
-        particles[currentOffset++] = mStartColor4f[2];
-        particles[currentOffset++] = mStartColor4f[3];
-        particles[currentOffset++] = mEndColor4f[0];
-        particles[currentOffset++] = mEndColor4f[1];
-        particles[currentOffset++] = mEndColor4f[2];
-        particles[currentOffset++] = mEndColor4f[3];
-        particles[currentOffset++] = mSpeed1f;
-        particles[currentOffset++] = mAngle1f;
-        particles[currentOffset++] = mDeltaTime1f / 1000.0f;
-        particles[currentOffset++] = mStartSize1f;
-        particles[currentOffset++] = mEndSize1f;
-        particles[currentOffset++] = mParticleBean.gravityx;
-        particles[currentOffset++] = mParticleBean.gravityy;
-        particles[currentOffset++] = mRotation2f[0];
-        particles[currentOffset++] = mRotation2f[1];
-        particles[currentOffset++] = mParticleLifeTime1f;
-
-        vertexArray.updateBuffer(particles, particleOffset, Total_Component_Count);
+        updateEmitCount();
     }
 
     private void bindData() {
         int dataOffset = 0;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getPositionLocation(), Position_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getPositionLocation(), Position_Component_Count, Stride);
         dataOffset += Position_Component_Count;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getStartColorLocation(), Color_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getStartColorLocation(), Color_Component_Count, Stride);
         dataOffset += Color_Component_Count;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getEndColorLocation(), Color_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getEndColorLocation(), Color_Component_Count, Stride);
         dataOffset += Color_Component_Count;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getSpeedLocation(), Speed_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getSpeedLocation(), Speed_Component_Count, Stride);
         dataOffset += Speed_Component_Count;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getAngleLocation(), Angle_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getAngleLocation(), Angle_Component_Count, Stride);
         dataOffset += Angle_Component_Count;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getParticleStartTimeLocation(), Particle_Start_Time_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getParticleStartTimeLocation(), Particle_Start_Time_Component_Count, Stride);
         dataOffset += Particle_Start_Time_Component_Count;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getStartSizeLocation(), Start_Size_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getStartSizeLocation(), Start_Size_Component_Count, Stride);
         dataOffset += Start_Size_Component_Count;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getEndSizeLocation(), End_Size_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getEndSizeLocation(), End_Size_Component_Count, Stride);
         dataOffset += End_Size_Component_Count;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getForceLocation(), Gravity_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getForceLocation(), Gravity_Component_Count, Stride);
         dataOffset += Gravity_Component_Count;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getRotationLocation(), Rotation_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getRotationLocation(), Rotation_Component_Count, Stride);
         dataOffset += Rotation_Component_Count;
-        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getParticleLifeTimeLocation(), Particle_Life_Time_Component_Count, Stride);
+        mVertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getParticleLifeTimeLocation(), Particle_Life_Time_Component_Count, Stride);
     }
 
 
@@ -266,6 +269,13 @@ public class ParticleShooter implements GLRenderable {
         mParticleLifeTime1f = nextParticleLifeTime1f();
     }
 
+    private void updateEmitCount() {
+        float rate = 1.0f / (mParticleBean.particleLifespan / mParticleBean.maxParticles);
+        if (mCurrentParticleCount < mParticleBean.maxParticles) {
+            mEmitCounter1i += 16;
+            mEmitCount1i = Utils.min(mParticleBean.maxParticles - mCurrentParticleCount, (int) (mEmitCounter1i / rate));
+        }
+    }
 
     private float[] nextRandomPosition4f() {
         return new float[]{
