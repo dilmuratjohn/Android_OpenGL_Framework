@@ -5,6 +5,7 @@ attribute vec3 a_Position;
 attribute vec4 a_StartColor;
 attribute vec4 a_EndColor;
 attribute float a_Speed;
+attribute float a_Angle;
 attribute float a_ParticleStartTime;
 attribute float a_PointSize;
 attribute vec2 a_Gravity;
@@ -14,7 +15,7 @@ attribute float a_ParticleLifeTime;
 varying vec4 v_StartColor;
 varying vec4 v_End_Color;
 varying float v_ElapsedTime;
-varying float v_Rotation;
+varying vec2 v_Rotation;
 varying float v_ParticleLifeTime;
 
 void main() {
@@ -22,11 +23,11 @@ void main() {
     v_End_Color = a_EndColor;
     v_ElapsedTime = u_Time - a_ParticleStartTime;
     v_ParticleLifeTime = a_ParticleLifeTime;
-    v_Rotation = a_Rotation.x;
+    v_Rotation = a_Rotation;
     vec3 currentPosition = a_Position;
 
-    currentPosition.x -= a_Speed * cos(radians(a_Rotation.x)) * v_ElapsedTime;
-    currentPosition.y -= a_Speed * sin(radians(a_Rotation.x)) * v_ElapsedTime;
+    currentPosition.x += a_Speed * cos(radians(a_Angle)) * v_ElapsedTime;
+    currentPosition.y += a_Speed * sin(radians(a_Angle)) * v_ElapsedTime;
 
     float timeSquare = v_ElapsedTime * v_ElapsedTime;
     currentPosition.x -= timeSquare * a_Gravity.x;

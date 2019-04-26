@@ -16,6 +16,7 @@ public class ParticleShooter implements GLRenderable {
     private static final int Position_Component_Count = 4;
     private static final int Color_Component_Count = 4;
     private static final int Speed_Component_Count = 1;
+    private static final int Angle_Component_Count = 1;
     private static final int Particle_Start_Time_Component_Count = 1;
     private static final int Particle_Size_Component_Count = 1;
     private static final int Gravity_Component_Count = 2;
@@ -26,6 +27,7 @@ public class ParticleShooter implements GLRenderable {
                     + Color_Component_Count
                     + Color_Component_Count
                     + Speed_Component_Count
+                    + Angle_Component_Count
                     + Particle_Start_Time_Component_Count
                     + Particle_Size_Component_Count
                     + Gravity_Component_Count
@@ -51,6 +53,7 @@ public class ParticleShooter implements GLRenderable {
     private long mStartTime1f;
     private float mDeltaTime1f;
     private int mEmissionRate1i;
+    private float mAngle1f;
 
     public ParticleShooter(String json) {
         mParticleBean = new Gson().fromJson(json, ParticleBean.class);
@@ -137,6 +140,7 @@ public class ParticleShooter implements GLRenderable {
         updateParticleSize();
         updateRotation();
         updateVelocity();
+        updateAngle();
         updateParticleLifeTime();
     }
 
@@ -168,6 +172,7 @@ public class ParticleShooter implements GLRenderable {
         particles[currentOffset++] = mEndColor4f[2];
         particles[currentOffset++] = mEndColor4f[3];
         particles[currentOffset++] = mSpeed1f;
+        particles[currentOffset++] = mAngle1f;
         particles[currentOffset++] = mDeltaTime1f / 1000.0f;
         particles[currentOffset++] = mParticleSize1f;
         particles[currentOffset++] = mParticleBean.gravityx;
@@ -189,6 +194,8 @@ public class ParticleShooter implements GLRenderable {
         dataOffset += Color_Component_Count;
         vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getSpeedLocation(), Speed_Component_Count, Stride);
         dataOffset += Speed_Component_Count;
+        vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getAngleLocation(), Angle_Component_Count, Stride);
+        dataOffset += Angle_Component_Count;
         vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getParticleStartTimeLocation(), Particle_Start_Time_Component_Count, Stride);
         dataOffset += Particle_Start_Time_Component_Count;
         vertexArray.setVertexAttribPointer(dataOffset, mParticleShader.getParticleSizeLocation(), Particle_Size_Component_Count, Stride);
@@ -211,6 +218,10 @@ public class ParticleShooter implements GLRenderable {
 
     private void updateVelocity() {
         mSpeed1f = nextRandomSpeed1f();
+    }
+
+    private void updateAngle() {
+        mAngle1f = nextRandomAngle();
     }
 
     private void updateRotation() {
@@ -244,7 +255,7 @@ public class ParticleShooter implements GLRenderable {
         mEndColor4f = nextRandomEndColor4f();
     }
 
-    private void updateParticleLifeTime(){
+    private void updateParticleLifeTime() {
         mParticleLifeTime1f = nextParticleLifeTime1f();
     }
 
@@ -298,9 +309,12 @@ public class ParticleShooter implements GLRenderable {
         return mParticleBean.speed + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.speedVariance;
     }
 
-    private float nextParticleLifeTime1f(){
+    private float nextParticleLifeTime1f() {
         return mParticleBean.particleLifespan + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.particleLifespanVariance;
     }
 
+    private float nextRandomAngle() {
+        return mParticleBean.angle + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.angleVariance;
+    }
 
 }
