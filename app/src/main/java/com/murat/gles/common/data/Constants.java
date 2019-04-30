@@ -1,4 +1,4 @@
-package com.murat.gles.common;
+package com.murat.gles.common.data;
 
 public class Constants {
 

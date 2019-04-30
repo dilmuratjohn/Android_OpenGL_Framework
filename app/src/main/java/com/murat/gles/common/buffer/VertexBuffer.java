@@ -6,7 +6,7 @@ import java.nio.FloatBuffer;
 
 import android.opengl.GLES20;
 
-import static com.murat.gles.common.Constants.BYTES_PER_FLOAT;
+import static com.murat.gles.common.data.Constants.BYTES_PER_FLOAT;
 
 public class VertexBuffer {
 

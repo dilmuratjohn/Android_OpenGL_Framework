@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import android.opengl.GLES20;
 
-import static com.murat.gles.common.Constants.BYTES_PER_FLOAT;
+import static com.murat.gles.common.data.Constants.BYTES_PER_FLOAT;
 
 public class VertexArray {
 
@@ -31,12 +31,6 @@ public class VertexArray {
             setVertexAttributePointer(element.location, element.dimension, element.type, element.normalized, layout.getStride(), mFloatBuffer);
             offset += element.dimension;
         }
-        mFloatBuffer.position(0);
-    }
-
-    public void setVertexAttributePointer(int offset, int location, int type, int count, int stride) {
-        mFloatBuffer.position(offset);
-        setVertexAttributePointer(location, count, type, false, stride, mFloatBuffer);
         mFloatBuffer.position(0);
     }
 

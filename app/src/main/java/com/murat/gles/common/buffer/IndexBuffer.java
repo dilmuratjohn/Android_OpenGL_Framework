@@ -7,7 +7,7 @@ import java.nio.ShortBuffer;
 import android.opengl.GLES20;
 import android.util.Log;
 
-import com.murat.gles.common.Constants;
+import com.murat.gles.common.data.Constants;
 
 public class IndexBuffer {
 

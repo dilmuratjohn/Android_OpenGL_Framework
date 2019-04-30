@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         mGLView.add(magicWand)
         .add(magicWandLight)
         .add(magicStick)
-        .add(wall);
+        .add(wall).add(particleRibbon);
         mGLFrame.addView(mGLView);
 
     }

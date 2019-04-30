@@ -16,7 +16,7 @@ class SpriteShader extends Shader {
     private static final String mColor = "uColor";
 
     SpriteShader(Context context) {
-        super(context, R.raw.baic_vertex, R.raw.basic_fragment);
+        super(context, R.raw.basic_vertex, R.raw.basic_fragment);
         mMVPMatrixLocation = GLES20.glGetUniformLocation(mProgram, mMVPMatrix);
         mColorLocation = GLES20.glGetUniformLocation(mProgram, mColor);
     }
