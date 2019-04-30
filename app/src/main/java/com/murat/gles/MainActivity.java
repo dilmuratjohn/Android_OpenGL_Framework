@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private GLView mGLView;
     private SpriteRenderer mMagicWand;
     private SpriteRenderer mMagicWandLight;
+    private SpriteRenderer mMagicStick;
     private ParticleRenderer mParticleRibbon;
 
 
@@ -29,11 +30,14 @@ public class MainActivity extends AppCompatActivity {
         mGLView = new GLView(getApplicationContext());
         mMagicWand = new SpriteRenderer(R.drawable.magic_stick1);
         mMagicWandLight = new SpriteRenderer(R.drawable.magic_stick2);
+
+        mMagicStick = new SpriteRenderer(R.drawable.magic_wand);
         mParticleRibbon = new ParticleRenderer(getApplicationContext(), R.raw.particle_ribbon);
 
         mGLView.add(mMagicWand);
         mGLView.add(mMagicWandLight);
-        mGLView.add(mParticleRibbon);
+        mGLView.add(mMagicStick);
+//        mGLView.add(mParticleRibbon);
         mGLFrame.addView(mGLView);
 
     }

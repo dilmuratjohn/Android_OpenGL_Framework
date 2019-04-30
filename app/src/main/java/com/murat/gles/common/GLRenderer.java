@@ -10,7 +10,6 @@ import android.opengl.GLES20;
 
 import android.opengl.Matrix;
 
-import com.murat.gles.actions.ActionInterval;
 import com.murat.gles.picture.SpriteRenderer;
 
 import java.util.ArrayList;
@@ -87,10 +86,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                 .moveToDelayed(-1.0f, 0.0f, 0.0f, 2f, 6f)
                 .moveToDelayed(0.0f, -1.0f, 0.0f, 2f, 8f)
 
-                .scaleByDelayed(1.0f, 0.0f, 0.0f, 2f, 0f)
-                .scaleByDelayed(0.0f, 1.0f, 0.0f, 2f, 2f)
-                .scaleByDelayed(-1.0f, 0.0f, 0.0f, 2f, 4f)
-                .scaleByDelayed(0.0f, -1.0f, 0.0f, 2f, 6f)
+                .scaleByDelayed(0.1f, 0.0f, 0.0f, 2f, 0f)
+                .scaleByDelayed(0.0f, 0.1f, 0.0f, 2f, 2f)
+                .scaleByDelayed(-0.1f, 0.0f, 0.0f, 2f, 4f)
+                .scaleByDelayed(0.0f, -0.1f, 0.0f, 2f, 6f)
 
                 .fadeByDelayed(1.0f, 1f, 2f)
                 .fadeByDelayed(-1.0f, 1f, 3f)
@@ -99,6 +98,13 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                 .fadeByDelayed(1.0f, 1f, 6f)
                 .fadeByDelayed(-1.0f, 1f, 7f)
                 .fadeByDelayed(1.0f, 1f, 8f)
+
+                .rotateToDelayed(45, 0, 0, 1f, 2f, 1f)
+                .rotateToDelayed(45, 0, 0, 1f, 2f, 2f)
+                .rotateToDelayed(45, 0, 0, 1f, 2f, 3f)
+                .rotateToDelayed(45, 0, 0, 1f, 2f, 4f)
+                .rotateToDelayed(45, 0, 0, 1f, 2f, 5f)
+                .rotateToDelayed(45, 0, 0, 1f, 2f, 6f)
 
         ;
 
@@ -110,10 +116,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                 .moveToDelayed(0.0f, 1.0f, 0.0f, 2f, 6f)
                 .moveToDelayed(1.0f, 0.0f, 0.0f, 2f, 8f)
 
-                .scaleByDelayed(1.0f, 0.0f, 0.0f, 2f, 0f)
-                .scaleByDelayed(0.0f, 1.0f, 0.0f, 2f, 2f)
-                .scaleByDelayed(-1.0f, 0.0f, 0.0f, 2f, 4f)
-                .scaleByDelayed(0.0f, -1.0f, 0.0f, 2f, 6f)
+                .scaleByDelayed(0.1f, 0.0f, 0.0f, 2f, 0f)
+                .scaleByDelayed(0.0f, 0.1f, 0.0f, 2f, 2f)
+                .scaleByDelayed(-0.1f, 0.0f, 0.0f, 2f, 4f)
+                .scaleByDelayed(0.0f, -0.1f, 0.0f, 2f, 6f)
 
                 .fadeByDelayed(1.0f, 1f, 2f)
                 .fadeByDelayed(-1.0f, 1f, 3f)
@@ -122,7 +128,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                 .fadeByDelayed(1.0f, 1f, 6f)
                 .fadeByDelayed(-1.0f, 1f, 7f)
                 .fadeByDelayed(1.0f, 1f, 8f)
-
 
         ;
 

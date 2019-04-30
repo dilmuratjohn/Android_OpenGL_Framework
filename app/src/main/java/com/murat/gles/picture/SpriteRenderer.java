@@ -46,6 +46,10 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.setIdentityM(mModelViewMatrix, 0);
         Matrix.setIdentityM(mModelViewProjectionMatrix, 0);
+        mColor[0] = 1.0f;
+        mColor[1] = 1.0f;
+        mColor[2] = 1.0f;
+        mColor[3] = 1.0f;
         return this;
     }
 
