@@ -80,57 +80,59 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     public void start() {
         ((SpriteRenderer) mRenderLine.get(0)).getActionInterval()
+                .rotate(180f, 0, 0, 1f, 0f)
+                .move(1.0f, 0.0f, 0.0f, 2f, 2f)
+                .move(0.0f, 1.0f, 0.0f, 2f, 4f)
+                .move(-1.0f, 0.0f, 0.0f, 2f, 6f)
+                .move(0.0f, -1.0f, 0.0f, 2f, 8f)
 
-                .moveToDelayed(1.0f, 0.0f, 0.0f, 2f, 2f)
-                .moveToDelayed(0.0f, 1.0f, 0.0f, 2f, 4f)
-                .moveToDelayed(-1.0f, 0.0f, 0.0f, 2f, 6f)
-                .moveToDelayed(0.0f, -1.0f, 0.0f, 2f, 8f)
+                .scale(0.1f, 0.0f, 0.0f, 2f, 0f)
+                .scale(0.0f, 0.1f, 0.0f, 2f, 2f)
+                .scale(-0.1f, 0.0f, 0.0f, 2f, 4f)
+                .scale(0.0f, -0.1f, 0.0f, 2f, 6f)
 
-                .scaleByDelayed(0.1f, 0.0f, 0.0f, 2f, 0f)
-                .scaleByDelayed(0.0f, 0.1f, 0.0f, 2f, 2f)
-                .scaleByDelayed(-0.1f, 0.0f, 0.0f, 2f, 4f)
-                .scaleByDelayed(0.0f, -0.1f, 0.0f, 2f, 6f)
+                .fade(1.0f, 1f, 2f)
+                .fade(-1.0f, 1f, 3f)
+                .fade(1.0f, 1f, 4f)
+                .fade(-1.0f, 1f, 5f)
+                .fade(1.0f, 1f, 6f)
+                .fade(-1.0f, 1f, 7f)
+                .fade(1.0f, 1f, 8f)
 
-                .fadeByDelayed(1.0f, 1f, 2f)
-                .fadeByDelayed(-1.0f, 1f, 3f)
-                .fadeByDelayed(1.0f, 1f, 4f)
-                .fadeByDelayed(-1.0f, 1f, 5f)
-                .fadeByDelayed(1.0f, 1f, 6f)
-                .fadeByDelayed(-1.0f, 1f, 7f)
-                .fadeByDelayed(1.0f, 1f, 8f)
-
-                .rotateToDelayed(45, 0, 0, 1f, 2f, 1f)
-                .rotateToDelayed(45, 0, 0, 1f, 2f, 2f)
-                .rotateToDelayed(45, 0, 0, 1f, 2f, 3f)
-                .rotateToDelayed(45, 0, 0, 1f, 2f, 4f)
-                .rotateToDelayed(45, 0, 0, 1f, 2f, 5f)
-                .rotateToDelayed(45, 0, 0, 1f, 2f, 6f)
-
+                .rotate(45, 0, 0, 1f, 2f, 1f)
+                .rotate(45, 0, 0, 1f, 2f, 2f)
+                .rotate(45, 0, 0, 1f, 2f, 3f)
+                .rotate(45, 0, 0, 1f, 2f, 4f)
+                .rotate(45, 0, 0, 1f, 2f, 5f)
+                .rotate(45, 0, 0, 1f, 2f, 6f)
         ;
 
 
         ((SpriteRenderer) mRenderLine.get(1)).getActionInterval()
+                .rotate(180f, 0, 0, 1f, 0f)
+                .move(0.0f, -1.0f, 0.0f, 2f, 2f)
+                .move(-1.0f, 0.0f, 0.0f, 2f, 4f)
+                .move(0.0f, 1.0f, 0.0f, 2f, 6f)
+                .move(1.0f, 0.0f, 0.0f, 2f, 8f)
 
-                .moveToDelayed(0.0f, -1.0f, 0.0f, 2f, 2f)
-                .moveToDelayed(-1.0f, 0.0f, 0.0f, 2f, 4f)
-                .moveToDelayed(0.0f, 1.0f, 0.0f, 2f, 6f)
-                .moveToDelayed(1.0f, 0.0f, 0.0f, 2f, 8f)
+                .scale(0.1f, 0.0f, 0.0f, 2f, 0f)
+                .scale(0.0f, 0.1f, 0.0f, 2f, 2f)
+                .scale(-0.1f, 0.0f, 0.0f, 2f, 4f)
+                .scale(0.0f, -0.1f, 0.0f, 2f, 6f)
 
-                .scaleByDelayed(0.1f, 0.0f, 0.0f, 2f, 0f)
-                .scaleByDelayed(0.0f, 0.1f, 0.0f, 2f, 2f)
-                .scaleByDelayed(-0.1f, 0.0f, 0.0f, 2f, 4f)
-                .scaleByDelayed(0.0f, -0.1f, 0.0f, 2f, 6f)
-
-                .fadeByDelayed(1.0f, 1f, 2f)
-                .fadeByDelayed(-1.0f, 1f, 3f)
-                .fadeByDelayed(1.0f, 1f, 4f)
-                .fadeByDelayed(-1.0f, 1f, 5f)
-                .fadeByDelayed(1.0f, 1f, 6f)
-                .fadeByDelayed(-1.0f, 1f, 7f)
-                .fadeByDelayed(1.0f, 1f, 8f)
-
+                .fade(1.0f, 1f, 2f)
+                .fade(-1.0f, 1f, 3f)
+                .fade(1.0f, 1f, 4f)
+                .fade(-1.0f, 1f, 5f)
+                .fade(1.0f, 1f, 6f)
+                .fade(-1.0f, 1f, 7f)
+                .fade(1.0f, 1f, 8f)
         ;
 
+
+        ((SpriteRenderer) mRenderLine.get(2)).getActionInterval()
+                .rotate(180f, 0, 0, 1f, 0f)
+        ;
     }
 
 

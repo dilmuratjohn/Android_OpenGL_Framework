@@ -55,8 +55,8 @@ public class ActionInterval {
     private int fadeTimes;
     private int tintTimes;
 
-    public ActionInterval moveTo(float x, float y, float z, float duration) {
-        moveTimes = (int) (duration * 1000f / deltaTime);
+    public ActionInterval move(float x, float y, float z, float duration) {
+        moveTimes = (int) (duration * 1000f / deltaTime) + 1;
         if (moveTimes <= 0) {
             moveFraction = new float[]{x, y, z};
         } else {
@@ -65,18 +65,22 @@ public class ActionInterval {
         return this;
     }
 
-    public ActionInterval moveToDelayed(final float x, final float y, final float z, final float duration, final float delayed) {
+    public ActionInterval move(final float x, final float y, final float z, final float duration, final float delayed) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                moveTo(x, y, z, duration);
+                move(x, y, z, duration);
             }
-        }, (long)delayed * 1000);
+        }, (long) delayed * 1000);
         return this;
     }
 
-    public ActionInterval scaleBy(float x, float y, float z, float duration) {
-        scaleTimes = (int) (duration * 1000f / deltaTime);
+    private void move() {
+        ref.translate(moveFraction[0], moveFraction[1], moveFraction[2]);
+    }
+
+    public ActionInterval scale(float x, float y, float z, float duration) {
+        scaleTimes = (int) (duration * 1000f / deltaTime) + 1;
         if (scaleTimes <= 0) {
             scaleFraction = new float[]{x, y, z};
         } else {
@@ -85,18 +89,22 @@ public class ActionInterval {
         return this;
     }
 
-    public ActionInterval scaleByDelayed(final float x, final float y, final float z, final float duration, final float delayed) {
+    public ActionInterval scale(final float x, final float y, final float z, final float duration, final float delayed) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                scaleBy(x, y, z, duration);
+                scale(x, y, z, duration);
             }
-        }, (long)delayed * 1000);
+        }, (long) delayed * 1000);
         return this;
     }
 
-    public ActionInterval rotateTo(float a, float x, float y, float z, float duration) {
-        rotateTimes = (int) (duration * 1000f / deltaTime);
+    private void scale() {
+        ref.scale(scaleFraction[0], scaleFraction[1], scaleFraction[2]);
+    }
+
+    public ActionInterval rotate(float a, float x, float y, float z, float duration) {
+        rotateTimes = (int) (duration * 1000f / deltaTime) + 1;
         if (duration <= 0) {
             rotateFraction = new float[]{a, x, y, z};
         } else {
@@ -105,18 +113,22 @@ public class ActionInterval {
         return this;
     }
 
-    public ActionInterval rotateToDelayed(final float a, final float x, final float y, final float z, final float duration, final float delayed) {
+    public ActionInterval rotate(final float a, final float x, final float y, final float z, final float duration, final float delayed) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                rotateTo(a, x, y, z, duration);
+                rotate(a, x, y, z, duration);
             }
-        }, (long)delayed * 1000);
+        }, (long) delayed * 1000);
         return this;
     }
 
-    public ActionInterval fadeTo(float a, float duration) {
-        fadeTimes = (int) (duration * 1000f / deltaTime);
+    private void rotate() {
+        ref.rotate(rotateFraction[0], rotateFraction[1], rotateFraction[2], rotateFraction[3]);
+    }
+
+    public ActionInterval fade(float a, float duration) {
+        fadeTimes = (int) (duration * 1000f / deltaTime) + 1;
         if (fadeTimes <= 0) {
             colorFraction = new float[]{0, 0, 0, a};
         } else {
@@ -125,20 +137,22 @@ public class ActionInterval {
         return this;
     }
 
-    public ActionInterval fadeByDelayed(final float a, final float duration, final float delayed) {
+    public ActionInterval fade(final float a, final float duration, final float delayed) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                fadeTo(a, duration);
+                fade(a, duration);
             }
-        }, (long)delayed * 1000);
+        }, (long) delayed * 1000);
         return this;
     }
 
+    private void fade() {
+        ref.fade(colorFraction[3]);
+    }
 
-    // Tint
-    public ActionInterval tintTo(float r, float g, float b, float duration) {
-        tintTimes = (int) (duration * 1000f / deltaTime);
+    public ActionInterval tint(float r, float g, float b, float duration) {
+        tintTimes = (int) (duration * 1000f / deltaTime) + 1;
         if (tintTimes <= 0) {
             colorFraction = new float[]{r, g, b, 0};
         } else {
@@ -147,35 +161,18 @@ public class ActionInterval {
         return this;
     }
 
-    public ActionInterval tintByDelayed(final float r, final float g, final float b, final float duration, final float delayed) {
+    public ActionInterval tint(final float r, final float g, final float b, final float duration, final float delayed) {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                tintTo(r, g, b, duration);
+                tint(r, g, b, duration);
             }
-        }, (long)delayed * 1000);
+        }, (long) delayed * 1000);
         return this;
-    }
-
-    private void move() {
-        ref.translate(moveFraction[0], moveFraction[1], moveFraction[2]);
-    }
-
-    private void scale() {
-        ref.scale(scaleFraction[0], scaleFraction[1], scaleFraction[2]);
-    }
-
-    private void rotate() {
-        ref.rotate(rotateFraction[0], rotateFraction[1], rotateFraction[2], rotateFraction[3]);
-    }
-
-    private void fade() {
-        ref.fade(colorFraction[3]);
     }
 
     private void tint() {
         ref.tint(colorFraction[0], colorFraction[1], colorFraction[2]);
     }
-
 
 }
