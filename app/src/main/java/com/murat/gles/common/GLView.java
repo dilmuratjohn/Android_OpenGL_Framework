@@ -14,7 +14,7 @@ public class GLView extends GLSurfaceView {
         setRenderer(mRenderer);
     }
 
-    public void add(GLRenderable renderer) {
+    public void add(GLRenderer.GLRenderable renderer) {
         mRenderer.add(renderer);
     }
 

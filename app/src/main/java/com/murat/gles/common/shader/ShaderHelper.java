@@ -1,4 +1,4 @@
-package com.murat.gles.common;
+package com.murat.gles.common.shader;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-class GLShaderHelper {
+class ShaderHelper {
 
     private static final String TAG_ERROR = "[OpenGL Error] -> ";
 

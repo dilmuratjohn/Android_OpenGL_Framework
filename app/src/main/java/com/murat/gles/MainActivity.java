@@ -2,60 +2,40 @@ package com.murat.gles;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.view.View;
 
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.murat.gles.common.GLView;
-import com.murat.gles.particle.ParticleShooter;
-import com.murat.gles.common.GLUtils;
+import com.murat.gles.particle.ParticleRenderer;
+import com.murat.gles.picture.SpriteRenderer;
 import com.murat.particles.R;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
-    private boolean mSupport;
     private FrameLayout mGLFrame;
+    private GLView mGLView;
+    private SpriteRenderer mMagicWand;
+    private SpriteRenderer mMagicWandLight;
+    private ParticleRenderer mParticleRibbon;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
         mGLFrame = findViewById(R.id.frame);
-        mSupport = GLUtils.isSupportES20(this);
-        findViewById(R.id.frame).setOnClickListener(this);
+        mGLView = new GLView(getApplicationContext());
+        mMagicWand = new SpriteRenderer(R.drawable.magic_stick1);
+        mMagicWandLight = new SpriteRenderer(R.drawable.magic_stick2);
+        mParticleRibbon = new ParticleRenderer(getApplicationContext(), R.raw.particle_ribbon);
+
+        mGLView.add(mMagicWand);
+        mGLView.add(mParticleRibbon);
+        mGLView.add(mMagicWandLight);
+        mGLFrame.addView(mGLView);
+
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.frame: {
-                if (mSupport) {
-                    mGLFrame.removeAllViews();
-                    GLView view = new GLView(this);
-                    view.removeAll();
-                    mGLFrame.addView(view);
-
-                    String config1 = Utils.getJSONStringFromResource(getApplicationContext(), R.raw.particle_ribbon);
-                    String config2 = Utils.getJSONStringFromResource(getApplicationContext(), R.raw.particle_heal);
-                    String config3 = Utils.getJSONStringFromResource(getApplicationContext(), R.raw.particle_meteor);
-                    if (!TextUtils.isEmpty(config1)) {
-                        ParticleShooter particleRibbon = new ParticleShooter(config1);
-                        view.add(particleRibbon);
-                    }
-                    if (!TextUtils.isEmpty(config2)) {
-                        ParticleShooter particleRibbon = new ParticleShooter(config2);
-                        view.add(particleRibbon);
-                    }
-                    if (!TextUtils.isEmpty(config3)) {
-                        ParticleShooter particleRibbon = new ParticleShooter(config3);
-                        view.add(particleRibbon);
-                    }
-                } else {
-                    Toast.makeText(this, "Your device Does not support OpenGL ES 2.0", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    }
 }

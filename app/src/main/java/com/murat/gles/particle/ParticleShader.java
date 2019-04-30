@@ -2,13 +2,13 @@ package com.murat.gles.particle;
 
 import android.content.Context;
 
-import com.murat.gles.common.GLShader;
+import com.murat.gles.common.shader.Shader;
 import com.murat.particles.R;
 
 import android.opengl.GLES20;
 
 
-class ParticleShader extends GLShader {
+class ParticleShader extends Shader {
 
     private final int uMatrixLocation;
     private final int uTimeLocation;

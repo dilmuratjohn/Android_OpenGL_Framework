@@ -6,7 +6,6 @@ varying float v_ElapsedTime;
 varying vec2 v_Rotation;
 varying float v_ParticleLifeTime;
 
-
 uniform sampler2D u_TextureUnit;
 
 void main() {
@@ -19,7 +18,6 @@ void main() {
     if(v_ElapsedTime > v_ParticleLifeTime){
         discard;
     }
-
 
     vec2 center = vec2(0.5, 0.5);
     vec2 centeredPoint = gl_PointCoord - center;
