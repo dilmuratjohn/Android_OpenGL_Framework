@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
         mParticleRibbon = new ParticleRenderer(getApplicationContext(), R.raw.particle_ribbon);
 
         mGLView.add(mMagicWand);
-        mGLView.add(mParticleRibbon);
         mGLView.add(mMagicWandLight);
+        mGLView.add(mParticleRibbon);
         mGLFrame.addView(mGLView);
 
     }

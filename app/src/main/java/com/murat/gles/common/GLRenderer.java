@@ -79,24 +79,49 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLRenderable render(float[] projectionMatrix, float[] viewMatrix);
     }
 
-    public void start(){
-        ((SpriteRenderer)mRenderLine.get(0)).getActionInterval()
+    public void start() {
+        ((SpriteRenderer) mRenderLine.get(0)).getActionInterval()
 
-                .moveToDelayed(1.0f,0.0f,0.0f,2f,2f)
-                .moveToDelayed(0.0f,1.0f,0.0f,2f,4f)
-                .moveToDelayed(-1.0f,0.0f,0.0f,2f,6f)
-                .moveToDelayed(0.0f,-1.0f,0.0f,2f,8f)
+                .moveToDelayed(1.0f, 0.0f, 0.0f, 2f, 2f)
+                .moveToDelayed(0.0f, 1.0f, 0.0f, 2f, 4f)
+                .moveToDelayed(-1.0f, 0.0f, 0.0f, 2f, 6f)
+                .moveToDelayed(0.0f, -1.0f, 0.0f, 2f, 8f)
 
-                .scaleByDelayed(1.0f,0.0f,0.0f,2f,0f)
-                .scaleByDelayed(0.0f,1.0f,0.0f,2f,2f)
-                .scaleByDelayed(-1.0f,0.0f,0.0f,2f,4f)
-                .scaleByDelayed(0.0f,-1.0f,0.0f,2f,6f)
+                .scaleByDelayed(1.0f, 0.0f, 0.0f, 2f, 0f)
+                .scaleByDelayed(0.0f, 1.0f, 0.0f, 2f, 2f)
+                .scaleByDelayed(-1.0f, 0.0f, 0.0f, 2f, 4f)
+                .scaleByDelayed(0.0f, -1.0f, 0.0f, 2f, 6f)
+
+                .fadeByDelayed(1.0f, 1f, 2f)
+                .fadeByDelayed(-1.0f, 1f, 3f)
+                .fadeByDelayed(1.0f, 1f, 4f)
+                .fadeByDelayed(-1.0f, 1f, 5f)
+                .fadeByDelayed(1.0f, 1f, 6f)
+                .fadeByDelayed(-1.0f, 1f, 7f)
+                .fadeByDelayed(1.0f, 1f, 8f)
+
+        ;
 
 
-//                .fadeByDelayed(-1.0f,2f,0f)
-//                .fadeByDelayed(1.0f,2f,2f)
-//                .fadeByDelayed(-1.0f,2f,4f)
-//                .fadeByDelayed(1.0f,2f,6f)
+        ((SpriteRenderer) mRenderLine.get(1)).getActionInterval()
+
+                .moveToDelayed(0.0f, -1.0f, 0.0f, 2f, 2f)
+                .moveToDelayed(-1.0f, 0.0f, 0.0f, 2f, 4f)
+                .moveToDelayed(0.0f, 1.0f, 0.0f, 2f, 6f)
+                .moveToDelayed(1.0f, 0.0f, 0.0f, 2f, 8f)
+
+                .scaleByDelayed(1.0f, 0.0f, 0.0f, 2f, 0f)
+                .scaleByDelayed(0.0f, 1.0f, 0.0f, 2f, 2f)
+                .scaleByDelayed(-1.0f, 0.0f, 0.0f, 2f, 4f)
+                .scaleByDelayed(0.0f, -1.0f, 0.0f, 2f, 6f)
+
+                .fadeByDelayed(1.0f, 1f, 2f)
+                .fadeByDelayed(-1.0f, 1f, 3f)
+                .fadeByDelayed(1.0f, 1f, 4f)
+                .fadeByDelayed(-1.0f, 1f, 5f)
+                .fadeByDelayed(1.0f, 1f, 6f)
+                .fadeByDelayed(-1.0f, 1f, 7f)
+                .fadeByDelayed(1.0f, 1f, 8f)
 
 
         ;

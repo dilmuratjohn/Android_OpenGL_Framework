@@ -9,5 +9,7 @@ in vec2 fragTexCoord;
 
 void main()
 {
-    FragColor  = texture(u_Texture, fragTexCoord);
+    vec4 color = texture(u_Texture, fragTexCoord);
+    color.w = uColor.w;
+    FragColor  = color;
 }

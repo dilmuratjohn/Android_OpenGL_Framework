@@ -85,7 +85,7 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         if (mColor[3] < 0.0f) mColor[3] = 0.0f;
         mRectShader.setUniform4f(mRectShader.getColorLocation(), mColor);
         GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);
         GLES20.glDisable(GLES20.GL_BLEND);
         return this;
