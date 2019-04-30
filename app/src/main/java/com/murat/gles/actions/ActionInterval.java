@@ -8,7 +8,6 @@ public class ActionInterval {
     private final float speed = 1f;
     private final float deltaTime = speed / sample * 60 * 16;
 
-
     private Runnable mAction = new Runnable() {
         @Override
         public void run() {
