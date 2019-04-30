@@ -1,9 +1,8 @@
-package com.murat.gles.picture;
+package com.murat.gles.sprite;
 
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import com.murat.gles.actions.Action;
 import com.murat.gles.actions.ActionInterval;

@@ -10,7 +10,7 @@ import android.opengl.GLES20;
 
 import android.opengl.Matrix;
 
-import com.murat.gles.picture.SpriteRenderer;
+import com.murat.gles.sprite.SpriteRenderer;
 
 import java.util.ArrayList;
 
@@ -115,10 +115,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                 .move(0.0f, 1.0f, 0.0f, 2f, 6f)
                 .move(1.0f, 0.0f, 0.0f, 2f, 8f)
 
-                .scale(0.1f, 0.0f, 0.0f, 2f, 0f)
-                .scale(0.0f, 0.1f, 0.0f, 2f, 2f)
-                .scale(-0.1f, 0.0f, 0.0f, 2f, 4f)
-                .scale(0.0f, -0.1f, 0.0f, 2f, 6f)
+//                .scale(0.1f, 0.0f, 0.0f, 2f, 0f)
+//                .scale(0.0f, 0.1f, 0.0f, 2f, 2f)
+//                .scale(-0.1f, 0.0f, 0.0f, 2f, 4f)
+//                .scale(0.0f, -0.1f, 0.0f, 2f, 6f)
 
                 .fade(1.0f, 1f, 2f)
                 .fade(-1.0f, 1f, 3f)
@@ -132,6 +132,13 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         ((SpriteRenderer) mRenderLine.get(2)).getActionInterval()
                 .rotate(180f, 0, 0, 1f, 0f)
+        ;
+
+        ((SpriteRenderer) mRenderLine.get(3)).getActionInterval()
+                .move(0.0f, -2.0f, 0.0f, 2f, 2f)
+                .move(-2.0f, 0.0f, 0.0f, 2f, 4f)
+                .move(0.0f, 2.0f, 0.0f, 2f, 6f)
+                .move(2.0f, 0.0f, 0.0f, 2f, 8f)
         ;
     }
 

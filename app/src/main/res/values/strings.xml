@@ -1,5 +1,3 @@
 <resources>
     <string name="app_name">Particles</string>
-    <string name="title_activity_particles">Particles</string>
-    <string name="btn_text_start">Start</string>
 </resources>

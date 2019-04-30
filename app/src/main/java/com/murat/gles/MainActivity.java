@@ -3,41 +3,38 @@ package com.murat.gles;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.murat.gles.common.GLView;
 import com.murat.gles.particle.ParticleRenderer;
-import com.murat.gles.picture.SpriteRenderer;
+import com.murat.gles.sprite.SpriteRenderer;
 import com.murat.particles.R;
 
 public class MainActivity extends AppCompatActivity {
-
-    private FrameLayout mGLFrame;
-    private GLView mGLView;
-    private SpriteRenderer mMagicWand;
-    private SpriteRenderer mMagicWandLight;
-    private SpriteRenderer mMagicStick;
-    private ParticleRenderer mParticleRibbon;
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.main);
 
-        mGLFrame = findViewById(R.id.frame);
-        mGLView = new GLView(getApplicationContext());
-        mMagicWand = new SpriteRenderer(R.drawable.magic_stick1);
-        mMagicWandLight = new SpriteRenderer(R.drawable.magic_stick2);
+        FrameLayout mGLFrame = findViewById(R.id.frame);
+        GLView mGLView = new GLView(getApplicationContext());
+        SpriteRenderer magicWand = new SpriteRenderer(R.drawable.magic_stick1);
+        SpriteRenderer magicWandLight = new SpriteRenderer(R.drawable.magic_stick2);
+        SpriteRenderer magicStick = new SpriteRenderer(R.drawable.magic_wand);
+        SpriteRenderer wall = new SpriteRenderer(R.drawable.wall);
+        ParticleRenderer particleRibbon = new ParticleRenderer(getApplicationContext(), R.raw.particle_ribbon);
 
-        mMagicStick = new SpriteRenderer(R.drawable.magic_wand);
-        mParticleRibbon = new ParticleRenderer(getApplicationContext(), R.raw.particle_ribbon);
-
-        mGLView.add(mMagicWand);
-        mGLView.add(mMagicWandLight);
-        mGLView.add(mMagicStick);
-//        mGLView.add(mParticleRibbon);
+        mGLView.add(magicWand)
+        .add(magicWandLight)
+        .add(magicStick)
+        .add(wall);
         mGLFrame.addView(mGLView);
 
     }

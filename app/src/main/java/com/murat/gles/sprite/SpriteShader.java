@@ -1,4 +1,4 @@
-package com.murat.gles.picture;
+package com.murat.gles.sprite;
 
 import android.content.Context;
 import android.opengl.GLES20;

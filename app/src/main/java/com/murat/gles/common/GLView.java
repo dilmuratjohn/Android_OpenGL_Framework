@@ -14,16 +14,19 @@ public class GLView extends GLSurfaceView {
         setRenderer(mRenderer);
     }
 
-    public void add(GLRenderer.GLRenderable renderer) {
+    public GLView add(GLRenderer.GLRenderable renderer) {
         mRenderer.add(renderer);
+        return this;
     }
 
-    public void remove(int index) {
+    public GLView remove(int index) {
         mRenderer.remove(index);
+        return this;
     }
 
-    public void removeAll() {
+    public GLView removeAll() {
         mRenderer.clear();
+        return this;
     }
 
 }
