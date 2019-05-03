@@ -3,7 +3,7 @@ package com.murat.gles.particle;
 import android.content.Context;
 
 import com.murat.gles.common.shader.Shader;
-import com.murat.particles.R;
+import com.murat.opengl.R;
 
 import android.opengl.GLES20;
 

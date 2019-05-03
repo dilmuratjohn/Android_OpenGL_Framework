@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
 import com.murat.gles.common.GLView;
 import com.murat.gles.particle.ParticleRenderer;
 import com.murat.gles.sprite.SpriteRenderer;
-import com.murat.particles.R;
+import com.murat.opengl.R;
 
 public class MainActivity extends AppCompatActivity {
 

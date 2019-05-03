@@ -4,7 +4,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 
 import com.murat.gles.common.shader.Shader;
-import com.murat.particles.R;
+import com.murat.opengl.R;
 
 
 class SpriteShader extends Shader {
