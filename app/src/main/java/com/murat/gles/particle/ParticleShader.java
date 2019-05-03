@@ -44,7 +44,7 @@ class ParticleShader extends Shader {
 
 
     ParticleShader(Context context) {
-        super(context, R.raw.particle_vertex_shader, R.raw.particle_fragment_shader);
+        super(context, R.raw.particle_vertex, R.raw.particle_fragment);
 
         uMatrixLocation = GLES20.glGetUniformLocation(mProgram, U_Matrix);
         uTimeLocation = GLES20.glGetUniformLocation(mProgram, U_Time);

@@ -121,6 +121,7 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         mParticleShader.bind();
         mParticleTexture.bind();
         mVertexArray.setVertexAttributePointer(mVertexBufferLayout);
+        mParticleShader.setUniform1i(mParticleShader.getTextureLocation(), 0);
         return this;
     }
 
@@ -151,7 +152,6 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
 
         mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), modelViewProjectionMatrix);
         mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mDeltaTime1f / 1000.0f);
-        mParticleShader.setUniform1i(mParticleShader.getTextureLocation(), 0);
 
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(mParticleBean.blendFuncSource, mParticleBean.blendFuncDestination);

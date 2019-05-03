@@ -39,8 +39,10 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         mTexture = new Texture(context, mResourceId);
         mVertexBufferLayout = new VertexBufferLayout();
         mVertexArray = new VertexArray(mVertices);
-        mVertexBufferLayout.push(0, 4, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(1, 2, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
+
+        mRectShader.setUniform1i(mRectShader.getTextureLocation(), 0);
+        mVertexBufferLayout.push(mRectShader.getPositionLocation(), 4, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
+        mVertexBufferLayout.push(mRectShader.getTexCoordLocation(), 2, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
 
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.setIdentityM(mModelViewMatrix, 0);
