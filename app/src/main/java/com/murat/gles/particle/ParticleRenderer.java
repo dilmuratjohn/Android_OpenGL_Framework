@@ -3,12 +3,13 @@ package com.murat.gles.particle;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.murat.gles.Utils;
 import com.murat.gles.common.buffer.VertexBufferLayout;
 import com.murat.gles.common.data.Constants;
-import com.murat.gles.common.GLRenderer;
+import com.murat.gles.GLRenderer;
 import com.murat.gles.common.texture.Texture;
 import com.murat.gles.common.buffer.VertexArray;
 
@@ -25,6 +26,8 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
     private static final int Gravity_Component_Count = 2;
     private static final int Rotation_Component_Count = 2;
     private static final int Particle_Life_Time_Component_Count = 1;
+    private static final int Degree_Per_Second_Component_Count = 1;
+    private static final int Radius_Component_Count = 2;
     private static final int Total_Component_Count =
             Position_Component_Count
                     + Color_Component_Count
@@ -36,7 +39,9 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
                     + End_Size_Component_Count
                     + Gravity_Component_Count
                     + Rotation_Component_Count
-                    + Particle_Life_Time_Component_Count;
+                    + Particle_Life_Time_Component_Count
+                    + Degree_Per_Second_Component_Count
+                    + Radius_Component_Count;
     private final float[] mParticleData;
     private final VertexArray mVertexArray;
     private final VertexBufferLayout mVertexBufferLayout;
@@ -55,6 +60,8 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
     private float[] mRotation2f = new float[2];
     private float[][] mColorSet;
     private float[] mForce2f = new float[2];
+    private float mRotate1f;
+    private float[] mRadius2f = new float[2];
     private boolean mColorSetEnable;
     private long mStartTime1f;
     private float mTimePassed1f;
@@ -120,6 +127,8 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         mVertexBufferLayout.push(mParticleShader.getForceLocation(), Gravity_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexBufferLayout.push(mParticleShader.getRotationLocation(), Rotation_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexBufferLayout.push(mParticleShader.getLifeTimeLocation(), Particle_Life_Time_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getDegreePerSecondLocation(), Degree_Per_Second_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getRadiusLocation(), Radius_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         return this;
     }
 
@@ -128,6 +137,7 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         mParticleTexture.bind();
         mVertexArray.setVertexAttributePointer(mVertexBufferLayout);
         mParticleShader.setUniform1i(mParticleShader.getTextureLocation(), 0);
+        mParticleShader.setUniform1i(mParticleShader.getModeLocation(), mParticleBean.emitterType);
         return this;
     }
 
@@ -156,6 +166,8 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
             }
         }
 
+        Log.e("Murat", "count " + mEmitCount1i);
+
         mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), modelViewProjectionMatrix);
         mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mTimePassed1f);
 
@@ -173,6 +185,8 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         updateColor();
         updateParticleSize();
         updateRotation();
+        updateRotate();
+        updateRadius();
         updateSpeed();
         updateAngle();
         updateForce();
@@ -212,6 +226,10 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         mParticleData[currentOffset++] = mRotation2f[0];
         mParticleData[currentOffset++] = mRotation2f[1];
         mParticleData[currentOffset++] = mParticleLifeTime1f;
+        mParticleData[currentOffset++] = mRotate1f;
+        mParticleData[currentOffset++] = mRadius2f[0];
+        mParticleData[currentOffset++] = mRadius2f[1];
+
         mVertexArray.updateVertex(mParticleData, particleOffset, Total_Component_Count);
     }
 
@@ -222,6 +240,14 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
 
     private void updatePosition() {
         mPosition4f = nextRandomPosition4f();
+    }
+
+    private void updateRotate() {
+        mRotate1f = nextRandomRotate1f();
+    }
+
+    private void updateRadius() {
+        mRadius2f = nextRandomRadius2f();
     }
 
     private void updateSpeed() {
@@ -263,7 +289,7 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         mEndColor4f = nextRandomEndColor4f();
     }
 
-    private void updateForce(){
+    private void updateForce() {
         mForce2f = nextRandomForce2f();
     }
 
@@ -325,6 +351,17 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         return new float[]{
                 mParticleBean.rotationStart + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.rotationStartVariance,
                 mParticleBean.rotationEnd + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.rotationEndVariance,
+        };
+    }
+
+    private float nextRandomRotate1f() {
+        return mParticleBean.rotatePerSecond + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.rotatePerSecondVariance;
+    }
+
+    private float[] nextRandomRadius2f() {
+        return new float[]{
+                (mParticleBean.maxRadius + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.maxRadiusVariance) / Constants.Designed_Width * 2,
+                (mParticleBean.minRadius + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.minRadiusVariance) / Constants.Designed_Width * 2
         };
     }
 

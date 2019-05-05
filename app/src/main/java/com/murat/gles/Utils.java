@@ -49,6 +49,10 @@ public class Utils {
         return x < y ? x : y;
     }
 
+    public static int max(int x, int y) {
+        return x > y ? x : y;
+    }
+
     public static boolean isSupportES20(Context context) {
         final ActivityManager activityManager = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE));
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();

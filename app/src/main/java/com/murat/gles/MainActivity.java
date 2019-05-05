@@ -7,7 +7,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.murat.gles.common.GLView;
 import com.murat.gles.particle.ParticleRenderer;
 import com.murat.gles.sprite.SpriteRenderer;
 import com.murat.opengl.R;
@@ -31,22 +30,26 @@ public class MainActivity extends AppCompatActivity {
         SpriteRenderer wall = new SpriteRenderer(getApplicationContext(), R.drawable.wall);
         ParticleRenderer particleFirework = new ParticleRenderer(getApplicationContext(), R.raw.particle_firework);
         ParticleRenderer particleGalaxy = new ParticleRenderer(getApplicationContext(), R.raw.particle_galaxy);
+        ParticleRenderer particleCircle = new ParticleRenderer(getApplicationContext(), R.raw.particle_circle);
+
         ParticleRenderer particleHeal = new ParticleRenderer(getApplicationContext(), R.raw.particle_heal);
         ParticleRenderer particleMeteor = new ParticleRenderer(getApplicationContext(), R.raw.particle_meteor);
         ParticleRenderer particleRibbon = new ParticleRenderer(getApplicationContext(), R.raw.particle_ribbon);
         ParticleRenderer particleSmoke = new ParticleRenderer(getApplicationContext(), R.raw.particle_smoke);
 
         mGLView
-                .add(magicStick)
-                .add(magicWand)
-                .add(magicWandLight)
-                .add(wall)
+//                .add(magicStick)
+//                .add(magicWand)
+//                .add(magicWandLight)
+//                .add(wall)
                 .add(particleFirework)
+                .add(particleCircle)
                 .add(particleGalaxy)
-                .add(particleHeal)
-                .add(particleMeteor)
+//                .add(particleHeal)
+//                .add(particleMeteor)
                 .add(particleRibbon)
-                .add(particleSmoke);
+//                .add(particleSmoke)
+        ;
 
         mGLFrame.addView(mGLView);
 

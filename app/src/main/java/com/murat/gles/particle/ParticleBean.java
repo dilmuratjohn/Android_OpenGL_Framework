@@ -3,7 +3,7 @@ package com.murat.gles.particle;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class ParticleBean {
+class ParticleBean {
 
     String textureFileName;
 
@@ -53,7 +53,8 @@ public class ParticleBean {
     float angle;
     float angleVariance;
 
-    float emitterType;
+    int emitterType;
+
     float sourcePositionx;
     float sourcePositiony;
     float sourcePositionVariancey;
@@ -61,10 +62,13 @@ public class ParticleBean {
 
     float rotatePerSecond;
     float rotatePerSecondVariance;
+
     float maxRadius;
     float maxRadiusVariance;
     float minRadius;
+    float minRadiusVariance;
     float radialAccelVariance;
+
     float radialAcceleration;
     float tangentialAccelVariance;
     float tangentialAcceleration;

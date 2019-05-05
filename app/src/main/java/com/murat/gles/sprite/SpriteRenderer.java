@@ -6,7 +6,7 @@ import android.opengl.Matrix;
 
 import com.murat.gles.actions.Action;
 import com.murat.gles.actions.ActionInterval;
-import com.murat.gles.common.GLRenderer;
+import com.murat.gles.GLRenderer;
 import com.murat.gles.common.data.Constants;
 import com.murat.gles.common.data.Vertices;
 import com.murat.gles.common.texture.Texture;

@@ -15,7 +15,7 @@ void main() {
     if (distanceFromCenter > 0.5) {
         discard;
     }
-    if(v_ElapsedTime* 1000.0 > v_ParticleLifeTime ){
+    if(v_ElapsedTime * 1000.0 > v_ParticleLifeTime ){
         discard;
     }
 

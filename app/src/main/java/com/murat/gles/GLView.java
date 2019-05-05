@@ -1,4 +1,4 @@
-package com.murat.gles.common;
+package com.murat.gles;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -28,5 +28,4 @@ public class GLView extends GLSurfaceView {
         mRenderer.clear();
         return this;
     }
-
 }

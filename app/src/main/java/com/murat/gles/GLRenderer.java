@@ -1,6 +1,5 @@
-package com.murat.gles.common;
+package com.murat.gles;
 
-import android.content.Context;
 import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 
@@ -50,7 +49,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         for (GLRenderable renderer : mRenderLine)
             renderer.init(this);
 
-        start();
+//        start();
     }
 
     @Override

@@ -13,6 +13,7 @@ class ParticleShader extends Shader {
     private final int uMatrixLocation;
     private final int uTimeLocation;
     private final int uTextureUnitLocation;
+    private final int uModeLocation;
 
     private final int aPositionLocation;
     private final int aStartColorLocation;
@@ -25,10 +26,13 @@ class ParticleShader extends Shader {
     private final int aForceLocation;
     private final int aRotationLocation;
     private final int aAngleLocation;
+    private final int aDegreePerSecondLocation;
+    private final int aRadiusLocation;
 
     private static final String U_Matrix = "u_Matrix";
     private static final String U_Texture_Unit = "u_TextureUnit";
     private static final String U_Time = "u_Time";
+    private static final String U_Mode = "u_Mode";
 
     private static final String A_Position = "a_Position";
     private static final String A_StartColor = "a_StartColor";
@@ -41,6 +45,8 @@ class ParticleShader extends Shader {
     private static final String A_Gravity = "a_Gravity";
     private static final String A_Rotation = "a_Rotation";
     private static final String A_LifeTime = "a_LifeTime";
+    private static final String A_DegreePerSecond = "a_DegreePerSecond";
+    private static final String A_Radius = "a_Radius";
 
 
     ParticleShader(Context context) {
@@ -49,6 +55,7 @@ class ParticleShader extends Shader {
         uMatrixLocation = GLES20.glGetUniformLocation(mProgram, U_Matrix);
         uTimeLocation = GLES20.glGetUniformLocation(mProgram, U_Time);
         uTextureUnitLocation = GLES20.glGetUniformLocation(mProgram, U_Texture_Unit);
+        uModeLocation = GLES20.glGetUniformLocation(mProgram, U_Mode);
 
         aPositionLocation = GLES20.glGetAttribLocation(mProgram, A_Position);
         aStartSize = GLES20.glGetAttribLocation(mProgram, A_StartSize);
@@ -61,6 +68,8 @@ class ParticleShader extends Shader {
         aForceLocation = GLES20.glGetAttribLocation(mProgram, A_Gravity);
         aRotationLocation = GLES20.glGetAttribLocation(mProgram, A_Rotation);
         aLifeTimeLocation = GLES20.glGetAttribLocation(mProgram, A_LifeTime);
+        aDegreePerSecondLocation = GLES20.glGetAttribLocation(mProgram, A_DegreePerSecond);
+        aRadiusLocation = GLES20.glGetAttribLocation(mProgram, A_Radius);
     }
 
     int getMatrixLocation() {
@@ -73,6 +82,11 @@ class ParticleShader extends Shader {
 
     int getTextureLocation() {
         return uTextureUnitLocation;
+    }
+
+
+    int getModeLocation() {
+        return uModeLocation;
     }
 
     int getPositionLocation() {
@@ -118,4 +132,13 @@ class ParticleShader extends Shader {
     int getAngleLocation() {
         return aAngleLocation;
     }
+
+    int getDegreePerSecondLocation() {
+        return aDegreePerSecondLocation;
+    }
+
+    int getRadiusLocation() {
+        return aRadiusLocation;
+    }
+
 }
