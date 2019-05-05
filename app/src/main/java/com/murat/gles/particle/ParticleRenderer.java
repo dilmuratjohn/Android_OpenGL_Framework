@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.murat.gles.Utils;
+import com.murat.gles.actions.Action;
+import com.murat.gles.actions.ActionInterval;
 import com.murat.gles.common.buffer.VertexBufferLayout;
 import com.murat.gles.common.data.Constants;
 import com.murat.gles.GLRenderer;
@@ -14,7 +16,7 @@ import com.murat.gles.common.texture.Texture;
 import com.murat.gles.common.buffer.VertexArray;
 
 
-public class ParticleRenderer implements GLRenderer.GLRenderable {
+public class ParticleRenderer implements GLRenderer.GLRenderable, Action {
 
     private static final int Position_Component_Count = 4;
     private static final int Color_Component_Count = 4;
@@ -72,9 +74,11 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
 
     private GLRenderer mRenderer;
     private Context mContext;
+    private ActionInterval mActionInterval;
 
     public ParticleRenderer(Context context, int sourceId) {
         mContext = context;
+        mActionInterval = new ActionInterval(this);
         mParticleBean = new Gson().fromJson(Utils.getJSONStringFromResource(context, sourceId), ParticleBean.class);
         mParticleData = new float[mParticleBean.maxParticles * Total_Component_Count];
         mVertexArray = new VertexArray(mParticleData);
@@ -115,7 +119,9 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         mParticleTexture = new Texture(mContext, mParticleBean.textureFileName.split("\\.")[0]);
         mParticleShader = new ParticleShader(mContext);
         mStartTime1f = System.currentTimeMillis();
-
+        Matrix.setIdentityM(mModelMatrix, 0);
+        Matrix.setIdentityM(mModelViewMatrix, 0);
+        Matrix.setIdentityM(mModelViewProjectionMatrix, 0);
         mVertexBufferLayout.push(mParticleShader.getPositionLocation(), Position_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexBufferLayout.push(mParticleShader.getStartColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexBufferLayout.push(mParticleShader.getEndColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
@@ -147,16 +153,14 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         return this;
     }
 
-    private final float[] modelMatrix = new float[16];
-    private final float[] modelViewMatrix = new float[16];
-    private final float[] modelViewProjectionMatrix = new float[16];
+    private final float[] mModelMatrix = new float[16];
+    private final float[] mModelViewMatrix = new float[16];
+    private final float[] mModelViewProjectionMatrix = new float[16];
 
     public GLRenderer.GLRenderable render() {
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.setIdentityM(modelViewMatrix, 0);
-        Matrix.setIdentityM(modelViewProjectionMatrix, 0);
-        Matrix.multiplyMM(modelViewMatrix, 0, mRenderer.getViewMatrix(), 0, modelMatrix, 0);
-        Matrix.multiplyMM(modelViewProjectionMatrix, 0, mRenderer.getProjectionMatrix(), 0, modelViewMatrix, 0);
+
+        Matrix.multiplyMM(mModelViewMatrix, 0, mRenderer.getViewMatrix(), 0, mModelMatrix, 0);
+        Matrix.multiplyMM(mModelViewProjectionMatrix, 0, mRenderer.getProjectionMatrix(), 0, mModelViewMatrix, 0);
         mTimePassed1f = (System.currentTimeMillis() - mStartTime1f) / 1000000f;
 
         if (mTimePassed1f <= mParticleBean.duration / 1000 || mParticleBean.duration <= 0) {
@@ -166,9 +170,8 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
             }
         }
 
-        Log.e("Murat", "count " + mEmitCount1i);
 
-        mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), modelViewProjectionMatrix);
+        mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), mModelViewProjectionMatrix);
         mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mTimePassed1f);
 
 
@@ -386,6 +389,47 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
                         - (mParticleBean.tangentialAcceleration + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.tangentialAccelVariance)
                         + mParticleBean.gravityy
         };
+    }
+
+    @Override
+    public Action translate(float x, float y, float z) {
+        float[] translation = new float[16];
+        Matrix.setIdentityM(translation, 0);
+        Matrix.translateM(translation, 0, translation, 0, x, y, z);
+        Matrix.multiplyMM(mModelMatrix, 0, translation, 0, mModelMatrix, 0);
+        return this;
+    }
+
+    @Override
+    public Action rotate(float a, float x, float y, float z) {
+        float[] rotation = new float[16];
+        Matrix.setIdentityM(rotation, 0);
+        Matrix.rotateM(rotation, 0, rotation, 0, a, x, y, z);
+        Matrix.multiplyMM(mModelMatrix, 0, rotation, 0, mModelMatrix, 0);
+        return this;
+    }
+
+    @Override
+    public Action scale(float x, float y, float z) {
+        float[] scale = new float[16];
+        Matrix.setIdentityM(scale, 0);
+        Matrix.scaleM(scale, 0, scale, 0, x + 1f, y + 1f, z + 1f);
+        Matrix.multiplyMM(mModelMatrix, 0, scale, 0, mModelMatrix, 0);
+        return this;
+    }
+
+    @Override
+    public Action fade(float a) {
+        return this;
+    }
+
+    @Override
+    public Action tint(float r, float g, float b) {
+        return this;
+    }
+
+    public ActionInterval getActionInterval() {
+        return mActionInterval;
     }
 
 }

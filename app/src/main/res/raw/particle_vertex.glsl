@@ -20,13 +20,13 @@ varying vec4 v_StartColor;
 varying vec4 v_End_Color;
 varying float v_ElapsedTime;
 varying vec2 v_Rotation;
-varying float v_ParticleLifeTime;
+varying float v_LifeTime;
 
 void main() {
     v_StartColor = a_StartColor;
     v_End_Color = a_EndColor;
     v_ElapsedTime = u_Time - a_StartTime;
-    v_ParticleLifeTime = a_LifeTime;
+    v_LifeTime = a_LifeTime;
     v_Rotation = a_Rotation;
     vec3 currentPosition = a_Position;
 
@@ -36,11 +36,11 @@ void main() {
         currentPosition.x += v_ElapsedTime * v_ElapsedTime * 1000.0 * a_Gravity.x;
         currentPosition.y += v_ElapsedTime * v_ElapsedTime * 1000.0 * a_Gravity.y;
     } else {
-        float angle = a_Angle + a_DegreePerSecond * v_ElapsedTime* 1000.0;
-        float radius = a_Radius.x + v_ElapsedTime* 1000.0 * (a_Radius.y - a_Radius.x) / a_LifeTime;
+        float angle = a_Angle + a_DegreePerSecond * v_ElapsedTime * 1000.0;
+        float radius = a_Radius.x + v_ElapsedTime * 1000.0 * (a_Radius.y - a_Radius.x) / a_LifeTime;
         currentPosition.x = -cos(radians(angle)) * radius;
         currentPosition.y = -sin(radians(angle)) * radius;
     }
-    gl_PointSize = a_StartSize + v_ElapsedTime * (a_EndSize - a_StartSize) / a_LifeTime;
+    gl_PointSize = a_StartSize + v_ElapsedTime* 1000.0 * (a_EndSize - a_StartSize) / a_LifeTime;
     gl_Position = u_Matrix * vec4(currentPosition, 1.0);
 }

@@ -9,7 +9,12 @@ import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLES20;
 
 import android.opengl.Matrix;
+import android.util.Log;
+import android.view.MotionEvent;
 
+import com.murat.gles.actions.Action;
+import com.murat.gles.actions.ActionInterval;
+import com.murat.gles.particle.ParticleRenderer;
 import com.murat.gles.sprite.SpriteRenderer;
 
 import java.util.ArrayList;
@@ -59,9 +64,22 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         mHeight = height;
         Matrix.setIdentityM(mViewMatrix, 0);
         Matrix.setIdentityM(mProjectionMatrix, 0);
-        Matrix.translateM(mViewMatrix, 0, 0f, 0f, -5f);
-        Matrix.perspectiveM(mProjectionMatrix, 0, 45, (float) width / height, 1f, 100f);
-//        Matrix.orthoM(mProjectionMatrix, 0, 0, width ,0, height, -2f, 2f);
+//        Matrix.translateM(mViewMatrix, 0, 0f, 0f, -5f);
+//        Matrix.perspectiveM(mProjectionMatrix, 0, 45, (float) width / height, 1f, 100f);
+
+
+        float aspectRatio;
+        if (width > height){
+            aspectRatio = (float) width/ (float) height;
+        }
+        else{
+            aspectRatio = (float) height / (float) width;
+        }
+        if (width > height) {
+            Matrix.orthoM(mProjectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f);
+        } else {
+            Matrix.orthoM(mProjectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
+        }
     }
 
     @Override
