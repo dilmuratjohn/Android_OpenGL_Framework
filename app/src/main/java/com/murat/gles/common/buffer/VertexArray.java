@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import android.opengl.GLES20;
 
-import static com.murat.gles.common.data.Constants.BYTES_PER_FLOAT;
+import static com.murat.gles.common.data.Constants.Bytes_Per_Float;
 
 public class VertexArray {
 
@@ -16,7 +16,7 @@ public class VertexArray {
 
     public VertexArray(float[] vertices) {
         mFloatBuffer = ByteBuffer
-                .allocateDirect(vertices.length * BYTES_PER_FLOAT)
+                .allocateDirect(vertices.length * Bytes_Per_Float)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
                 .put(vertices);

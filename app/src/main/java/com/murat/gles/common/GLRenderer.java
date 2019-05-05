@@ -1,6 +1,7 @@
 package com.murat.gles.common;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -17,14 +18,14 @@ import java.util.ArrayList;
 
 public class GLRenderer implements GLSurfaceView.Renderer {
 
-    private final Context context;
+    private int mWidth;
+    private int mHeight;
 
-    private final float[] projectionMatrix = new float[16];
-    private final float[] viewMatrix = new float[16];
+    private final float[] mProjectionMatrix = new float[16];
+    private final float[] mViewMatrix = new float[16];
 
 
-    GLRenderer(Context context) {
-        this.context = context;
+    GLRenderer() {
         mRenderLine = new ArrayList<>();
     }
 
@@ -47,7 +48,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         for (GLRenderable renderer : mRenderLine)
-            renderer.init(this.context);
+            renderer.init(this);
 
         start();
     }
@@ -55,27 +56,42 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
-        Matrix.setIdentityM(viewMatrix, 0);
-        Matrix.setIdentityM(projectionMatrix, 0);
-        Matrix.translateM(viewMatrix, 0, 0f, 0f, -5f);
-        Matrix.perspectiveM(projectionMatrix, 0, 45, (float) width / (float) height, 1f, 100f);
+        mWidth = width;
+        mHeight = height;
+        Matrix.setIdentityM(mViewMatrix, 0);
+        Matrix.setIdentityM(mProjectionMatrix, 0);
+        Matrix.translateM(mViewMatrix, 0, 0f, 0f, -5f);
+        Matrix.perspectiveM(mProjectionMatrix, 0, 45, (float) width / height, 1f, 100f);
+//        Matrix.orthoM(mProjectionMatrix, 0, 0, width ,0, height, -2f, 2f);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         for (GLRenderable renderer : mRenderLine)
-            renderer.bind().render(projectionMatrix, viewMatrix).unbind();
+            renderer.bind().render().unbind();
     }
 
     public interface GLRenderable {
-        GLRenderable init(Context context);
+        GLRenderable init(GLRenderer renderer);
 
         GLRenderable bind();
 
         GLRenderable unbind();
 
-        GLRenderable render(float[] projectionMatrix, float[] viewMatrix);
+        GLRenderable render();
+    }
+
+    public Point getSurfaceSize() {
+        return new Point(mWidth, mHeight);
+    }
+
+    public float[] getProjectionMatrix() {
+        return mProjectionMatrix;
+    }
+
+    public float[] getViewMatrix() {
+        return mViewMatrix;
     }
 
     public void start() {
@@ -135,10 +151,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         ;
 
         ((SpriteRenderer) mRenderLine.get(3)).getActionInterval()
-                .move(0.0f, -2.0f, 0.0f, 2f, 2f)
-                .move(-2.0f, 0.0f, 0.0f, 2f, 4f)
-                .move(0.0f, 2.0f, 0.0f, 2f, 6f)
-                .move(2.0f, 0.0f, 0.0f, 2f, 8f)
+                .move(0.0f, -1.0f, 0.0f, 2f, 2f)
+                .move(-1.0f, 0.0f, 0.0f, 2f, 4f)
+                .move(0.0f, 1.0f, 0.0f, 2f, 6f)
+                .move(1.0f, 0.0f, 0.0f, 2f, 8f)
         ;
     }
 

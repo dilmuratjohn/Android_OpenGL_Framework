@@ -54,15 +54,20 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
     private float mEndSize1f;
     private float[] mRotation2f = new float[2];
     private float[][] mColorSet;
+    private float[] mForce2f = new float[2];
     private boolean mColorSetEnable;
     private long mStartTime1f;
-    private float mDeltaTime1f;
+    private float mTimePassed1f;
     private int mEmitCount1i;
     private float mAngle1f;
 
     private int mEmitCounter1i;
 
+    private GLRenderer mRenderer;
+    private Context mContext;
+
     public ParticleRenderer(Context context, int sourceId) {
+        mContext = context;
         mParticleBean = new Gson().fromJson(Utils.getJSONStringFromResource(context, sourceId), ParticleBean.class);
         mParticleData = new float[mParticleBean.maxParticles * Total_Component_Count];
         mVertexArray = new VertexArray(mParticleData);
@@ -98,22 +103,23 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         return mColorSetEnable;
     }
 
-    public GLRenderer.GLRenderable init(Context context) {
-        mParticleTexture = new Texture(context, mParticleBean.textureFileName.split("\\.")[0]);
-        mParticleShader = new ParticleShader(context);
+    public GLRenderer.GLRenderable init(GLRenderer renderer) {
+        mRenderer = renderer;
+        mParticleTexture = new Texture(mContext, mParticleBean.textureFileName.split("\\.")[0]);
+        mParticleShader = new ParticleShader(mContext);
         mStartTime1f = System.currentTimeMillis();
 
-        mVertexBufferLayout.push(mParticleShader.getPositionLocation(), Position_Component_Count, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(mParticleShader.getStartColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(mParticleShader.getEndColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(mParticleShader.getSpeedLocation(), Speed_Component_Count, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(mParticleShader.getAngleLocation(), Angle_Component_Count, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(mParticleShader.getStartTimeLocation(), Particle_Start_Time_Component_Count, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(mParticleShader.getStartSizeLocation(), Start_Size_Component_Count, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(mParticleShader.getEndSizeLocation(), End_Size_Component_Count, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(mParticleShader.getForceLocation(), Gravity_Component_Count, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(mParticleShader.getRotationLocation(), Rotation_Component_Count, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(mParticleShader.getLifeTimeLocation(), Particle_Life_Time_Component_Count, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
+        mVertexBufferLayout.push(mParticleShader.getPositionLocation(), Position_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getStartColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getEndColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getSpeedLocation(), Speed_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getAngleLocation(), Angle_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getStartTimeLocation(), Particle_Start_Time_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getStartSizeLocation(), Start_Size_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getEndSizeLocation(), End_Size_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getForceLocation(), Gravity_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getRotationLocation(), Rotation_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mParticleShader.getLifeTimeLocation(), Particle_Life_Time_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         return this;
     }
 
@@ -135,15 +141,15 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
     private final float[] modelViewMatrix = new float[16];
     private final float[] modelViewProjectionMatrix = new float[16];
 
-    public GLRenderer.GLRenderable render(float[] projectionMatrix, float[] viewMatrix) {
+    public GLRenderer.GLRenderable render() {
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.setIdentityM(modelViewMatrix, 0);
         Matrix.setIdentityM(modelViewProjectionMatrix, 0);
-        Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-        Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0);
-        mDeltaTime1f = (System.currentTimeMillis() - mStartTime1f) / 1000f;
+        Matrix.multiplyMM(modelViewMatrix, 0, mRenderer.getViewMatrix(), 0, modelMatrix, 0);
+        Matrix.multiplyMM(modelViewProjectionMatrix, 0, mRenderer.getProjectionMatrix(), 0, modelViewMatrix, 0);
+        mTimePassed1f = (System.currentTimeMillis() - mStartTime1f) / 1000000f;
 
-        if (mDeltaTime1f <= mParticleBean.duration || mParticleBean.duration <= 0) {
+        if (mTimePassed1f <= mParticleBean.duration / 1000 || mParticleBean.duration <= 0) {
             for (int i = 0; i <= mEmitCount1i; i++) {
                 update();
                 add();
@@ -151,7 +157,8 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         }
 
         mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), modelViewProjectionMatrix);
-        mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mDeltaTime1f / 1000.0f);
+        mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mTimePassed1f);
+
 
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(mParticleBean.blendFuncSource, mParticleBean.blendFuncDestination);
@@ -168,6 +175,7 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         updateRotation();
         updateSpeed();
         updateAngle();
+        updateForce();
         updateParticleLifeTime();
         updateEmitCount();
     }
@@ -196,11 +204,11 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         mParticleData[currentOffset++] = mEndColor4f[3];
         mParticleData[currentOffset++] = mSpeed1f;
         mParticleData[currentOffset++] = mAngle1f;
-        mParticleData[currentOffset++] = mDeltaTime1f / 1000.0f;
+        mParticleData[currentOffset++] = mTimePassed1f;
         mParticleData[currentOffset++] = mStartSize1f;
         mParticleData[currentOffset++] = mEndSize1f;
-        mParticleData[currentOffset++] = mParticleBean.gravityx;
-        mParticleData[currentOffset++] = mParticleBean.gravityy;
+        mParticleData[currentOffset++] = mForce2f[0];
+        mParticleData[currentOffset++] = mForce2f[1];
         mParticleData[currentOffset++] = mRotation2f[0];
         mParticleData[currentOffset++] = mRotation2f[1];
         mParticleData[currentOffset++] = mParticleLifeTime1f;
@@ -255,6 +263,10 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
         mEndColor4f = nextRandomEndColor4f();
     }
 
+    private void updateForce(){
+        mForce2f = nextRandomForce2f();
+    }
+
     private void updateParticleLifeTime() {
         mParticleLifeTime1f = nextParticleLifeTime1f();
     }
@@ -269,9 +281,9 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
 
     private float[] nextRandomPosition4f() {
         return new float[]{
-                Utils.nextRandomInRange(1.0f, -1.0f),
-                Utils.nextRandomInRange(0.5f, 1.0f),
-                1.0f,
+                0.5f - (mParticleBean.sourcePositionx + Utils.nextRandomInRange(1.0f, -1.0f) * mParticleBean.sourcePositionVariancex) / (Constants.Designed_Width + 0.f),
+                0.5f - (mParticleBean.sourcePositiony + Utils.nextRandomInRange(1.0f, -1.0f) * mParticleBean.sourcePositionVariancey) / (Constants.Designed_Height + 0.f),
+                0.0f,
                 1.0f
         };
     }
@@ -326,6 +338,17 @@ public class ParticleRenderer implements GLRenderer.GLRenderable {
 
     private float nextRandomAngle() {
         return mParticleBean.angle + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.angleVariance;
+    }
+
+    private float[] nextRandomForce2f() {
+        return new float[]{
+                mParticleBean.radialAcceleration + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.radialAccelVariance
+                        + mParticleBean.tangentialAcceleration + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.tangentialAccelVariance
+                        + mParticleBean.gravityx,
+                mParticleBean.radialAcceleration + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.radialAccelVariance
+                        - (mParticleBean.tangentialAcceleration + Utils.nextRandomInRange(-1.0f, 1.0f) * mParticleBean.tangentialAccelVariance)
+                        + mParticleBean.gravityy
+        };
     }
 
 }

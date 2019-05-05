@@ -53,22 +53,22 @@ public class ParticleBean {
     float angle;
     float angleVariance;
 
+    float emitterType;
+    float sourcePositionx;
+    float sourcePositiony;
+    float sourcePositionVariancey;
+    float sourcePositionVariancex;
+
     float rotatePerSecond;
     float rotatePerSecondVariance;
-    float emitterType;
     float maxRadius;
     float maxRadiusVariance;
     float minRadius;
-    float sourcePositionx;
-    float sourcePositiony;
     float radialAccelVariance;
     float radialAcceleration;
     float tangentialAccelVariance;
     float tangentialAcceleration;
-    float sourcePositionVariancey;
-    float sourcePositionVariancex;
 
-    String textureImageData;
     ArrayList<Map<String, Float>> colorSet;
 
 }

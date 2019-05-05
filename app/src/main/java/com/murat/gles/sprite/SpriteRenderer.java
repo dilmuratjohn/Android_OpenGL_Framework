@@ -6,8 +6,8 @@ import android.opengl.Matrix;
 
 import com.murat.gles.actions.Action;
 import com.murat.gles.actions.ActionInterval;
-import com.murat.gles.common.data.Constants;
 import com.murat.gles.common.GLRenderer;
+import com.murat.gles.common.data.Constants;
 import com.murat.gles.common.data.Vertices;
 import com.murat.gles.common.texture.Texture;
 import com.murat.gles.common.buffer.VertexArray;
@@ -17,6 +17,9 @@ import com.murat.gles.common.buffer.VertexBufferLayout;
 
 public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
 
+
+    private Context mContext;
+    private GLRenderer mRenderer;
     private VertexArray mVertexArray;
     private VertexBuffer mVertexBuffer;
     private VertexBufferLayout mVertexBufferLayout;
@@ -27,22 +30,24 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
 
     private float[] mVertices;
 
-    public SpriteRenderer(int resourceId) {
+    public SpriteRenderer(Context context, int resourceId) {
+        mContext = context;
         mActionInterval = new ActionInterval(this);
         mResourceId = resourceId;
         mVertices = Vertices.Position4f_TexCoord2f;
     }
 
     @Override
-    public GLRenderer.GLRenderable init(Context context) {
-        mRectShader = new SpriteShader(context);
-        mTexture = new Texture(context, mResourceId);
+    public GLRenderer.GLRenderable init(GLRenderer renderer) {
+        mRenderer = renderer;
+        mRectShader = new SpriteShader(mContext);
+        mTexture = new Texture(mContext, mResourceId);
         mVertexBufferLayout = new VertexBufferLayout();
         mVertexArray = new VertexArray(mVertices);
 
         mRectShader.setUniform1i(mRectShader.getTextureLocation(), 0);
-        mVertexBufferLayout.push(mRectShader.getPositionLocation(), 4, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
-        mVertexBufferLayout.push(mRectShader.getTexCoordLocation(), 2, GLES20.GL_FLOAT, Constants.BYTES_PER_FLOAT, false);
+        mVertexBufferLayout.push(mRectShader.getPositionLocation(), 4, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexBufferLayout.push(mRectShader.getTexCoordLocation(), 2, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
 
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.setIdentityM(mModelViewMatrix, 0);
@@ -75,9 +80,9 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
     private final float[] mModelViewProjectionMatrix = new float[16];
 
     @Override
-    public GLRenderer.GLRenderable render(float[] projectionMatrix, float[] viewMatrix) {
-        Matrix.multiplyMM(mModelViewMatrix, 0, viewMatrix, 0, mModelMatrix, 0);
-        Matrix.multiplyMM(mModelViewProjectionMatrix, 0, projectionMatrix, 0, mModelViewMatrix, 0);
+    public GLRenderer.GLRenderable render() {
+        Matrix.multiplyMM(mModelViewMatrix, 0, mRenderer.getViewMatrix(), 0, mModelMatrix, 0);
+        Matrix.multiplyMM(mModelViewProjectionMatrix, 0, mRenderer.getProjectionMatrix(), 0, mModelViewMatrix, 0);
         mRectShader.setUniformMatrix4fv(mRectShader.getMVPMatrixLocation(), mModelViewProjectionMatrix);
 
         if (mColor[0] > 1.0f) mColor[0] = 1.0f;

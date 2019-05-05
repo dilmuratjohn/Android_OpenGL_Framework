@@ -31,7 +31,7 @@ public class IndexBuffer {
 
     private void buffer(short[] indices) {
         ShortBuffer buffer = ByteBuffer
-                .allocateDirect(indices.length * Constants.BYTES_PER_SHORT)
+                .allocateDirect(indices.length * Constants.Bytes_Per_Short)
                 .order(ByteOrder.nativeOrder())
                 .asShortBuffer()
                 .put(indices);
@@ -40,7 +40,7 @@ public class IndexBuffer {
 
         GLES20.glBufferData(
                 GLES20.GL_ELEMENT_ARRAY_BUFFER,
-                buffer.capacity() * Constants.BYTES_PER_SHORT,
+                buffer.capacity() * Constants.Bytes_Per_Short,
                 buffer,
                 GLES20.GL_STATIC_DRAW
         );

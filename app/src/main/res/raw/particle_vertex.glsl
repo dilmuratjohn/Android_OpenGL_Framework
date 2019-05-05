@@ -31,9 +31,9 @@ void main() {
     currentPosition.x += a_Speed * cos(radians(a_Angle)) * v_ElapsedTime;
     currentPosition.y += a_Speed * sin(radians(a_Angle)) * v_ElapsedTime;
 
-    float timeSquare = v_ElapsedTime * v_ElapsedTime;
-    currentPosition.x -= timeSquare * a_Gravity.x;
-    currentPosition.y -= timeSquare * a_Gravity.y;
+    float timeSquare = v_ElapsedTime * v_ElapsedTime * 1000.0;
+    currentPosition.x += timeSquare * a_Gravity.x;
+    currentPosition.y += timeSquare * a_Gravity.y;
 
     gl_Position = u_Matrix * vec4(currentPosition, 1.0);
     gl_PointSize = a_StartSize + v_ElapsedTime * (a_EndSize - a_StartSize) / v_ParticleLifeTime;

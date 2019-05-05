@@ -10,7 +10,7 @@ public class GLView extends GLSurfaceView {
     public GLView(Context context) {
         super(context);
         setEGLContextClientVersion(2);
-        mRenderer = new GLRenderer(getContext());
+        mRenderer = new GLRenderer();
         setRenderer(mRenderer);
     }
 

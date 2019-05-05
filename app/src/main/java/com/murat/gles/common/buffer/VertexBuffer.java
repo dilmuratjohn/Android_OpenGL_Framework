@@ -6,7 +6,7 @@ import java.nio.FloatBuffer;
 
 import android.opengl.GLES20;
 
-import static com.murat.gles.common.data.Constants.BYTES_PER_FLOAT;
+import static com.murat.gles.common.data.Constants.Bytes_Per_Float;
 
 public class VertexBuffer {
 
@@ -23,7 +23,7 @@ public class VertexBuffer {
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, bufferId);
 
         FloatBuffer vertexArray = ByteBuffer
-                .allocateDirect(vertexData.length * BYTES_PER_FLOAT)
+                .allocateDirect(vertexData.length * Bytes_Per_Float)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer()
                 .put(vertexData);
@@ -32,7 +32,7 @@ public class VertexBuffer {
 
         GLES20.glBufferData(
                 GLES20.GL_ARRAY_BUFFER,
-                vertexArray.capacity() * BYTES_PER_FLOAT,
+                vertexArray.capacity() * Bytes_Per_Float,
                 vertexArray,
                 GLES20.GL_STATIC_DRAW
         );
