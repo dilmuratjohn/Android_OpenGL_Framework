@@ -2,7 +2,7 @@ uniform mat4 u_Matrix;
 uniform float u_Time;
 uniform int u_Mode;
 
-attribute vec3 a_Position;
+attribute vec4 a_Position;
 attribute vec4 a_StartColor;
 attribute vec4 a_EndColor;
 attribute float a_Speed;
@@ -28,19 +28,20 @@ void main() {
     v_ElapsedTime = u_Time - a_StartTime;
     v_LifeTime = a_LifeTime;
     v_Rotation = a_Rotation;
-    vec3 currentPosition = a_Position;
+    vec4 position = a_Position;
 
     if (u_Mode == 0){
-        currentPosition.x += a_Speed * cos(radians(a_Angle)) * v_ElapsedTime;
-        currentPosition.y += a_Speed * sin(radians(a_Angle)) * v_ElapsedTime;
-        currentPosition.x += v_ElapsedTime * v_ElapsedTime * 1000.0 * a_Gravity.x;
-        currentPosition.y += v_ElapsedTime * v_ElapsedTime * 1000.0 * a_Gravity.y;
+        position.x += a_Speed * cos(radians(a_Angle)) * v_ElapsedTime;
+        position.y += a_Speed * sin(radians(a_Angle)) * v_ElapsedTime;
+        position.x += v_ElapsedTime * v_ElapsedTime * 1000.0 * a_Gravity.x;
+        position.y += v_ElapsedTime * v_ElapsedTime * 1000.0 * a_Gravity.y;
     } else {
         float angle = a_Angle + a_DegreePerSecond * v_ElapsedTime * 1000.0;
         float radius = a_Radius.x + v_ElapsedTime * 1000.0 * (a_Radius.y - a_Radius.x) / a_LifeTime;
-        currentPosition.x = -cos(radians(angle)) * radius;
-        currentPosition.y = -sin(radians(angle)) * radius;
+        position.x = -cos(radians(angle)) * radius;
+        position.y = -sin(radians(angle)) * radius;
     }
-    gl_PointSize = a_StartSize + v_ElapsedTime* 1000.0 * (a_EndSize - a_StartSize) / a_LifeTime;
-    gl_Position = u_Matrix * vec4(currentPosition, 1.0);
+    position = u_Matrix * position;
+    gl_Position = position;
+    gl_PointSize = (a_StartSize + v_ElapsedTime * (a_EndSize - a_StartSize) / a_LifeTime);
 }
