@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.murat.android.opengl.GLRenderer;
+import com.murat.android.opengl.Utils;
 import com.murat.android.opengl.actions.Action;
 import com.murat.android.opengl.actions.ActionInterval;
 import com.murat.android.opengl.common.buffer.VertexArray;
@@ -49,13 +50,20 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         mVertexBufferLayout.push(mRectShader.getPositionLocation(), 4, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexBufferLayout.push(mRectShader.getTexCoordLocation(), 2, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
 
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.setIdentityM(mModelViewMatrix, 0);
-        Matrix.setIdentityM(mModelViewProjectionMatrix, 0);
+        Matrix.setIdentityM(mModelM, 0);
+        Matrix.setIdentityM(mModelViewM, 0);
+        Matrix.setIdentityM(mModelViewProjectionM, 0);
+
+        Matrix.setIdentityM(mTranslateM, 0);
+        Matrix.setIdentityM(mRotateM, 0);
+        Matrix.setIdentityM(mScaleM, 0);
+
         mColor[0] = 1.0f;
         mColor[1] = 1.0f;
         mColor[2] = 1.0f;
         mColor[3] = 1.0f;
+
+        rotate(180f, 1f, 0, 0);
         return this;
     }
 
@@ -75,24 +83,13 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
     }
 
     private final float[] mColor = new float[4];
-    private final float[] mModelMatrix = new float[16];
-    private final float[] mModelViewMatrix = new float[16];
-    private final float[] mModelViewProjectionMatrix = new float[16];
+    private final float[] mModelM = new float[16];
+    private final float[] mModelViewM = new float[16];
+    private final float[] mModelViewProjectionM = new float[16];
 
     @Override
     public GLRenderer.GLRenderable render() {
-        Matrix.multiplyMM(mModelViewMatrix, 0, mRenderer.getViewMatrix(), 0, mModelMatrix, 0);
-        Matrix.multiplyMM(mModelViewProjectionMatrix, 0, mRenderer.getProjectionMatrix(), 0, mModelViewMatrix, 0);
-        mRectShader.setUniformMatrix4fv(mRectShader.getMVPMatrixLocation(), mModelViewProjectionMatrix);
-
-        if (mColor[0] > 1.0f) mColor[0] = 1.0f;
-        if (mColor[0] < 0.0f) mColor[0] = 0.0f;
-        if (mColor[1] > 1.0f) mColor[1] = 1.0f;
-        if (mColor[1] < 0.0f) mColor[1] = 0.0f;
-        if (mColor[2] > 1.0f) mColor[2] = 1.0f;
-        if (mColor[2] < 0.0f) mColor[2] = 0.0f;
-        if (mColor[3] > 1.0f) mColor[3] = 1.0f;
-        if (mColor[3] < 0.0f) mColor[3] = 0.0f;
+        mRectShader.setUniformMatrix4fv(mRectShader.getMVPMatrixLocation(), mModelViewProjectionM);
         mRectShader.setUniform4f(mRectShader.getColorLocation(), mColor);
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
@@ -101,37 +98,46 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         return this;
     }
 
+
+    private float[] mTranslateM = new float[16];
+    private float[] mRotateM = new float[16];
+    private float[] mScaleM = new float[16];
+
     @Override
     public Action translate(float x, float y, float z) {
-        float[] translation = new float[16];
-        Matrix.setIdentityM(translation, 0);
-        Matrix.translateM(translation, 0, translation, 0, x, y, z);
-
-        Matrix.multiplyMM(mModelMatrix, 0, translation, 0, mModelMatrix, 0);
+        Matrix.translateM(mTranslateM, 0, mTranslateM, 0, x, y, z);
+        updateMatrix();
         return this;
     }
 
     @Override
     public Action rotate(float a, float x, float y, float z) {
-        float[] rotation = new float[16];
-        Matrix.setIdentityM(rotation, 0);
-        Matrix.rotateM(rotation, 0, rotation, 0, a, x, y, z);
-        Matrix.multiplyMM(mModelMatrix, 0, rotation, 0, mModelMatrix, 0);
+        Matrix.rotateM(mRotateM, 0, mRotateM, 0, a, x, y, z);
+        updateMatrix();
         return this;
     }
 
     @Override
     public Action scale(float x, float y, float z) {
-        float[] scale = new float[16];
-        Matrix.setIdentityM(scale, 0);
-        Matrix.scaleM(scale, 0, scale, 0, x + 1f, y + 1f, z + 1f);
-        Matrix.multiplyMM(mModelMatrix, 0, scale, 0, mModelMatrix, 0);
+        Matrix.scaleM(mScaleM, 0, mScaleM, 0, x + 1f, y + 1f, z + 1f);
+        updateMatrix();
         return this;
+    }
+
+    private void updateMatrix() {
+        if (mRenderer == null) return;
+        Matrix.setIdentityM(mModelM, 0);
+        Matrix.multiplyMM(mModelM, 0, mTranslateM, 0, mModelM, 0);
+        Matrix.multiplyMM(mModelM, 0, mRotateM, 0, mModelM, 0);
+        Matrix.multiplyMM(mModelM, 0, mScaleM, 0, mModelM, 0);
+        Matrix.multiplyMM(mModelViewM, 0, mRenderer.getViewMatrix(), 0, mModelM, 0);
+        Matrix.multiplyMM(mModelViewProjectionM, 0, mRenderer.getProjectionMatrix(), 0, mModelViewM, 0);
     }
 
     @Override
     public Action fade(float a) {
         mColor[3] += a;
+        mColor[3] = Utils.clamp(mColor[3], 0.0f, 1.0f);
         return this;
     }
 
@@ -140,6 +146,10 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         mColor[0] += r;
         mColor[1] += g;
         mColor[2] += b;
+
+        mColor[0] = Utils.clamp(mColor[0], 0.0f, 1.0f);
+        mColor[1] = Utils.clamp(mColor[1], 0.0f, 1.0f);
+        mColor[2] = Utils.clamp(mColor[2], 0.0f, 1.0f);
         return this;
     }
 

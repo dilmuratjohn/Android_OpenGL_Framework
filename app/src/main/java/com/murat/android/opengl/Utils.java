@@ -64,4 +64,8 @@ public class Utils {
                 || Build.MODEL.contains("Android SDK built for x86")));
     }
 
+    public static float clamp(float x, float min, float max){
+        return  x < min ? min : x > max ? max : x;
+    }
+
 }
