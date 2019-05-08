@@ -7,9 +7,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.murat.android.opengl.animation.Animator;
 import com.murat.android.opengl.particle.ParticleRenderer;
-
-import java.util.Random;
+import com.murat.android.opengl.sprite.SpriteRenderer;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -17,7 +17,9 @@ public class MainActivity extends AppCompatActivity {
 
     FrameLayout mGLFrame;
     GLView mGLView;
-    ParticleRenderer mBomb;
+    ParticleRenderer mBomb1;
+    ParticleRenderer mBomb2;
+    SpriteRenderer mWall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +30,17 @@ public class MainActivity extends AppCompatActivity {
 
         mGLFrame = findViewById(R.id.frame);
         mGLView = new GLView(getApplicationContext());
-        mBomb = new ParticleRenderer(getApplicationContext(), R.raw.particle_bomb);
-        mGLView.add(mBomb);
+        mBomb1 = new ParticleRenderer(getApplicationContext(), R.raw.particle_star);
+        mBomb2 = new ParticleRenderer(getApplicationContext(), R.raw.particle_star2);
+        mWall= new SpriteRenderer(getApplicationContext(), R.drawable.wall);
+        mGLView.add(mBomb1);
+        mGLView.add(mBomb2);
+        mGLView.add(mWall);
         mGLFrame.addView(mGLView);
+
+
+        Animator animator = new Animator(getApplicationContext(), R.raw.sprite_test, mWall.getActionInterval());
+        animator.play();
 
     }
 
@@ -41,8 +51,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showBombEffect(float x, float y) {
-        if (mGLView != null && mBomb != null) {
-            mBomb.show(x, y, new Random().nextFloat());
+        if (mGLView != null && mBomb1 != null) {
+            mBomb1.show(x, y, 0f);
+        }
+
+        if (mGLView != null && mBomb2 != null) {
+            mBomb2.show(x, y, 0f);
+            mBomb2.translate(0f, 1f, 0f);
         }
     }
 

@@ -21,7 +21,7 @@ void main() {
 
     vec2 center = vec2(0.5, 0.5);
     vec2 centeredPoint = gl_PointCoord - center;
-    float r = v_Rotation.x + v_ElapsedTime* 1000.0 * (v_Rotation.y - v_Rotation.x) / v_LifeTime;
+    float r = v_Rotation.x + v_ElapsedTime * (v_Rotation.y - v_Rotation.x) / v_LifeTime;
     mat2 rotation = mat2(cos(r), sin(r), -sin(r), cos(r));
     centeredPoint = rotation * centeredPoint;
     vec4 color = vec4(v_StartColor + v_ElapsedTime* 1000.0 * (v_End_Color - v_StartColor) / v_LifeTime) * texture2D(u_TextureUnit, centeredPoint + center);

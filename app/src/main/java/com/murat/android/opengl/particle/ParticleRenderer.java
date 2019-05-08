@@ -3,6 +3,7 @@ package com.murat.android.opengl.particle;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.murat.android.opengl.GLRenderer;
@@ -170,13 +171,11 @@ public class ParticleRenderer implements GLRenderer.GLRenderable, Action {
             }
         }
 
-
         mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), mModelViewProjectionMatrix);
         mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mTimePassed1f);
 
-
         GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(mParticleBean.blendFuncSource, mParticleBean.blendFuncDestination);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glDrawArrays(GLES20.GL_POINTS, 0, mCurrentParticleCount);
         GLES20.glDisable(GLES20.GL_BLEND);
 
@@ -304,8 +303,9 @@ public class ParticleRenderer implements GLRenderer.GLRenderable, Action {
         float rate = 1.0f / (mParticleBean.particleLifespan / mParticleBean.maxParticles);
         if (mCurrentParticleCount < mParticleBean.maxParticles) {
             mEmitCounter1i += 16;
-            mEmitCount1i = Utils.min(mParticleBean.maxParticles - mCurrentParticleCount, (int) (mEmitCounter1i / rate));
+            mEmitCount1i = (int) (mEmitCounter1i / rate);
         }
+        Log.e("Murat", "emit count " + mEmitCount1i);
     }
 
     private float[] nextRandomPosition4f() {
