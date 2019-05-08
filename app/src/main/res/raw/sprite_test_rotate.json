@@ -1,0 +1,22 @@
+{
+    "props": {
+        "angle": [
+            {
+                "frame": 0,
+                "value": 0
+            },
+            {
+                "frame": 3,
+                "value": 360
+            },
+            {
+                "frame": 6,
+                "value": 720
+            },
+            {
+                "frame": 9,
+                "value": 0
+            }
+        ]
+    }
+}

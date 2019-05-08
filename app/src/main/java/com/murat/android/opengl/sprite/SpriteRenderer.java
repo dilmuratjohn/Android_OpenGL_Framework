@@ -3,6 +3,7 @@ package com.murat.android.opengl.sprite;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.murat.android.opengl.GLRenderer;
 import com.murat.android.opengl.Utils;
@@ -127,18 +128,11 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
     private void updateMatrix() {
         if (mRenderer == null) return;
         Matrix.setIdentityM(mModelM, 0);
-        Matrix.multiplyMM(mModelM, 0, mTranslateM, 0, mModelM, 0);
-        Matrix.multiplyMM(mModelM, 0, mRotateM, 0, mModelM, 0);
         Matrix.multiplyMM(mModelM, 0, mScaleM, 0, mModelM, 0);
+        Matrix.multiplyMM(mModelM, 0, mRotateM, 0, mModelM, 0);
+        Matrix.multiplyMM(mModelM, 0, mTranslateM, 0, mModelM, 0);
         Matrix.multiplyMM(mModelViewM, 0, mRenderer.getViewMatrix(), 0, mModelM, 0);
         Matrix.multiplyMM(mModelViewProjectionM, 0, mRenderer.getProjectionMatrix(), 0, mModelViewM, 0);
-    }
-
-    @Override
-    public Action fade(float a) {
-        mColor[3] += a;
-        mColor[3] = Utils.clamp(mColor[3], 0.0f, 1.0f);
-        return this;
     }
 
     @Override
@@ -150,6 +144,19 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         mColor[0] = Utils.clamp(mColor[0], 0.0f, 1.0f);
         mColor[1] = Utils.clamp(mColor[1], 0.0f, 1.0f);
         mColor[2] = Utils.clamp(mColor[2], 0.0f, 1.0f);
+        Log.e("MuratF",
+                "r " + mColor[0] +
+                "g " + mColor[1]+
+                "b " + mColor[2] );
+        return this;
+    }
+
+    @Override
+    public Action fade(float a) {
+        mColor[3] += a;
+        mColor[3] = Utils.clamp(mColor[3], 0.0f, 1.0f);
+        Log.e("MuratF",
+                "a " + mColor[3] );
         return this;
     }
 

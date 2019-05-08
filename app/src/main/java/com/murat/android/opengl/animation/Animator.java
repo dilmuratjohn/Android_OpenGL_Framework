@@ -20,7 +20,6 @@ public class Animator {
     }
 
     public void play() {
-
         playRotation();
         playScale();
         playColor();
@@ -33,7 +32,7 @@ public class Animator {
             int size = positionList.size();
             float originX = 0f;
             float originY = 0f;
-            float delayTime = 0f;
+            float durationLast = 0f;
             for (int i = 0; i < size; i++) {
                 AnimationBean.PropsBean.PositionBean positionBean = positionList.get(i);
                 float duration = positionBean.getFrame();
@@ -41,10 +40,9 @@ public class Animator {
                 float startY = positionBean.getValue().get(1) / 1334 * 2 - originY;
                 originX += startX;
                 originY += startY;
-                Log.e("Murat", "x " + originX + "y " + originY);
-                Log.e("Murat", "[X] " + positionBean.getValue().get(0) + " [Y] " + positionBean.getValue().get(1));
-                mRef.move(startX, startY, 0f, duration, delayTime);
-                delayTime += duration;
+                Log.e("Murat", "[Position X] " + startX + " [Position Y] " + startY);
+                mRef.move(startX, startY, 0f, (duration - durationLast));
+                durationLast = duration;
             }
         }
     }
@@ -53,14 +51,16 @@ public class Animator {
         List<AnimationBean.PropsBean.AngleBean> rotationList = mAnimationBean.getProps().getAngle();
         if (null != rotationList && rotationList.size() > 0) {
             int size = rotationList.size();
-            float delayTime = 0f;
+            float durationLast = 0f;
+            float rotationLast = 0f;
             for (int i = 0; i < size; i++) {
                 AnimationBean.PropsBean.AngleBean angleBean = rotationList.get(i);
                 float duration = angleBean.getFrame();
                 float angle = angleBean.getValue();
-                mRef.rotate(angle, 0, 0, -1f, duration, delayTime);
-                Log.e("Murat", "angle " + angle);
-                delayTime += duration;
+                mRef.rotate(angle - rotationLast, 0, 0, -1f, (duration - durationLast));
+                Log.e("Murat", "[Angle] " + (angle - rotationLast));
+                durationLast = duration;
+                rotationLast = angle;
             }
         }
     }
@@ -69,9 +69,9 @@ public class Animator {
         List<AnimationBean.PropsBean.ScaleBean> scaleList = mAnimationBean.getProps().getScale();
         if (null != scaleList && scaleList.size() > 0) {
             int size = scaleList.size();
-            float delayTime = 0f;
             float scaleOriginX = 1f;
             float scaleOriginY = 1f;
+            float durationLast = 0f;
             for (int i = 0; i < size; i++) {
                 AnimationBean.PropsBean.ScaleBean scaleBean = scaleList.get(i);
                 float duration = scaleBean.getFrame();
@@ -79,9 +79,9 @@ public class Animator {
                 float scaleY = scaleBean.getValue().getY() - scaleOriginY;
                 scaleOriginX = scaleBean.getValue().getX();
                 scaleOriginY = scaleBean.getValue().getY();
-                Log.e("Murat", "[scaleX] " + scaleOriginX + " [scaleY] " + scaleOriginX);
-                mRef.scale(scaleX, scaleY, 0f, duration, delayTime);
-                delayTime += duration;
+                Log.e("Murat", "[Scale X] " + scaleX + " [Scale Y] " + scaleY);
+                mRef.scale(scaleX, scaleY, 0f, (duration - durationLast));
+                durationLast = duration;
             }
         }
     }
@@ -90,7 +90,7 @@ public class Animator {
         List<AnimationBean.PropsBean.ColorBean> colorList = mAnimationBean.getProps().getColor();
         if (null != colorList && colorList.size() > 0) {
             int size = colorList.size();
-            float delayTime = 0f;
+            float durationLast = 0f;
             float originR = 1f, originG = 1f, originB = 1f, originA = 1f;
             for (int i = 0; i < size; i++) {
                 AnimationBean.PropsBean.ColorBean colorBean = colorList.get(i);
@@ -99,14 +99,16 @@ public class Animator {
                 float g = colorBean.getValue().getG() / 255f - originG;
                 float b = colorBean.getValue().getB() / 255f - originB;
                 float a = colorBean.getValue().getA() / 255f - originA;
-                mRef.fade(a, duration, delayTime);
-                mRef.tint(r, g, b, duration, delayTime);
-                Log.e("Murat", " [r] " + colorBean.getValue().getR() + " [g] " + colorBean.getValue().getG() + " [b] " + colorBean.getValue().getB() + " [a] " + colorBean.getValue().getA());
+                mRef.fade(a, (duration - durationLast));
+                mRef.tint(r, g, b, (duration - durationLast));
+                Log.e("MuratColor", "[Red] " + colorBean.getValue().getR() + " [Green] " + colorBean.getValue().getG() + " [Blue] " + colorBean.getValue().getB() + " [Alpha] " + colorBean.getValue().getA());
+                Log.e("MuratColor", "[Red] " + r + " [Green] " + g + " [Blue] " + b + " [Alpha] " + a);
+
                 originR += r;
                 originG += g;
                 originB += b;
                 originA += a;
-                delayTime += duration;
+                durationLast = duration;
             }
         }
     }
