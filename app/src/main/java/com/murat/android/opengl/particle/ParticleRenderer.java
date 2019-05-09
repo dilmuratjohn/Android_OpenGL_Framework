@@ -305,7 +305,7 @@ public class ParticleRenderer implements GLRenderer.GLRenderable, Action {
             mEmitCounter1i += 16;
             mEmitCount1i = (int) (mEmitCounter1i / rate);
         }
-        Log.e("Murat", "emit count " + mEmitCount1i);
+//        Log.e("Murat", "emit count " + mEmitCount1i);
     }
 
     private float[] nextRandomPosition4f() {

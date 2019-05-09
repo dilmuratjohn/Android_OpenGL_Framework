@@ -1,7 +1,6 @@
 package com.murat.android.opengl.actions;
 
 import android.os.Handler;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -99,71 +98,69 @@ public class ActionInterval {
     private ArrayList<float[]> mListTintFractions = new ArrayList<>();
 
     public ActionInterval move(float x, float y, float z, float duration) {
-        int moveTimes = (int) (duration * 1000f / deltaTime);
-        float[] moveFraction;
-        if (duration <= 0) {
-            moveFraction = new float[]{x, y, z};
+        if (duration <= 0.0) {
+            ref.translate(x, y, z);
         } else {
+            int moveTimes = (int) (duration * 1000f / deltaTime);
+            float[] moveFraction;
             moveFraction = new float[]{x / moveTimes, y / moveTimes, z / moveTimes};
+            mListMoveTimes.add(moveTimes);
+            mListMoveFractions.add(moveFraction);
         }
-        mListMoveTimes.add(moveTimes);
-        mListMoveFractions.add(moveFraction);
         return this;
     }
 
     public ActionInterval scale(float x, float y, float z, float duration) {
-        int scaleTimes = (int) (duration * 1000f / deltaTime);
-        float[] scaleFraction;
-        if (duration <= 0) {
-            scaleFraction = new float[]{x, y, z};
+        if (duration <= 0.0) {
+            ref.scale(x, y, z);
         } else {
+            int scaleTimes = (int) (duration * 1000f / deltaTime);
+            float[] scaleFraction;
             scaleFraction = new float[]{x / scaleTimes, y / scaleTimes, z / scaleTimes};
+            mListScaleTimes.add(scaleTimes);
+            mListScaleFractions.add(scaleFraction);
         }
-        mListScaleTimes.add(scaleTimes);
-        mListScaleFractions.add(scaleFraction);
         return this;
     }
 
 
     public ActionInterval rotate(float a, float x, float y, float z, float duration) {
-        int rotateTimes = (int) (duration * 1000f / deltaTime);
-        float[] rotateFraction;
-        if (duration <= 0) {
-            rotateFraction = new float[]{a, x, y, z};
+        if (duration <= 0.0) {
+            ref.rotate(a, x, y, z);
         } else {
+            int rotateTimes = (int) (duration * 1000f / deltaTime);
+            float[] rotateFraction;
             rotateFraction = new float[]{a / rotateTimes, x / rotateTimes, y / rotateTimes, z / rotateTimes};
+            mListRotateTimes.add(rotateTimes);
+            mListRotateFractions.add(rotateFraction);
         }
-        mListRotateTimes.add(rotateTimes);
-        mListRotateFractions.add(rotateFraction);
         return this;
     }
 
 
     public ActionInterval tint(float r, float g, float b, float duration) {
-        int tintTimes = (int) (duration * 1000f / deltaTime);
-        float[] tintFraction;
-        if (duration <= 0) {
-            tintFraction = new float[]{r, g, b};
+        if (duration <= 0.0) {
+            ref.tint(r, g, b);
         } else {
+            int tintTimes = (int) (duration * 1000f / deltaTime);
+            float[] tintFraction;
             tintFraction = new float[]{r / tintTimes, g / tintTimes, b / tintTimes};
-            Log.e("Murat", "r " + tintFraction[0] + " g " + tintFraction[1] + " b " + tintFraction[2] + " times " + tintTimes);
+            mListTintTimes.add(tintTimes);
+            mListTintFractions.add(tintFraction);
         }
-        mListTintTimes.add(tintTimes);
-        mListTintFractions.add(tintFraction);
         return this;
     }
 
     public ActionInterval fade(float a, float duration) {
-        int fadeTimes = (int) (duration * 1000f / deltaTime);
-        float[] fadeFraction;
-        if (duration <= 0) {
-            fadeFraction = new float[]{a};
+        if (duration <= 0.0) {
+            ref.fade(a);
         } else {
+            int fadeTimes = (int) (duration * 1000f / deltaTime);
+            float[] fadeFraction;
             fadeFraction = new float[]{a / fadeTimes};
-            Log.e("Murat", "a " + fadeFraction[0] + " times " + fadeTimes);
+            mListFadeTimes.add(fadeTimes);
+            mListFadeFractions.add(fadeFraction);
         }
-        mListFadeTimes.add(fadeTimes);
-        mListFadeFractions.add(fadeFraction);
         return this;
     }
 
@@ -180,12 +177,10 @@ public class ActionInterval {
     }
 
     private void tint() {
-        Log.e("Murat", "tint"+mTintFraction[0]+ mTintFraction[1]+ mTintFraction[2]);
         ref.tint(mTintFraction[0], mTintFraction[1], mTintFraction[2]);
     }
 
     private void fade() {
-        Log.e("Murat", "fade"+mFadeFraction[0]);
         ref.fade(mFadeFraction[0]);
     }
 

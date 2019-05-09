@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         mParticle1 = new ParticleRenderer(getApplicationContext(), R.raw.particle_star);
         mParticle2 = new ParticleRenderer(getApplicationContext(), R.raw.particle_star2);
 
-        mSprite1 = new SpriteRenderer(getApplicationContext(), R.drawable.wall);
-//        mSprite2 = new SpriteRenderer(getApplicationContext(), R.drawable.magic_wand);
+        mSprite1 = new SpriteRenderer(getApplicationContext(), R.drawable.magic_wand);
+        mSprite2 = new SpriteRenderer(getApplicationContext(), R.drawable.magic_wand);
 //        mSprite3 = new SpriteRenderer(getApplicationContext(), R.drawable.star);
 //        mSprite4 = new SpriteRenderer(getApplicationContext(), R.drawable.star);
 //        mSprite5 = new SpriteRenderer(getApplicationContext(), R.drawable.star);
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         mGLView.add(mParticle2);
 
         mGLView.add(mSprite1);
-//        mGLView.add(mSprite2);
+        mGLView.add(mSprite2);
 //        mGLView.add(mSprite3);
 //        mGLView.add(mSprite4);
 //        mGLView.add(mSprite5);
@@ -69,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
     private void spriteAnim() {
         super.onStart();
 
-        new Animator(getApplicationContext(), R.raw.sprite_test_3, mSprite1.getActionInterval()).play();
-//        new Animator(getApplicationContext(), R.raw.sprite_test_position, mSprite2.getActionInterval()).play();
+        new Animator(getApplicationContext(), R.raw.sprite_test_final, mSprite1.getActionInterval()).play();
+//        new Animator(getApplicationContext(), R.raw.sprite_test_color, mSprite2.getActionInterval()).play();
 //        new Animator(getApplicationContext(), R.raw.sprite_test_color, mSprite3.getActionInterval()).play();
 //        new Animator(getApplicationContext(), R.raw.sprite_test_scale, mSprite4.getActionInterval()).play();
 //        new Animator(getApplicationContext(), R.raw.sprite_test_rotate, mSprite5.getActionInterval()).play();

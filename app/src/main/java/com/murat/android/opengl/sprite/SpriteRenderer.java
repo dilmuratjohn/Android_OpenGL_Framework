@@ -59,11 +59,6 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         Matrix.setIdentityM(mRotateM, 0);
         Matrix.setIdentityM(mScaleM, 0);
 
-        mColor[0] = 1.0f;
-        mColor[1] = 1.0f;
-        mColor[2] = 1.0f;
-        mColor[3] = 1.0f;
-
         rotate(180f, 1f, 0, 0);
         return this;
     }
@@ -83,7 +78,7 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         return this;
     }
 
-    private final float[] mColor = new float[4];
+    private final float[] mColor = new float[]{1f, 1f, 1f, 1f};
     private final float[] mModelM = new float[16];
     private final float[] mModelViewM = new float[16];
     private final float[] mModelViewProjectionM = new float[16];
@@ -144,10 +139,6 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         mColor[0] = Utils.clamp(mColor[0], 0.0f, 1.0f);
         mColor[1] = Utils.clamp(mColor[1], 0.0f, 1.0f);
         mColor[2] = Utils.clamp(mColor[2], 0.0f, 1.0f);
-        Log.e("MuratF",
-                "r " + mColor[0] +
-                "g " + mColor[1]+
-                "b " + mColor[2] );
         return this;
     }
 
@@ -155,8 +146,6 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
     public Action fade(float a) {
         mColor[3] += a;
         mColor[3] = Utils.clamp(mColor[3], 0.0f, 1.0f);
-        Log.e("MuratF",
-                "a " + mColor[3] );
         return this;
     }
 

@@ -1,7 +1,6 @@
 package com.murat.android.opengl.animation;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.murat.android.opengl.Utils;
@@ -36,11 +35,10 @@ public class Animator {
             for (int i = 0; i < size; i++) {
                 AnimationBean.PropsBean.PositionBean positionBean = positionList.get(i);
                 float duration = positionBean.getFrame();
-                float startX = positionBean.getValue().get(0) / 750 * 2 - originX;
-                float startY = positionBean.getValue().get(1) / 1334 * 2 - originY;
+                float startX = positionBean.getValue().get(0) / 1080 * 2 - originX;
+                float startY = positionBean.getValue().get(1) / 1920 * 2 * 1920/1080 - originY;
                 originX += startX;
                 originY += startY;
-                Log.e("Murat", "[Position X] " + startX + " [Position Y] " + startY);
                 mRef.move(startX, startY, 0f, (duration - durationLast));
                 durationLast = duration;
             }
@@ -58,7 +56,6 @@ public class Animator {
                 float duration = angleBean.getFrame();
                 float angle = angleBean.getValue();
                 mRef.rotate(angle - rotationLast, 0, 0, -1f, (duration - durationLast));
-                Log.e("Murat", "[Angle] " + (angle - rotationLast));
                 durationLast = duration;
                 rotationLast = angle;
             }
@@ -79,7 +76,6 @@ public class Animator {
                 float scaleY = scaleBean.getValue().getY() - scaleOriginY;
                 scaleOriginX = scaleBean.getValue().getX();
                 scaleOriginY = scaleBean.getValue().getY();
-                Log.e("Murat", "[Scale X] " + scaleX + " [Scale Y] " + scaleY);
                 mRef.scale(scaleX, scaleY, 0f, (duration - durationLast));
                 durationLast = duration;
             }
@@ -101,9 +97,6 @@ public class Animator {
                 float a = colorBean.getValue().getA() / 255f - originA;
                 mRef.fade(a, (duration - durationLast));
                 mRef.tint(r, g, b, (duration - durationLast));
-                Log.e("MuratColor", "[Red] " + colorBean.getValue().getR() + " [Green] " + colorBean.getValue().getG() + " [Blue] " + colorBean.getValue().getB() + " [Alpha] " + colorBean.getValue().getA());
-                Log.e("MuratColor", "[Red] " + r + " [Green] " + g + " [Blue] " + b + " [Alpha] " + a);
-
                 originR += r;
                 originG += g;
                 originB += b;
