@@ -3,14 +3,12 @@ package com.murat.android.opengl.sprite;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import com.murat.android.opengl.GLRenderer;
 import com.murat.android.opengl.Utils;
 import com.murat.android.opengl.actions.Action;
 import com.murat.android.opengl.actions.ActionInterval;
 import com.murat.android.opengl.common.buffer.VertexArray;
-import com.murat.android.opengl.common.buffer.VertexBuffer;
 import com.murat.android.opengl.common.buffer.VertexBufferLayout;
 import com.murat.android.opengl.common.data.Constants;
 import com.murat.android.opengl.common.data.Vertices;
@@ -19,18 +17,23 @@ import com.murat.android.opengl.common.texture.Texture;
 
 public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
 
-
     private Context mContext;
     private GLRenderer mRenderer;
     private VertexArray mVertexArray;
-    private VertexBuffer mVertexBuffer;
     private VertexBufferLayout mVertexBufferLayout;
     private Texture mTexture;
     private SpriteShader mRectShader;
     private ActionInterval mActionInterval;
     private int mResourceId;
 
-    private float[] mVertices;
+    private final float[] mColor = new float[]{1f, 1f, 1f, 1f};
+    private final float[] mModelM = new float[16];
+    private final float[] mModelViewM = new float[16];
+    private final float[] mModelViewProjectionM = new float[16];
+    private final float[] mTranslateM = new float[16];
+    private final float[] mRotateM = new float[16];
+    private final float[] mScaleM = new float[16];
+    private final float[] mVertices;
 
     public SpriteRenderer(Context context, int resourceId) {
         mContext = context;
@@ -78,11 +81,6 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         return this;
     }
 
-    private final float[] mColor = new float[]{1f, 1f, 1f, 1f};
-    private final float[] mModelM = new float[16];
-    private final float[] mModelViewM = new float[16];
-    private final float[] mModelViewProjectionM = new float[16];
-
     @Override
     public GLRenderer.GLRenderable render() {
         mRectShader.setUniformMatrix4fv(mRectShader.getMVPMatrixLocation(), mModelViewProjectionM);
@@ -94,10 +92,6 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         return this;
     }
 
-
-    private float[] mTranslateM = new float[16];
-    private float[] mRotateM = new float[16];
-    private float[] mScaleM = new float[16];
 
     @Override
     public Action translate(float x, float y, float z) {
@@ -135,7 +129,6 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         mColor[0] += r;
         mColor[1] += g;
         mColor[2] += b;
-
         mColor[0] = Utils.clamp(mColor[0], 0.0f, 1.0f);
         mColor[1] = Utils.clamp(mColor[1], 0.0f, 1.0f);
         mColor[2] = Utils.clamp(mColor[2], 0.0f, 1.0f);

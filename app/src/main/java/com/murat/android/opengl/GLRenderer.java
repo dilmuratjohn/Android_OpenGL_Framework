@@ -5,8 +5,6 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
-import com.murat.android.opengl.sprite.SpriteRenderer;
-
 import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -20,7 +18,6 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
-
 
     GLRenderer() {
         mRenderLine = new ArrayList<>();

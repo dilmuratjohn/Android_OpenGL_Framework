@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.murat.android.opengl.Utils;
 import com.murat.android.opengl.actions.ActionInterval;
+import com.murat.android.opengl.common.data.Constants;
 
 import java.util.List;
 
@@ -35,8 +36,8 @@ public class Animator {
             for (int i = 0; i < size; i++) {
                 AnimationBean.PropsBean.PositionBean positionBean = positionList.get(i);
                 float duration = positionBean.getFrame();
-                float startX = positionBean.getValue().get(0) / 1080 * 2 - originX;
-                float startY = positionBean.getValue().get(1) / 1920 * 2 * 1920/1080 - originY;
+                float startX = positionBean.getValue().get(0) / Constants.Designed_Width * 2 - originX;
+                float startY = positionBean.getValue().get(1) / Constants.Designed_Height * 2 * Constants.Designed_Height / Constants.Designed_Width - originY;
                 originX += startX;
                 originY += startY;
                 mRef.move(startX, startY, 0f, (duration - durationLast));

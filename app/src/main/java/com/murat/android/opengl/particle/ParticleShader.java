@@ -83,7 +83,6 @@ class ParticleShader extends Shader {
         return uTextureUnitLocation;
     }
 
-
     int getModeLocation() {
         return uModeLocation;
     }

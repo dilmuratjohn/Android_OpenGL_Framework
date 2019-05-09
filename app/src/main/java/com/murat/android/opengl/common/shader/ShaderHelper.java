@@ -59,7 +59,7 @@ class ShaderHelper {
         final int[] linkStatus = new int[1];
         GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
         if (linkStatus[0] == GLES20.GL_FALSE) {
-            Log.w(TAG_ERROR, "error linking program.");
+            Log.e(TAG_ERROR, "error linking program.");
             GLES20.glDeleteProgram(program);
         }
     }
@@ -69,7 +69,7 @@ class ShaderHelper {
         final int[] validateStatus = new int[1];
         GLES20.glGetProgramiv(program, GLES20.GL_VALIDATE_STATUS, validateStatus, 0);
         if (validateStatus[0] == GLES20.GL_FALSE) {
-            Log.w(TAG_ERROR, "error validating program." + "\n" + GLES20.glGetProgramInfoLog(program));
+            Log.e(TAG_ERROR, "error validating program." + "\n" + GLES20.glGetProgramInfoLog(program));
         }
     }
 
