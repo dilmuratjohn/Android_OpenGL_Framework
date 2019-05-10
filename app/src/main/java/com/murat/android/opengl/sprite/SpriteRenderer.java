@@ -92,6 +92,12 @@ public class SpriteRenderer implements GLRenderer.GLRenderable, Action {
         return this;
     }
 
+    @Override
+    public GLRenderer.GLRenderable delete() {
+        mRectShader.delete();
+        mTexture.delete();
+        return this;
+    }
 
     @Override
     public Action translate(float x, float y, float z) {

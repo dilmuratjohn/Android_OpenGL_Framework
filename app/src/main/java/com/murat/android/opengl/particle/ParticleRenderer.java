@@ -180,6 +180,13 @@ public class ParticleRenderer implements GLRenderer.GLRenderable, Action {
         return this;
     }
 
+    @Override
+    public GLRenderer.GLRenderable delete() {
+        mParticleShader.delete();
+        mParticleTexture.delete();
+        return this;
+    }
+
     private void update() {
         updatePosition();
         updateColor();

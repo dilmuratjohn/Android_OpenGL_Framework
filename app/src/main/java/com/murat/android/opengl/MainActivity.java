@@ -30,21 +30,13 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.main);
+        init();
+    }
 
+
+    private void init() {
         mGLFrame = findViewById(R.id.frame);
-        mGLView = new GLView(getApplicationContext());
-
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        particleEffect(event.getRawX(), event.getRawY());
-        return super.onTouchEvent(event);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+        mGLView =  new GLView(getApplicationContext());
         mParticle1 = new ParticleRenderer(getApplicationContext(), R.raw.particle_star);
         mParticle2 = new ParticleRenderer(getApplicationContext(), R.raw.particle_star2);
 
@@ -91,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
             mParticle2.show(x, y, 0f);
             mParticle2.translate(0f, 1f, 0f);
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        particleEffect(event.getRawX(), event.getRawY());
+        return super.onTouchEvent(event);
     }
 
 }

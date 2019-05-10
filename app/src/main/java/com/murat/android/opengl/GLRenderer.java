@@ -4,6 +4,7 @@ import android.graphics.Point;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -20,22 +21,28 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private final float[] mViewMatrix = new float[16];
 
     GLRenderer() {
-        mRenderLine = new ArrayList<>();
     }
 
-    private ArrayList<GLRenderable> mRenderLine;
+    private ArrayList<GLRenderable> mRenderLine = new ArrayList<>();
 
     public void add(GLRenderable renderer) {
         mRenderLine.add(renderer);
     }
 
     public void remove(int index) {
-        if (index <= 0 && index < mRenderLine.size())
+        if (mRenderLine != null && index <= 0 && index < mRenderLine.size()) {
+            mRenderLine.get(index).delete();
             mRenderLine.remove(index);
+        }
     }
 
     public void clear() {
-        mRenderLine.clear();
+        if (mRenderLine != null) {
+            for (GLRenderable renderable : mRenderLine) {
+                renderable.delete();
+            }
+            mRenderLine.clear();
+        }
     }
 
     @Override
@@ -66,6 +73,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         } else {
             Matrix.orthoM(mProjectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f);
         }
+
+
     }
 
     @Override
@@ -83,6 +92,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLRenderable unbind();
 
         GLRenderable render();
+
+        GLRenderable delete();
     }
 
     public Point getSurfaceSize() {
