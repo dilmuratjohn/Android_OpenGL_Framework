@@ -5,17 +5,17 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import com.google.gson.Gson;
-import com.murat.android.opengl.GLRenderer;
+import com.murat.android.opengl.render.Renderable;
+import com.murat.android.opengl.render.Renderer;
 import com.murat.android.opengl.Utils;
 import com.murat.android.opengl.actions.Action;
-import com.murat.android.opengl.actions.ActionInterval;
 import com.murat.android.opengl.common.buffer.VertexArray;
-import com.murat.android.opengl.common.buffer.VertexBufferLayout;
+import com.murat.android.opengl.common.buffer.VertexAttributeArray;
 import com.murat.android.opengl.common.data.Constants;
 import com.murat.android.opengl.common.texture.Texture;
 
 
-public class ParticleRenderer implements GLRenderer.GLRenderable, Action {
+public class Particle implements Renderable, Action {
 
     private static final int Position_Component_Count = 4;
     private static final int Color_Component_Count = 4;
@@ -66,21 +66,19 @@ public class ParticleRenderer implements GLRenderer.GLRenderable, Action {
     private float[][] mColorSet;
 
     private VertexArray mVertexArray;
-    private VertexBufferLayout mVertexBufferLayout;
+    private VertexAttributeArray mVertexAttributeArray;
     private ParticleBean mParticleBean;
     private ParticleShader mParticleShader;
     private Texture mParticleTexture;
-    private GLRenderer mRenderer;
+    private Renderer mRenderer;
     private Context mContext;
-    private ActionInterval mActionInterval;
 
-    public ParticleRenderer(Context context, int sourceId) {
+    public Particle(Context context, int sourceId) {
         mContext = context;
-        mActionInterval = new ActionInterval(this);
         mParticleBean = new Gson().fromJson(Utils.getJSONStringFromResource(context, sourceId), ParticleBean.class);
         mParticleData = new float[mParticleBean.maxParticles * Total_Component_Count];
         mVertexArray = new VertexArray(mParticleData);
-        mVertexBufferLayout = new VertexBufferLayout();
+        mVertexAttributeArray = new VertexAttributeArray();
         initColorSet();
     }
 
@@ -112,40 +110,44 @@ public class ParticleRenderer implements GLRenderer.GLRenderable, Action {
         return mColorSetEnable;
     }
 
-    public GLRenderer.GLRenderable init(GLRenderer renderer) {
+    @Override
+    public Renderable init(Renderer renderer) {
         mRenderer = renderer;
         mParticleTexture = new Texture(mContext, mParticleBean.textureFileName.split("\\.")[0]);
         mParticleShader = new ParticleShader(mContext);
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.setIdentityM(mModelViewMatrix, 0);
         Matrix.setIdentityM(mModelViewProjectionMatrix, 0);
-        mVertexBufferLayout.push(mParticleShader.getPositionLocation(), Position_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getStartColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getEndColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getSpeedLocation(), Speed_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getAngleLocation(), Angle_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getStartTimeLocation(), Particle_Start_Time_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getStartSizeLocation(), Start_Size_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getEndSizeLocation(), End_Size_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getForceLocation(), Gravity_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getRotationLocation(), Rotation_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getLifeTimeLocation(), Particle_Life_Time_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getDegreePerSecondLocation(), Degree_Per_Second_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexBufferLayout.push(mParticleShader.getRadiusLocation(), Radius_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getPositionLocation(), Position_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getStartColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getEndColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getSpeedLocation(), Speed_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getAngleLocation(), Angle_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getStartTimeLocation(), Particle_Start_Time_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getStartSizeLocation(), Start_Size_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getEndSizeLocation(), End_Size_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getForceLocation(), Gravity_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getRotationLocation(), Rotation_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getLifeTimeLocation(), Particle_Life_Time_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getDegreePerSecondLocation(), Degree_Per_Second_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
+        mVertexAttributeArray.push(mParticleShader.getRadiusLocation(), Radius_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         return this;
     }
 
-    public GLRenderer.GLRenderable bind() {
+
+    @Override
+    public Renderable bind() {
         if (!mRender) return this;
         mParticleShader.bind();
         mParticleTexture.bind();
-        mVertexArray.setVertexAttributePointer(mVertexBufferLayout);
+        mVertexArray.setVertexAttributePointer(mVertexAttributeArray);
         mParticleShader.setUniform1i(mParticleShader.getTextureLocation(), 0);
         mParticleShader.setUniform1i(mParticleShader.getModeLocation(), mParticleBean.emitterType);
         return this;
     }
 
-    public GLRenderer.GLRenderable unbind() {
+    @Override
+    public Renderable unbind() {
         if (!mRender) return this;
         mParticleShader.unbind();
         mParticleTexture.unbind();
@@ -156,18 +158,11 @@ public class ParticleRenderer implements GLRenderer.GLRenderable, Action {
     private final float[] mModelViewMatrix = new float[16];
     private final float[] mModelViewProjectionMatrix = new float[16];
 
-    public GLRenderer.GLRenderable render() {
+    @Override
+    public Renderable render() {
         if (!mRender) return this;
         Matrix.multiplyMM(mModelViewMatrix, 0, mRenderer.getViewMatrix(), 0, mModelMatrix, 0);
         Matrix.multiplyMM(mModelViewProjectionMatrix, 0, mRenderer.getProjectionMatrix(), 0, mModelViewMatrix, 0);
-        mTimePassed1f = (System.currentTimeMillis() - mStartTime1l) / 1000000f;
-
-        if (mTimePassed1f <= mParticleBean.duration / 1000 || mParticleBean.duration <= 0) {
-            for (int i = 0; i <= mEmitCount1i; i++) {
-                update();
-                add();
-            }
-        }
 
         mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), mModelViewProjectionMatrix);
         mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mTimePassed1f);
@@ -181,24 +176,32 @@ public class ParticleRenderer implements GLRenderer.GLRenderable, Action {
     }
 
     @Override
-    public GLRenderer.GLRenderable delete() {
+    public Renderable delete() {
         mParticleShader.delete();
         mParticleTexture.delete();
         return this;
     }
 
-    private void update() {
-        updatePosition();
-        updateColor();
-        updateParticleSize();
-        updateRotation();
-        updateRotate();
-        updateRadius();
-        updateSpeed();
-        updateAngle();
-        updateForce();
-        updateParticleLifeTime();
-        updateEmitCount();
+    @Override
+    public Renderable update() {
+        mTimePassed1f = (System.currentTimeMillis() - mStartTime1l) / 1000000f;
+        if (mTimePassed1f <= mParticleBean.duration / 1000 || mParticleBean.duration <= 0) {
+            for (int i = 0; i <= mEmitCount1i; i++) {
+                updatePosition();
+                updateColor();
+                updateParticleSize();
+                updateRotation();
+                updateRotate();
+                updateRadius();
+                updateSpeed();
+                updateAngle();
+                updateForce();
+                updateParticleLifeTime();
+                updateEmitCount();
+                add();
+            }
+        }
+        return this;
     }
 
     private void add() {
@@ -430,10 +433,6 @@ public class ParticleRenderer implements GLRenderer.GLRenderable, Action {
     @Override
     public Action tint(float r, float g, float b) {
         return this;
-    }
-
-    public ActionInterval getActionInterval() {
-        return mActionInterval;
     }
 
     public void show(float x, float y, float scale) {

@@ -23,10 +23,10 @@ public class VertexArray {
         mFloatBuffer.position(0);
     }
 
-    public void setVertexAttributePointer(final VertexBufferLayout layout) {
-        ArrayList<VertexBufferLayout.VertexBufferElement> elements = layout.getElements();
+    public void setVertexAttributePointer(final VertexAttributeArray layout) {
+        ArrayList<VertexAttributeArray.VertexAttribute> elements = layout.getElements();
         int offset = 0;
-        for (VertexBufferLayout.VertexBufferElement element : elements) {
+        for (VertexAttributeArray.VertexAttribute element : elements) {
             mFloatBuffer.position(offset);
             setVertexAttributePointer(element.location, element.dimension, element.type, element.normalized, layout.getStride(), mFloatBuffer);
             offset += element.dimension;

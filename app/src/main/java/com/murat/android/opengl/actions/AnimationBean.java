@@ -1,4 +1,4 @@
-package com.murat.android.opengl.animation;
+package com.murat.android.opengl.actions;
 
 import java.util.List;
 

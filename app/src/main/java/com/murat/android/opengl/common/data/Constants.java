@@ -7,4 +7,7 @@ public class Constants {
 
     public static final int Designed_Width = 1080;
     public static final int Designed_Height = 1920;
+
+    public static final long Delta_Time = 16;
+
 }

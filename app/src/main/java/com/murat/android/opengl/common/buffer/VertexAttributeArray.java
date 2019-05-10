@@ -2,18 +2,18 @@ package com.murat.android.opengl.common.buffer;
 
 import java.util.ArrayList;
 
-public class VertexBufferLayout {
-    private ArrayList<VertexBufferElement> mElements;
+public class VertexAttributeArray {
+    private ArrayList<VertexAttribute> mElements;
     private int mStride;
 
-    class VertexBufferElement {
+    class VertexAttribute {
         int location;
         int dimension;
         int type;
         int size;
         boolean normalized;
 
-        VertexBufferElement(int location, int dimension, int type, int size, boolean normalized) {
+        VertexAttribute(int location, int dimension, int type, int size, boolean normalized) {
             this.location = location;
             this.dimension = dimension;
             this.type = type;
@@ -22,16 +22,16 @@ public class VertexBufferLayout {
         }
     }
 
-    public VertexBufferLayout() {
+    public VertexAttributeArray() {
         mElements = new ArrayList<>();
     }
 
     public void push(int location, int dimension, int type, int size, boolean normalized) {
-        mElements.add(new VertexBufferElement(location, dimension, type, size, normalized));
+        mElements.add(new VertexAttribute(location, dimension, type, size, normalized));
         mStride += dimension * size;
     }
 
-    public ArrayList<VertexBufferElement> getElements() {
+    public ArrayList<VertexAttribute> getElements() {
         return mElements;
     }
 

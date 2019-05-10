@@ -7,22 +7,16 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.murat.android.opengl.animation.Animator;
-import com.murat.android.opengl.particle.ParticleRenderer;
-import com.murat.android.opengl.sprite.SpriteRenderer;
+import com.murat.android.opengl.particle.Particle;
+import com.murat.android.opengl.sprite.Sprite;
 
 
 public class MainActivity extends AppCompatActivity {
 
     FrameLayout mGLFrame;
     GLView mGLView;
-    ParticleRenderer mParticle1;
-    ParticleRenderer mParticle2;
-    SpriteRenderer mSprite1;
-    SpriteRenderer mSprite2;
-    SpriteRenderer mSprite3;
-    SpriteRenderer mSprite4;
-    SpriteRenderer mSprite5;
+    Particle mParticle1;
+    Sprite mSprite1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,52 +30,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         mGLFrame = findViewById(R.id.frame);
-        mGLView =  new GLView(getApplicationContext());
-        mParticle1 = new ParticleRenderer(getApplicationContext(), R.raw.particle_star);
-        mParticle2 = new ParticleRenderer(getApplicationContext(), R.raw.particle_star2);
-
-        mSprite1 = new SpriteRenderer(getApplicationContext(), R.drawable.magic_wand);
-        mSprite2 = new SpriteRenderer(getApplicationContext(), R.drawable.magic_wand);
-//        mSprite3 = new SpriteRenderer(getApplicationContext(), R.drawable.star);
-//        mSprite4 = new SpriteRenderer(getApplicationContext(), R.drawable.star);
-//        mSprite5 = new SpriteRenderer(getApplicationContext(), R.drawable.star);
-
+        mGLView = new GLView(getApplicationContext());
+        mParticle1 = new Particle(getApplicationContext(), R.raw.particle_star);
+        mSprite1 = new Sprite(getApplicationContext(), R.drawable.magic_wand);
+        mSprite1.setAnim(R.raw.sprite_test_final);
         mGLView.add(mParticle1);
-        mGLView.add(mParticle2);
-
         mGLView.add(mSprite1);
-        mGLView.add(mSprite2);
-//        mGLView.add(mSprite3);
-//        mGLView.add(mSprite4);
-//        mGLView.add(mSprite5);
         mGLFrame.addView(mGLView);
-        spriteAnim();
-    }
-
-    private void spriteAnim() {
-        super.onStart();
-
-        new Animator(getApplicationContext(), R.raw.sprite_test_final, mSprite1.getActionInterval()).play();
-//        new Animator(getApplicationContext(), R.raw.sprite_test_color, mSprite2.getActionInterval()).play();
-//        new Animator(getApplicationContext(), R.raw.sprite_test_color, mSprite3.getActionInterval()).play();
-//        new Animator(getApplicationContext(), R.raw.sprite_test_scale, mSprite4.getActionInterval()).play();
-//        new Animator(getApplicationContext(), R.raw.sprite_test_rotate, mSprite5.getActionInterval()).play();
-
-//        mSprite1.getActionInterval().move(0f, 1.0f, 0, 0f);
-//        mSprite2.getActionInterval().move(0f, 0.5f, 0, 0f);
-//        mSprite3.getActionInterval().move(0f, 0f, 0, 0f);
-//        mSprite4.getActionInterval().move(0f, -0.5f, 0, 0f);
-//        mSprite5.getActionInterval().move(0f, -1.0f, 0, 0f);
+        mGLView.start();
+        mSprite1.startAnim();
     }
 
     private void particleEffect(float x, float y) {
         if (mGLView != null && mParticle1 != null) {
             mParticle1.show(x, y, 0f);
-        }
-
-        if (mGLView != null && mParticle2 != null) {
-            mParticle2.show(x, y, 0f);
-            mParticle2.translate(0f, 1f, 0f);
         }
     }
 
