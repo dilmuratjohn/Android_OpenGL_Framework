@@ -7,6 +7,6 @@ varying vec2 vFragTexCoord;
 
 void main()
 {
-    gl_Position =  uMVPMatrix *aPosition;
+    gl_Position = uMVPMatrix * aPosition;
     vFragTexCoord = aTexCoord;
 }
