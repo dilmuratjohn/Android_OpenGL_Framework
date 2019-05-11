@@ -59,11 +59,9 @@ public class Sprite implements Renderable, Action {
 
         mVertexAttributeArray.push(mRectShader.getPositionLocation(), 4, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexAttributeArray.push(mRectShader.getTexCoordLocation(), 2, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mVertexArray.setVertexAttributePointer(mVertexAttributeArray);
 
         rotate(0, 0, 0, 0); //图像翻转
         mMatrixDirty = true;
-        mColorDirty = true;
 
         mRectShader.setUniform1i(mRectShader.getTextureLocation(), 0);
 
@@ -96,7 +94,6 @@ public class Sprite implements Renderable, Action {
             }
         }
         if (mMatrixDirty) updateMatrix();
-        if (mColorDirty) updateColor();
         return this;
     }
 
@@ -104,6 +101,7 @@ public class Sprite implements Renderable, Action {
     public Renderable bind() {
         mRectShader.bind();
         mTexture.bind();
+        mVertexArray.setVertexAttributePointer(mVertexAttributeArray);
         return this;
     }
 
@@ -158,7 +156,6 @@ public class Sprite implements Renderable, Action {
     }
 
     private boolean mMatrixDirty;
-    private boolean mColorDirty;
 
     private void updateMatrix() {
         Matrix.setIdentityM(mModelM, 0);
@@ -167,13 +164,7 @@ public class Sprite implements Renderable, Action {
         Matrix.multiplyMM(mModelM, 0, mTranslateM, 0, mModelM, 0);
         Matrix.multiplyMM(mModelViewM, 0, mRenderer.getViewMatrix(), 0, mModelM, 0);
         Matrix.multiplyMM(mModelViewProjectionM, 0, mRenderer.getProjectionMatrix(), 0, mModelViewM, 0);
-        mRectShader.setUniformMatrix4fv(mRectShader.getMVPMatrixLocation(), mModelViewProjectionM);
         mMatrixDirty = false;
-    }
-
-    private void updateColor() {
-        mRectShader.setUniform4f(mRectShader.getColorLocation(), mColor);
-        mColorDirty = false;
     }
 
     @Override
@@ -184,7 +175,6 @@ public class Sprite implements Renderable, Action {
         mColor[0] = Utils.clamp(mColor[0], 0.0f, 1.0f);
         mColor[1] = Utils.clamp(mColor[1], 0.0f, 1.0f);
         mColor[2] = Utils.clamp(mColor[2], 0.0f, 1.0f);
-        mColorDirty = true;
         return this;
     }
 
@@ -192,7 +182,6 @@ public class Sprite implements Renderable, Action {
     public Action fade(float a) {
         mColor[3] = a;
         mColor[3] = Utils.clamp(mColor[3], 0.0f, 1.0f);
-        mColorDirty = true;
         return this;
     }
 
