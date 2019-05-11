@@ -114,13 +114,15 @@ public class Node implements Renderable, Action {
     private boolean mMatrixDirty;
 
     private void updateMatrix() {
-        Matrix.setIdentityM(mModelM, 0);
-        Matrix.multiplyMM(mModelM, 0, mScaleM, 0, mModelM, 0);
-        Matrix.multiplyMM(mModelM, 0, mRotateM, 0, mModelM, 0);
-        Matrix.multiplyMM(mModelM, 0, mTranslateM, 0, mModelM, 0);
-        Matrix.multiplyMM(mModelViewM, 0, mRenderer.getViewMatrix(), 0, mModelM, 0);
-        Matrix.multiplyMM(mModelViewProjectionM, 0, mRenderer.getProjectionMatrix(), 0, mModelViewM, 0);
-        mMatrixDirty = false;
+        if (mRenderer != null) {
+            Matrix.setIdentityM(mModelM, 0);
+            Matrix.multiplyMM(mModelM, 0, mScaleM, 0, mModelM, 0);
+            Matrix.multiplyMM(mModelM, 0, mRotateM, 0, mModelM, 0);
+            Matrix.multiplyMM(mModelM, 0, mTranslateM, 0, mModelM, 0);
+            Matrix.multiplyMM(mModelViewM, 0, mRenderer.getViewMatrix(), 0, mModelM, 0);
+            Matrix.multiplyMM(mModelViewProjectionM, 0, mRenderer.getProjectionMatrix(), 0, mModelViewM, 0);
+            mMatrixDirty = false;
+        }
     }
 
     @Override

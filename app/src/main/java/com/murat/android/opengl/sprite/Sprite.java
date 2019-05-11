@@ -43,31 +43,42 @@ public class Sprite extends Node {
 
     @Override
     public void bind() {
-        mRectShader.bind();
-        mTexture.bind();
-        mVertexArray.setVertexAttributePointer(mVertexAttributeArray);
+        if (mRectShader != null && mTexture != null) {
+            mRectShader.bind();
+            mTexture.bind();
+            mVertexArray.setVertexAttributePointer(mVertexAttributeArray);
+        }
     }
 
     @Override
     public void unbind() {
-        mRectShader.unbind();
-        mTexture.unbind();
+        if (mRectShader != null && mTexture != null) {
+            mRectShader.unbind();
+            mTexture.unbind();
+        }
     }
 
     @Override
     public void render() {
-        mRectShader.setUniform4f(mRectShader.getColorLocation(), mColor);
-        mRectShader.setUniformMatrix4fv(mRectShader.getMVPMatrixLocation(), mModelViewProjectionM);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);
-        GLES20.glDisable(GLES20.GL_BLEND);
+        if (mRectShader != null) {
+            mRectShader.setUniform4f(mRectShader.getColorLocation(), mColor);
+            mRectShader.setUniformMatrix4fv(mRectShader.getMVPMatrixLocation(), mModelViewProjectionM);
+            GLES20.glEnable(GLES20.GL_BLEND);
+            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);
+            GLES20.glDisable(GLES20.GL_BLEND);
+        }
+
     }
 
     @Override
     public void delete() {
-        mRectShader.delete();
-        mTexture.delete();
+        if (mRectShader != null) {
+            mRectShader.delete();
+        }
+        if (mTexture != null) {
+            mTexture.delete();
+        }
     }
 
 }

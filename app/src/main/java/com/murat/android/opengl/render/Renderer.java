@@ -4,6 +4,7 @@ import android.graphics.Point;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -22,19 +23,28 @@ public class Renderer implements GLSurfaceView.Renderer {
     private ArrayList<Renderable> mRenderQueue = new ArrayList<>();
 
     public void add(Renderable renderer) {
-        mRenderQueue.add(renderer);
+        if (renderer != null) {
+            mRenderQueue.add(renderer);
+        } else {
+            Log.w("[OpenGL-Waring", "should not add null object to render queue.");
+        }
     }
 
     public void remove(int index) {
         if (index >= 0 && index < mRenderQueue.size()) {
-            mRenderQueue.get(index).delete();
+            Renderable renderable = mRenderQueue.get(index);
+            if (renderable != null) {
+                renderable.delete();
+            }
             mRenderQueue.remove(index);
         }
     }
 
     public void clear() {
         for (Renderable renderable : mRenderQueue) {
-            renderable.delete();
+            if (renderable != null) {
+                renderable.delete();
+            }
         }
         mRenderQueue.clear();
     }
@@ -42,8 +52,11 @@ public class Renderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        for (Renderable renderer : mRenderQueue)
-            renderer.init(this);
+        for (Renderable renderer : mRenderQueue) {
+            if (renderer != null) {
+                renderer.init(this);
+            }
+        }
     }
 
     @Override
@@ -68,10 +81,12 @@ public class Renderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         for (Renderable renderer : mRenderQueue) {
-            renderer.bind();
-            renderer.update();
-            renderer.render();
-            renderer.unbind();
+            if (renderer != null) {
+                renderer.bind();
+                renderer.update();
+                renderer.render();
+                renderer.unbind();
+            }
         }
     }
 

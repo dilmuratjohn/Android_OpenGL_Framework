@@ -22,19 +22,16 @@ public class GLView extends GLSurfaceView {
         setRenderMode(RENDERMODE_WHEN_DIRTY);
     }
 
-    public GLView add(Renderable renderer) {
+    public void add(Renderable renderer) {
         mRenderer.add(renderer);
-        return this;
     }
 
-    public GLView remove(int index) {
+    public void remove(int index) {
         mRenderer.remove(index);
-        return this;
     }
 
-    public GLView removeAll() {
+    public void removeAll() {
         mRenderer.clear();
-        return this;
     }
 
     public void start() {

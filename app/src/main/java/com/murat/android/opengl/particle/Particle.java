@@ -155,19 +155,27 @@ public class Particle extends Node {
     public void render() {
         super.render();
         if (!mActive) return;
-        mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), mModelViewProjectionM);
-        mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mTimePassed1f);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, mCurrentParticleCount1i);
-        GLES20.glDisable(GLES20.GL_BLEND);
+        if(mParticleShader!= null){
+            mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), mModelViewProjectionM);
+            mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mTimePassed1f);
+            GLES20.glEnable(GLES20.GL_BLEND);
+            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+            GLES20.glDrawArrays(GLES20.GL_POINTS, 0, mCurrentParticleCount1i);
+            GLES20.glDisable(GLES20.GL_BLEND);
+        }
     }
 
     @Override
     public void delete() {
         super.delete();
-        mParticleShader.delete();
-        mParticleTexture.delete();
+        if(mParticleShader!= null)
+        {
+            mParticleShader.delete();
+        }
+        if(mParticleTexture!= null)
+        {
+            mParticleTexture.delete();
+        }
     }
 
     @Override
@@ -388,6 +396,10 @@ public class Particle extends Node {
     }
 
     public void show(float x, float y, float scale) {
+        if(mRenderer == null){
+            Log.i("[OpenGL-Error]", "Renderer is null.");
+            return;
+        }
         stop();
         float sizeX = mRenderer.getSurfaceSize().x;
         float sizeY = mRenderer.getSurfaceSize().y;
