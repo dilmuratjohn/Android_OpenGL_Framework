@@ -1,6 +1,7 @@
 package com.murat.android.opengl.common.buffer;
 
 import android.opengl.GLES20;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -16,7 +17,7 @@ public class VertexBuffer {
         final int[] buffers = new int[1];
         GLES20.glGenBuffers(buffers.length, buffers, 0);
         if (buffers[0] == 0) {
-            throw new RuntimeException("error generate vertex buffers.");
+            Log.i("[OpenGL-Error]", "filed to generate vertex buffers.");
         }
 
         bufferId = buffers[0];

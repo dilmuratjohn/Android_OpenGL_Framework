@@ -67,8 +67,12 @@ public class Renderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        for (Renderable renderer : mRenderQueue)
-            renderer.bind().update().render().unbind();
+        for (Renderable renderer : mRenderQueue) {
+            renderer.bind();
+            renderer.update();
+            renderer.render();
+            renderer.unbind();
+        }
     }
 
     public Point getSurfaceSize() {

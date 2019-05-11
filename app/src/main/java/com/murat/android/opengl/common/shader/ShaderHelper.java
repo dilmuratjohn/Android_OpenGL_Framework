@@ -1,18 +1,14 @@
 package com.murat.android.opengl.common.shader;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.opengl.GLES20;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 class ShaderHelper {
-
-    private static final String TAG_ERROR = "[OpenGL Error] -> ";
 
     private static String parse(Context context, int id) {
         StringBuilder content = new StringBuilder();
@@ -25,11 +21,8 @@ class ShaderHelper {
                 content.append(nextLine);
                 content.append("\n");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        } catch (Resources.NotFoundException e) {
-            throw new RuntimeException(e.getMessage());
         }
         return content.toString();
     }
@@ -37,7 +30,7 @@ class ShaderHelper {
     private static int compile(int type, String shaderCode) {
         final int id = GLES20.glCreateShader(type);
         if (id == 0) {
-            Log.e(TAG_ERROR, "error creating shader.");
+            Log.i("[OpenGL-Error]", "failed to create shader.");
             return 0;
         }
         GLES20.glShaderSource(id, shaderCode);
@@ -45,7 +38,7 @@ class ShaderHelper {
         final int[] compileStatus = new int[1];
         GLES20.glGetShaderiv(id, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
         if (compileStatus[0] == 0) {
-            Log.e(TAG_ERROR, "error compiling shader." + "\n" + GLES20.glGetShaderInfoLog(id));
+            Log.i("[OpenGL-Error]", "failed to compile shader." + "\n" + GLES20.glGetShaderInfoLog(id));
             GLES20.glDeleteShader(id);
             return 0;
         }
@@ -59,7 +52,7 @@ class ShaderHelper {
         final int[] linkStatus = new int[1];
         GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0);
         if (linkStatus[0] == GLES20.GL_FALSE) {
-            Log.e(TAG_ERROR, "error linking program.");
+            Log.i("[OpenGL-Error]", "failed to link program.");
             GLES20.glDeleteProgram(program);
         }
     }
@@ -69,7 +62,7 @@ class ShaderHelper {
         final int[] validateStatus = new int[1];
         GLES20.glGetProgramiv(program, GLES20.GL_VALIDATE_STATUS, validateStatus, 0);
         if (validateStatus[0] == GLES20.GL_FALSE) {
-            Log.e(TAG_ERROR, "error validating program." + "\n" + GLES20.glGetProgramInfoLog(program));
+            Log.i("[OpenGL-Error]", "failed to validate program." + "\n" + GLES20.glGetProgramInfoLog(program));
         }
     }
 
@@ -77,7 +70,7 @@ class ShaderHelper {
 
         final int program = GLES20.glCreateProgram();
         if (program == 0) {
-            Log.e(TAG_ERROR, "error creating program.");
+            Log.i("[OpenGL-Error]", "failed to create program.");
         }
 
         String vertexShaderCode = parse(context, vertexShaderSourceId);

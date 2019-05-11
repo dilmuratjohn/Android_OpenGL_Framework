@@ -33,17 +33,18 @@ public class MainActivity extends AppCompatActivity {
         mGLView = new GLView(getApplicationContext());
         mParticle1 = new Particle(getApplicationContext(), R.raw.particle_star);
         mSprite1 = new Sprite(getApplicationContext(), R.drawable.magic_wand);
-        mSprite1.setAnim(R.raw.sprite_test_final);
+
         mGLView.add(mParticle1);
         mGLView.add(mSprite1);
         mGLFrame.addView(mGLView);
         mGLView.start();
-        mSprite1.startAnim();
     }
 
     private void particleEffect(float x, float y) {
         if (mGLView != null && mParticle1 != null) {
-            mParticle1.show(x, y, 0f);
+            mSprite1.setAnim(R.raw.sprite_test_final);
+            mSprite1.startAnim();
+            mParticle1.show(x, y, 1f);
         }
     }
 

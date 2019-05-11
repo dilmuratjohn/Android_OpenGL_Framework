@@ -31,11 +31,11 @@ public class VertexAttributeArray {
         mStride += dimension * size;
     }
 
-    public ArrayList<VertexAttribute> getElements() {
+    ArrayList<VertexAttribute> getElements() {
         return mElements;
     }
 
-    public int getStride() {
+    int getStride() {
         return mStride;
     }
 }

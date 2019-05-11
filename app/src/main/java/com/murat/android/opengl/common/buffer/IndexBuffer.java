@@ -11,8 +11,6 @@ import java.nio.ShortBuffer;
 
 public class IndexBuffer {
 
-    private static final String TAG_ERROR = "[OpenGL Error] -> ";
-
     private final int[] mBufferId = new int[1];
 
     public IndexBuffer(short[] indices) {
@@ -25,7 +23,7 @@ public class IndexBuffer {
     private void create() {
         GLES20.glGenBuffers(mBufferId.length, mBufferId, 0);
         if (mBufferId[0] == 0) {
-            Log.e(TAG_ERROR, "error generating texture.");
+            Log.i("[OpenGL-Error]", "failed to generate texture.");
         }
     }
 

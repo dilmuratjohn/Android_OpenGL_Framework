@@ -2,10 +2,11 @@ package com.murat.android.opengl.common.shader;
 
 import android.content.Context;
 import android.opengl.GLES20;
+import android.util.Log;
 
 public class Shader {
 
-    protected final int mProgram;
+    private final int mProgram;
 
     public Shader(Context context, int vertexShaderId, int fragmentShaderId) {
         mProgram = ShaderHelper.create(context, vertexShaderId, fragmentShaderId);
@@ -37,5 +38,21 @@ public class Shader {
 
     public void setUniform1i(final int location, int x) {
         GLES20.glUniform1i(location, x);
+    }
+
+    public int getUniformLocation(String name) {
+        int location = GLES20.glGetUniformLocation(mProgram, name);
+        if (location < 0) {
+            Log.i("[OpenGL-Error]", "failed to get uniform " + name + "'s location");
+        }
+        return location;
+    }
+
+    public int getAttributeLocation(String name) {
+        int location = GLES20.glGetAttribLocation(mProgram, name);
+        if (location < 0) {
+            Log.i("[OpenGL-Error]", "failed to get attribute " + name + "'s location");
+        }
+        return location;
     }
 }

@@ -1,7 +1,6 @@
 package com.murat.android.opengl.particle;
 
 import android.content.Context;
-import android.opengl.GLES20;
 
 import com.murat.android.opengl.R;
 import com.murat.android.opengl.common.shader.Shader;
@@ -51,24 +50,25 @@ class ParticleShader extends Shader {
     ParticleShader(Context context) {
         super(context, R.raw.particle_vertex, R.raw.particle_fragment);
 
-        uMatrixLocation = GLES20.glGetUniformLocation(mProgram, U_Matrix);
-        uTimeLocation = GLES20.glGetUniformLocation(mProgram, U_Time);
-        uTextureUnitLocation = GLES20.glGetUniformLocation(mProgram, U_Texture_Unit);
-        uModeLocation = GLES20.glGetUniformLocation(mProgram, U_Mode);
+        uMatrixLocation = getUniformLocation(U_Matrix);
+        uTimeLocation = getUniformLocation(U_Time);
+        uTextureUnitLocation = getUniformLocation(U_Texture_Unit);
+        uModeLocation = getUniformLocation(U_Mode);
 
-        aPositionLocation = GLES20.glGetAttribLocation(mProgram, A_Position);
-        aStartSize = GLES20.glGetAttribLocation(mProgram, A_StartSize);
-        aEndSize = GLES20.glGetAttribLocation(mProgram, A_EndSize);
-        aStartColorLocation = GLES20.glGetAttribLocation(mProgram, A_StartColor);
-        aEndColorLocation = GLES20.glGetAttribLocation(mProgram, A_EndColor);
-        aSpeedLocation = GLES20.glGetAttribLocation(mProgram, A_Speed);
-        aAngleLocation = GLES20.glGetAttribLocation(mProgram, A_Angle);
-        aStartTimeLocation = GLES20.glGetAttribLocation(mProgram, A_StartTime);
-        aForceLocation = GLES20.glGetAttribLocation(mProgram, A_Gravity);
-        aRotationLocation = GLES20.glGetAttribLocation(mProgram, A_Rotation);
-        aLifeTimeLocation = GLES20.glGetAttribLocation(mProgram, A_LifeTime);
-        aDegreePerSecondLocation = GLES20.glGetAttribLocation(mProgram, A_DegreePerSecond);
-        aRadiusLocation = GLES20.glGetAttribLocation(mProgram, A_Radius);
+        aPositionLocation = getAttributeLocation(A_Position);
+        aStartSize = getAttributeLocation(A_StartSize);
+        aEndSize = getAttributeLocation(A_EndSize);
+        aStartColorLocation = getAttributeLocation(A_StartColor);
+        aEndColorLocation = getAttributeLocation(A_EndColor);
+        aSpeedLocation = getAttributeLocation(A_Speed);
+        aAngleLocation = getAttributeLocation(A_Angle);
+        aStartTimeLocation = getAttributeLocation(A_StartTime);
+        aForceLocation = getAttributeLocation(A_Gravity);
+        aRotationLocation = getAttributeLocation(A_Rotation);
+        aLifeTimeLocation = getAttributeLocation(A_LifeTime);
+        aDegreePerSecondLocation = getAttributeLocation(A_DegreePerSecond);
+        aRadiusLocation = getAttributeLocation(A_Radius);
+
     }
 
     int getMatrixLocation() {

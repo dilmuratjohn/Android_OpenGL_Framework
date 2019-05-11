@@ -3,19 +3,19 @@ package com.murat.android.opengl.particle;
 import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.google.gson.Gson;
-import com.murat.android.opengl.render.Renderable;
+import com.murat.android.opengl.node.Node;
 import com.murat.android.opengl.render.Renderer;
 import com.murat.android.opengl.Utils;
-import com.murat.android.opengl.actions.Action;
 import com.murat.android.opengl.common.buffer.VertexArray;
 import com.murat.android.opengl.common.buffer.VertexAttributeArray;
 import com.murat.android.opengl.common.data.Constants;
 import com.murat.android.opengl.common.texture.Texture;
 
 
-public class Particle implements Renderable, Action {
+public class Particle extends Node {
 
     private static final int Position_Component_Count = 4;
     private static final int Color_Component_Count = 4;
@@ -70,12 +70,13 @@ public class Particle implements Renderable, Action {
     private ParticleBean mParticleBean;
     private ParticleShader mParticleShader;
     private Texture mParticleTexture;
-    private Renderer mRenderer;
-    private Context mContext;
 
     public Particle(Context context, int sourceId) {
-        mContext = context;
-        mParticleBean = new Gson().fromJson(Utils.getJSONStringFromResource(context, sourceId), ParticleBean.class);
+        super(context);
+        mParticleBean = new Gson().fromJson(Utils.getJSONStringFromResource(mContext, sourceId), ParticleBean.class);
+        if (mParticleBean == null) {
+            Log.i("[OpenGL-Error]", "failed to read particle config.");
+        }
         mParticleData = new float[mParticleBean.maxParticles * Total_Component_Count];
         mVertexArray = new VertexArray(mParticleData);
         mVertexAttributeArray = new VertexAttributeArray();
@@ -97,6 +98,7 @@ public class Particle implements Renderable, Action {
                 setColorSetEnable(true);
                 mColorSet = colors;
             } catch (Exception e) {
+                Log.i("[OpenGL-Warning]", "failed to load color set");
                 setColorSetEnable(false);
             }
         }
@@ -111,13 +113,10 @@ public class Particle implements Renderable, Action {
     }
 
     @Override
-    public Renderable init(Renderer renderer) {
-        mRenderer = renderer;
+    public void init(Renderer renderer) {
+        super.init(renderer);
         mParticleTexture = new Texture(mContext, mParticleBean.textureFileName.split("\\.")[0]);
         mParticleShader = new ParticleShader(mContext);
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.setIdentityM(mModelViewMatrix, 0);
-        Matrix.setIdentityM(mModelViewProjectionMatrix, 0);
         mVertexAttributeArray.push(mParticleShader.getPositionLocation(), Position_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexAttributeArray.push(mParticleShader.getStartColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexAttributeArray.push(mParticleShader.getEndColorLocation(), Color_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
@@ -131,59 +130,51 @@ public class Particle implements Renderable, Action {
         mVertexAttributeArray.push(mParticleShader.getLifeTimeLocation(), Particle_Life_Time_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexAttributeArray.push(mParticleShader.getDegreePerSecondLocation(), Degree_Per_Second_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexAttributeArray.push(mParticleShader.getRadiusLocation(), Radius_Component_Count, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        return this;
     }
 
-
     @Override
-    public Renderable bind() {
-        if (!mRender) return this;
+    public void bind() {
+        super.bind();
+        if (!mActive) return;
         mParticleShader.bind();
         mParticleTexture.bind();
         mVertexArray.setVertexAttributePointer(mVertexAttributeArray);
         mParticleShader.setUniform1i(mParticleShader.getTextureLocation(), 0);
         mParticleShader.setUniform1i(mParticleShader.getModeLocation(), mParticleBean.emitterType);
-        return this;
     }
 
     @Override
-    public Renderable unbind() {
-        if (!mRender) return this;
+    public void unbind() {
+        super.unbind();
+        if (!mActive) return;
         mParticleShader.unbind();
         mParticleTexture.unbind();
-        return this;
     }
 
-    private final float[] mModelMatrix = new float[16];
-    private final float[] mModelViewMatrix = new float[16];
-    private final float[] mModelViewProjectionMatrix = new float[16];
-
     @Override
-    public Renderable render() {
-        if (!mRender) return this;
-        Matrix.multiplyMM(mModelViewMatrix, 0, mRenderer.getViewMatrix(), 0, mModelMatrix, 0);
-        Matrix.multiplyMM(mModelViewProjectionMatrix, 0, mRenderer.getProjectionMatrix(), 0, mModelViewMatrix, 0);
-
-        mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), mModelViewProjectionMatrix);
+    public void render() {
+        super.render();
+        if (!mActive) return;
+        mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), mModelViewProjectionM);
         mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mTimePassed1f);
-
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
         GLES20.glDrawArrays(GLES20.GL_POINTS, 0, mCurrentParticleCount1i);
         GLES20.glDisable(GLES20.GL_BLEND);
-
-        return this;
     }
 
     @Override
-    public Renderable delete() {
+    public void delete() {
+        super.delete();
         mParticleShader.delete();
         mParticleTexture.delete();
-        return this;
     }
 
     @Override
-    public Renderable update() {
+    public void update() {
+        if (!mActive) return;
+        super.update();
+        updateEmitCount();
         mTimePassed1f = (System.currentTimeMillis() - mStartTime1l) / 1000000f;
         if (mTimePassed1f <= mParticleBean.duration / 1000 || mParticleBean.duration <= 0) {
             for (int i = 0; i <= mEmitCount1i; i++) {
@@ -197,11 +188,9 @@ public class Particle implements Renderable, Action {
                 updateAngle();
                 updateForce();
                 updateParticleLifeTime();
-                updateEmitCount();
                 add();
             }
         }
-        return this;
     }
 
     private void add() {
@@ -311,7 +300,6 @@ public class Particle implements Renderable, Action {
         float rate = 1.0f / (mParticleBean.particleLifespan / mParticleBean.maxParticles);
         if (mCurrentParticleCount1i < mParticleBean.maxParticles) {
             mEmitCounter1i += 16;
-//            mEmitCount1i = (int) (mEmitCounter1i / rate);
             mEmitCount1i = Utils.min(mParticleBean.maxParticles - mCurrentParticleCount1i, (int) (mEmitCounter1i / rate));
         }
     }
@@ -399,43 +387,6 @@ public class Particle implements Renderable, Action {
         };
     }
 
-    @Override
-    public Action translate(float x, float y, float z) {
-        float[] translation = new float[16];
-        Matrix.setIdentityM(translation, 0);
-        Matrix.translateM(translation, 0, translation, 0, x, y, z);
-        Matrix.multiplyMM(mModelMatrix, 0, translation, 0, mModelMatrix, 0);
-        return this;
-    }
-
-    @Override
-    public Action rotate(float a, float x, float y, float z) {
-        float[] rotation = new float[16];
-        Matrix.setIdentityM(rotation, 0);
-        Matrix.rotateM(rotation, 0, rotation, 0, a, x, y, z);
-        Matrix.multiplyMM(mModelMatrix, 0, rotation, 0, mModelMatrix, 0);
-        return this;
-    }
-
-    @Override
-    public Action scale(float x, float y, float z) {
-        float[] scale = new float[16];
-        Matrix.setIdentityM(scale, 0);
-        Matrix.scaleM(scale, 0, scale, 0, x + 1f, y + 1f, z + 1f);
-        Matrix.multiplyMM(mModelMatrix, 0, scale, 0, mModelMatrix, 0);
-        return this;
-    }
-
-    @Override
-    public Action fade(float a) {
-        return this;
-    }
-
-    @Override
-    public Action tint(float r, float g, float b) {
-        return this;
-    }
-
     public void show(float x, float y, float scale) {
         stop();
         float sizeX = mRenderer.getSurfaceSize().x;
@@ -448,16 +399,14 @@ public class Particle implements Renderable, Action {
     }
 
     private void stop() {
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.setIdentityM(mModelViewMatrix, 0);
-        Matrix.setIdentityM(mModelViewProjectionMatrix, 0);
-        mRender = false;
+        super.reset();
+        mActive = false;
     }
 
-    private boolean mRender;
+    private boolean mActive;
 
     private void start() {
-        mRender = true;
+        mActive = true;
         mParticleData = new float[mParticleBean.maxParticles * Total_Component_Count];
         mVertexArray = new VertexArray(mParticleData);
         mStartTime1l = System.currentTimeMillis();

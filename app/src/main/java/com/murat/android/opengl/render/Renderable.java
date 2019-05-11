@@ -1,15 +1,15 @@
 package com.murat.android.opengl.render;
 
 public interface Renderable {
-    Renderable init(Renderer renderer);
+    void init(Renderer renderer);
 
-    Renderable update();
+    void update();
 
-    Renderable bind();
+    void bind();
 
-    Renderable unbind();
+    void unbind();
 
-    Renderable render();
+    void render();
 
-    Renderable delete();
+    void delete();
 }

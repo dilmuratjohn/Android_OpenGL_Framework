@@ -85,10 +85,6 @@ public class AnimationBean {
                 return frame;
             }
 
-            public void setFrame(float frame) {
-                this.frame = frame;
-            }
-
             public ValueBeanX getValue() {
                 return value;
             }

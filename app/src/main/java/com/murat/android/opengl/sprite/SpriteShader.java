@@ -1,7 +1,6 @@
 package com.murat.android.opengl.sprite;
 
 import android.content.Context;
-import android.opengl.GLES20;
 
 import com.murat.android.opengl.R;
 import com.murat.android.opengl.common.shader.Shader;
@@ -23,11 +22,11 @@ class SpriteShader extends Shader {
 
     SpriteShader(Context context) {
         super(context, R.raw.basic_vertex, R.raw.basic_fragment);
-        mMVPMatrixLocation = GLES20.glGetUniformLocation(mProgram, mMVPMatrix);
-        mTextureLocation = GLES20.glGetUniformLocation(mProgram, mTexture);
-        mColorLocation = GLES20.glGetUniformLocation(mProgram, mColor);
-        mPositionLocation = GLES20.glGetAttribLocation(mProgram, mPosition);
-        mTexCoordLocation = GLES20.glGetAttribLocation(mProgram, mTexCoord);
+        mMVPMatrixLocation = getUniformLocation(mMVPMatrix);
+        mTextureLocation = getUniformLocation(mTexture);
+        mColorLocation = getUniformLocation(mColor);
+        mPositionLocation = getAttributeLocation(mPosition);
+        mTexCoordLocation = getAttributeLocation(mTexCoord);
     }
 
     int getMVPMatrixLocation() {
