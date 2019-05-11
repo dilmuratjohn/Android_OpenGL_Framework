@@ -311,7 +311,8 @@ public class Particle implements Renderable, Action {
         float rate = 1.0f / (mParticleBean.particleLifespan / mParticleBean.maxParticles);
         if (mCurrentParticleCount1i < mParticleBean.maxParticles) {
             mEmitCounter1i += 16;
-            mEmitCount1i = (int) (mEmitCounter1i / rate);
+//            mEmitCount1i = (int) (mEmitCounter1i / rate);
+            mEmitCount1i = Utils.min(mParticleBean.maxParticles - mCurrentParticleCount1i, (int) (mEmitCounter1i / rate));
         }
     }
 
