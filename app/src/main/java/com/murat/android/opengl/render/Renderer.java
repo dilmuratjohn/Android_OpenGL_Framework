@@ -14,6 +14,22 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class Renderer implements GLSurfaceView.Renderer {
 
+    private Listener mListener;
+
+    public interface Listener {
+        void onSurfaceCreated();
+
+        void onSurfaceChanged();
+    }
+
+    public void setListener(Listener listener) {
+        mListener = listener;
+    }
+
+    public void removeListener() {
+        mListener = null;
+    }
+
     private int mWidth;
     private int mHeight;
 
@@ -26,7 +42,7 @@ public class Renderer implements GLSurfaceView.Renderer {
         if (renderer != null) {
             mRenderQueue.add(renderer);
         } else {
-            Log.w("[OpenGL-Waring", "should not add null object to render queue.");
+            Log.w("[OpenGL-Waring]", "should not add null object to render queue.");
         }
     }
 
@@ -51,7 +67,7 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         for (Renderable renderer : mRenderQueue) {
             if (renderer != null) {
                 renderer.init(this);

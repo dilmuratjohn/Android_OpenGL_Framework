@@ -12,11 +12,49 @@ public class GLView extends GLSurfaceView {
 
     private final com.murat.android.opengl.render.Renderer mRenderer;
     private final Handler mHandler;
+    private final Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            GLView.this.requestRender();
+            mHandler.postDelayed(mRunnable, Constants.Delta_Time);
+        }
+    };
+
+    public interface Listener {
+        void onSurfaceCreated();
+
+        void onSurfaceChanged();
+    }
+
+    private Listener mListener;
+
+    public void setListener(Listener listener) {
+        mListener = listener;
+    }
+
+    public void removeListener() {
+        mListener = null;
+    }
 
     public GLView(Context context) {
         super(context);
         setEGLContextClientVersion(2);
         mRenderer = new com.murat.android.opengl.render.Renderer();
+        mRenderer.setListener(new com.murat.android.opengl.render.Renderer.Listener() {
+            @Override
+            public void onSurfaceCreated() {
+                if (mListener != null) {
+                    mListener.onSurfaceCreated();
+                }
+            }
+
+            @Override
+            public void onSurfaceChanged() {
+                if (mListener != null) {
+                    mListener.onSurfaceChanged();
+                }
+            }
+        });
         mHandler = new Handler();
         setRenderer(mRenderer);
         setRenderMode(RENDERMODE_WHEN_DIRTY);

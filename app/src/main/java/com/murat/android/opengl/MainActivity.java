@@ -2,7 +2,6 @@ package com.murat.android.opengl;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -15,8 +14,9 @@ public class MainActivity extends AppCompatActivity {
 
     FrameLayout mGLFrame;
     GLView mGLView;
-    Particle mParticle1;
-    Sprite mSprite1;
+    Particle mParticle;
+    Sprite mSprite;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,31 +27,16 @@ public class MainActivity extends AppCompatActivity {
         init();
     }
 
-
     private void init() {
         mGLFrame = findViewById(R.id.frame);
         mGLView = new GLView(getApplicationContext());
-        mParticle1 = new Particle(getApplicationContext(), R.raw.particle_star);
-        mSprite1 = new Sprite(getApplicationContext(), R.drawable.magic_wand);
-
-        mGLView.add(mParticle1);
-        mGLView.add(mSprite1);
+        mParticle = new Particle(getApplicationContext(), R.raw.particle_galaxy);
         mGLFrame.addView(mGLView);
+        Particle particle = new Particle(getApplicationContext(), R.raw.particle_ribbon);
+        mGLView.add(particle);
         mGLView.start();
+        particle.start();
     }
 
-    private void particleEffect(float x, float y) {
-        if (mGLView != null && mParticle1 != null) {
-            mSprite1.setAnim(R.raw.sprite_test_final);
-            mSprite1.startAnim();
-            mParticle1.show(x, y, 1f);
-        }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        particleEffect(event.getRawX(), event.getRawY());
-        return super.onTouchEvent(event);
-    }
 
 }
