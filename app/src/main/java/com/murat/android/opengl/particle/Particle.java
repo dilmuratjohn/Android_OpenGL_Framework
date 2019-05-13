@@ -155,7 +155,7 @@ public class Particle extends Node {
     public void render() {
         super.render();
         if (!mActive) return;
-        if(mParticleShader!= null){
+        if (mParticleShader != null) {
             mParticleShader.setUniformMatrix4fv(mParticleShader.getMatrixLocation(), mModelViewProjectionM);
             mParticleShader.setUniform1f(mParticleShader.getTimeLocation(), mTimePassed1f);
             GLES20.glEnable(GLES20.GL_BLEND);
@@ -168,12 +168,10 @@ public class Particle extends Node {
     @Override
     public void delete() {
         super.delete();
-        if(mParticleShader!= null)
-        {
+        if (mParticleShader != null) {
             mParticleShader.delete();
         }
-        if(mParticleTexture!= null)
-        {
+        if (mParticleTexture != null) {
             mParticleTexture.delete();
         }
     }
@@ -315,7 +313,7 @@ public class Particle extends Node {
     private float[] nextRandomPosition4f() {
         return new float[]{
                 0.5f - (mParticleBean.sourcePositionx + Utils.nextRandomInRange(1.0f, -1.0f) * mParticleBean.sourcePositionVariancex) / (Constants.Designed_Width + 0.f),
-                0.5f - (mParticleBean.sourcePositiony + Utils.nextRandomInRange(1.0f, -1.0f) * mParticleBean.sourcePositionVariancey) / (Constants.Designed_Height + 0.f),
+                0.5f - (mParticleBean.sourcePositiony + Utils.nextRandomInRange(1.0f, -1.0f) * mParticleBean.sourcePositionVariancey) / (Constants.Designed_Height + 0.f) * Constants.Designed_Height / Constants.Designed_Width,
                 0.0f,
                 1.0f
         };
@@ -396,7 +394,7 @@ public class Particle extends Node {
     }
 
     public void show(float x, float y, float scale) {
-        if(mRenderer == null){
+        if (mRenderer == null) {
             Log.i("[OpenGL-Error]", "Renderer is null.");
             return;
         }
@@ -410,14 +408,14 @@ public class Particle extends Node {
         start();
     }
 
-    private void stop() {
+    public void stop() {
         super.reset();
         mActive = false;
     }
 
     private boolean mActive;
 
-    private void start() {
+    public void start() {
         mActive = true;
         mParticleData = new float[mParticleBean.maxParticles * Total_Component_Count];
         mVertexArray = new VertexArray(mParticleData);

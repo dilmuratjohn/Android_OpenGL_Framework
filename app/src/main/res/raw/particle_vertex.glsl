@@ -31,10 +31,10 @@ void main() {
     vec4 position = a_Position;
 
     if (u_Mode == 0){
-        position.x += a_Speed * cos(radians(a_Angle)) * v_ElapsedTime;
-        position.y += a_Speed * sin(radians(a_Angle)) * v_ElapsedTime;
-        position.x += v_ElapsedTime * v_ElapsedTime * 1000.0 * a_Gravity.x;
-        position.y += v_ElapsedTime * v_ElapsedTime * 1000.0 * a_Gravity.y;
+        position.x -= a_Speed * cos(radians(a_Angle)) * v_ElapsedTime;
+        position.y -= a_Speed * sin(radians(a_Angle)) * v_ElapsedTime;
+        position.x -= v_ElapsedTime * v_ElapsedTime * 1000.0 * a_Gravity.x;
+        position.y -= v_ElapsedTime * v_ElapsedTime * 1000.0 * a_Gravity.y;
     } else {
         float angle = a_Angle + a_DegreePerSecond * v_ElapsedTime * 1000.0;
         float radius = a_Radius.x + v_ElapsedTime * 1000.0 * (a_Radius.y - a_Radius.x) / a_LifeTime;
