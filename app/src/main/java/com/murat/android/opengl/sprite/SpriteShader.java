@@ -1,6 +1,7 @@
 package com.murat.android.opengl.sprite;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.murat.android.opengl.R;
 import com.murat.android.opengl.common.shader.Shader;
@@ -27,6 +28,7 @@ class SpriteShader extends Shader {
         mColorLocation = getUniformLocation(mColor);
         mPositionLocation = getAttributeLocation(mPosition);
         mTexCoordLocation = getAttributeLocation(mTexCoord);
+        Log.d("Murat", "Texture Location: " + mTextureLocation);
     }
 
     int getMVPMatrixLocation() {

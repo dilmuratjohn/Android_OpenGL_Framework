@@ -3,6 +3,7 @@ package com.murat.android.opengl.sprite;
 import android.content.Context;
 import android.opengl.GLES20;
 
+import com.murat.android.opengl.R;
 import com.murat.android.opengl.node.Node;
 import com.murat.android.opengl.render.Renderer;
 import com.murat.android.opengl.common.buffer.VertexArray;
@@ -22,10 +23,25 @@ public class Sprite extends Node {
 
     private final float[] mVertices;
 
-    public Sprite(Context context, int resourceId) {
+    public Sprite(Context context, int resourceId, float textureCoordinateOffsetX, float textureCoordinateOffsetY) {
         super(context);
         mResourceId = resourceId;
-        mVertices = Vertices.Position4f_TexCoord2f;
+        float[] vertices = Vertices.Position4f_TexCoord2f;
+        vertices[ 4] = .0f + .1f * textureCoordinateOffsetX;
+        vertices[ 5] = .0f + .1f * textureCoordinateOffsetY;
+        vertices[10] = .1f + .1f * textureCoordinateOffsetX;
+        vertices[11] = .0f + .1f * textureCoordinateOffsetY;
+        vertices[16] = .1f + .1f * textureCoordinateOffsetX;
+        vertices[17] = .1f + .1f * textureCoordinateOffsetY;
+        vertices[22] = .1f + .1f * textureCoordinateOffsetX;
+        vertices[23] = .1f + .1f * textureCoordinateOffsetY;
+        vertices[28] = .0f + .1f * textureCoordinateOffsetX;
+        vertices[29] = .1f + .1f * textureCoordinateOffsetY;
+        vertices[34] = .0f + .1f * textureCoordinateOffsetX;
+        vertices[35] = .0f + .1f * textureCoordinateOffsetY;
+
+
+        mVertices = vertices;
     }
 
     @Override
@@ -37,7 +53,7 @@ public class Sprite extends Node {
         mVertexArray = new VertexArray(mVertices);
         mVertexAttributeArray.push(mRectShader.getPositionLocation(), 4, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexAttributeArray.push(mRectShader.getTexCoordLocation(), 2, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mRectShader.setUniform1i(mRectShader.getTextureLocation(), 0);
+        mRectShader.setUniform1i(mRectShader.getTextureLocation(), mTexture.getLocation());
     }
 
 

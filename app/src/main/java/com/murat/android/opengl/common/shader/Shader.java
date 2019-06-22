@@ -36,6 +36,10 @@ public class Shader {
         GLES20.glUniform1f(location, x);
     }
 
+    public void setUniform2f(final int location, float x, float y) {
+        GLES20.glUniform2f(location, x, y);
+    }
+
     public void setUniform1i(final int location, int x) {
         GLES20.glUniform1i(location, x);
     }
