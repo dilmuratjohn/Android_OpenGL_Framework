@@ -53,7 +53,7 @@ public class Sprite extends Node {
         mVertexArray = new VertexArray(mVertices);
         mVertexAttributeArray.push(mRectShader.getPositionLocation(), 4, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
         mVertexAttributeArray.push(mRectShader.getTexCoordLocation(), 2, GLES20.GL_FLOAT, Constants.Bytes_Per_Float, false);
-        mRectShader.setUniform1i(mRectShader.getTextureLocation(), mTexture.getLocation());
+        mRectShader.setUniform1i(mRectShader.getTextureLocation(), 0);
     }
 
 
