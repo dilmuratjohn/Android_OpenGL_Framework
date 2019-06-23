@@ -15,9 +15,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     ViewGroup mGLFrame;
     GLView mGLView;
-    Sprite mSprite1;
-    Sprite mSprite2;
-    Button mSmall, mStart, mBig;
+    Sprite mSprite;
+    Button mSmall, mBig, mUp, mDown, mRight, mLeft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,52 +31,87 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGLFrame = findViewById(R.id.frame);
         mBig = findViewById(R.id.btn_big);
         mSmall = findViewById(R.id.btn_small);
-        mStart = findViewById(R.id.btn_start);
+        mUp = findViewById(R.id.btn_up);
+        mDown = findViewById(R.id.btn_down);
+        mLeft = findViewById(R.id.btn_left);
+        mRight = findViewById(R.id.btn_right);
         mBig.setOnClickListener(this);
         mSmall.setOnClickListener(this);
-        mStart.setOnClickListener(this);
+        mUp.setOnClickListener(this);
+        mDown.setOnClickListener(this);
+        mLeft.setOnClickListener(this);
+        mRight.setOnClickListener(this);
         mGLView = new GLView(getApplicationContext());
         mGLFrame.addView(mGLView);
-        mSprite1 = new Sprite(this, R.drawable.number, 0, 0);
-        mGLView.add(mSprite1);
-        mSprite2 = new Sprite(this, R.drawable.number, 1, 1);
-        mGLView.add(mSprite2);
+        int [][] numbers5 = new int[][]{{0,0},{0,1},{1,0},{1,1},{0,0}};
+        int [][] positions5 = new int[][]{{0,0},{0,0},{0,0},{0,0},{0,0}};
+        int [] scales5 = new int[]{1,1,1,1,1};
+        int [][] numbers1 = new int[][]{{0,0}};
+        int [][] positions1 = new int[][]{{0,0}};
+        int [] scales1 = new int[]{1};
+        float threshold = 0.1f;
+        mSprite = new Sprite(this, R.drawable.number, numbers1, positions1, scales1, threshold);
+        mGLView.add(mSprite);
         mGLView.start();
     }
 
-
-
-    float scale1X = 1.5f, scale2X = 1f, scale1Y = 1.5f, scale2Y = 1f;
+    float scaleX = 1f, scaleY = 1f;
+    float x,y;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_start:
-                mSprite1.translate(-0.5f, 0, 0);
-                mSprite2.translate(0.5f,0,0);
-                mSprite1.scale(1.5f, 1.5f, 1f);
+            case R.id.btn_up:
+                up();
+                break;
+            case R.id.btn_down:
+                down();
+                break;
+            case R.id.btn_left:
+                left();
+                break;
+            case R.id.btn_right:
+                right();
+                break;
             case R.id.btn_big:
                 big();
-                mSprite1.scale(scale1X, scale1Y, 1f);
-                mSprite2.scale(scale2X, scale2Y, 1f);
                 break;
             case R.id.btn_small:
                 small();
-                mSprite1.scale(scale1X, scale1Y, 1f);
-                mSprite2.scale(scale2X, scale2Y, 1f);
+                break;
         }
     }
 
+    private void up(){
+        y+=0.1f;
+        mSprite.translate(x,y,0);
+    }
+
+    private void down(){
+        y-=0.1f;
+        mSprite.translate(x,y,0);
+    }
+
+    private void left(){
+        x-=0.1f;
+        mSprite.translate(x,y,0);
+    }
+
+    private void right(){
+        x+=0.1f;
+        mSprite.translate(x,y,0);
+    }
+
     private void big(){
-        scale1X += 0.1f;
-        scale2X += 0.1f;
-        scale1Y += .1f;
-        scale2Y += .1f;
+        scaleX += 0.1f;
+        scaleY += .1f;
+        mSprite.scale(scaleX, scaleY, 1f);
+
     }
 
     private void small(){
-        scale1X -= .1f;
-        scale2X -= .1f;
-        scale1Y -= .1f;
-        scale2Y -= .1f;
+        scaleX -= .1f;
+        scaleY -= .1f;
+        mSprite.scale(scaleX, scaleY, 1f);
+
     }
 }

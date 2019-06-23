@@ -21,6 +21,16 @@ public class Vertices {
             -0.1f, -0.1f, 0.0f, 1.0f,       0.0f, 0.0f, // bottom left
     };
 
+    public static final float[] Position4f_TexCoord2f_OriginSize1f = new float[]{
+            -0.1f, -0.1f, 0.0f, 1.0f,       0.0f, 0.0f, 1, // bottom left
+            0.1f, -0.1f, 0.0f, 1.0f,       1.0f, 0.0f, 1,// bottom right
+            0.1f,  0.1f, 0.0f, 1.0f,       1.0f, 1.0f, 1,// top right
+
+            0.1f,  0.1f, 0.0f, 1.0f,       1.0f, 1.0f, 1,// top right
+            -0.1f,  0.1f, 0.0f, 1.0f,       0.0f, 1.0f,1, // top left
+            -0.1f, -0.1f, 0.0f, 1.0f,       0.0f, 0.0f,1, // bottom left
+    };
+
 //    public static final float[] Position4f_TexCoord2f = new float[]{
 //             0.10f, 0.1f, 0.0f, 1.0f,       0.0f, 0.0f, // bottom left
 //             0.3f, 0.1f, 0.0f, 1.0f,       1.0f, 0.0f, // bottom right
