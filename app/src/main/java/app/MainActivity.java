@@ -1,4 +1,4 @@
-package com.murat.android.opengl;
+package app;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,14 +8,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.murat.android.opengl.OpenGLView;
+import com.murat.android.opengl.R;
 import com.murat.android.opengl.common.data.TestData;
-import com.murat.android.opengl.node.Numbers;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     ViewGroup mGLFrame;
-    GLView mGLView;
+    OpenGLView mGLView;
     Numbers mNumbers;
     Button mSmall, mBig, mUp, mDown, mRight, mLeft;
 
@@ -42,14 +43,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDown.setOnClickListener(this);
         mLeft.setOnClickListener(this);
         mRight.setOnClickListener(this);
-        mGLView = new GLView(getApplicationContext());
+        mGLView = new OpenGLView(getApplicationContext());
         mGLFrame.addView(mGLView);
-
-        float threshold = 0.1f;
-//        mNumbers = new Numbers(this, R.drawable.number, TestData.numbers1, TestData.positions1, TestData.scales1, threshold);
-//
-//
-        mNumbers = new Numbers(this, R.drawable.number, TestData.numbers, TestData.positions, TestData.scales, threshold);
+        mNumbers = new Numbers(this, R.drawable.number, TestData.numbers, TestData.positions, TestData.scales, TestData.threshold);
         mGLView.add(mNumbers);
         mGLView.start();
     }

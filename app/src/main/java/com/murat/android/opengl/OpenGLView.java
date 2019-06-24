@@ -8,14 +8,14 @@ import com.murat.android.opengl.common.data.Constants;
 import com.murat.android.opengl.render.Renderable;
 
 
-public class GLView extends GLSurfaceView {
+public class OpenGLView extends GLSurfaceView {
 
     private final com.murat.android.opengl.render.Renderer mRenderer;
     private final Handler mHandler;
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            GLView.this.requestRender();
+            OpenGLView.this.requestRender();
             mHandler.postDelayed(mRunnable, Constants.Delta_Time);
         }
     };
@@ -36,7 +36,7 @@ public class GLView extends GLSurfaceView {
         mListener = null;
     }
 
-    public GLView(Context context) {
+    public OpenGLView(Context context) {
         super(context);
         setEGLContextClientVersion(2);
         mRenderer = new com.murat.android.opengl.render.Renderer();

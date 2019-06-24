@@ -1,4 +1,4 @@
-package com.murat.android.opengl.node;
+package app;
 
 import android.content.Context;
 
@@ -20,7 +20,7 @@ class NumbersShader extends Shader {
     final int aScale;
 
     NumbersShader(Context context) {
-        super(context, R.raw.basic_vertex, R.raw.basic_fragment);
+        super(context, R.raw.number_vertex, R.raw.number_fragment);
         uTexture = getUniformLocation("uTexture");
         uView = getUniformLocation("uView");
         uProjection = getUniformLocation("uProjection");
