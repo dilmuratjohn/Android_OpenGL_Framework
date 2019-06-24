@@ -47,7 +47,7 @@ public class Shader {
     public int getUniformLocation(String name) {
         int location = GLES20.glGetUniformLocation(mProgram, name);
         if (location < 0) {
-            Log.i("[OpenGL-Error]", "failed to get uniform " + name + "'s location");
+            Log.i("[OpenGL-Error]", "failed to get uniform " + name + "'s location" + "\n" + GLES20.glGetError());
         }
         return location;
     }
