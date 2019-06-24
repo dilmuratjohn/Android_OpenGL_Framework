@@ -64,6 +64,12 @@ public class GLView extends GLSurfaceView {
         mRenderer.add(renderer);
     }
 
+    public void addAll(Renderable[] renderableList){
+        for(Renderable renderable: renderableList){
+            mRenderer.add(renderable);
+        }
+    }
+
     public void remove(int index) {
         mRenderer.remove(index);
     }

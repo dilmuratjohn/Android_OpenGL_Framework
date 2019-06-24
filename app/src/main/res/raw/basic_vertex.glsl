@@ -13,4 +13,5 @@ void main()
     vScale = aScale;
     gl_Position = uMVPMatrix * aPosition;
     vFragTexCoord = aTexCoord;
+    gl_PointSize = 20.0;
 }
