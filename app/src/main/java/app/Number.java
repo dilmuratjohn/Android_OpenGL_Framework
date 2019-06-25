@@ -69,8 +69,8 @@ public class Number implements Renderable {
             offsetY = this.mNumbers[i][0];
             offsetX = this.mNumbers[i][1];
             //offset
-            mVertices[i * length + 4] = .0f + .1f * offsetX;
-            mVertices[i * length + 5] = .0f + .1f * offsetY;
+            mVertices[i * length +  4] = .0f + .1f * offsetX;
+            mVertices[i * length +  5] = .0f + .1f * offsetY;
             mVertices[i * length + 11] = .1f + .1f * offsetX;
             mVertices[i * length + 12] = .0f + .1f * offsetY;
             mVertices[i * length + 18] = .1f + .1f * offsetX;
@@ -82,33 +82,34 @@ public class Number implements Renderable {
             mVertices[i * length + 39] = .0f + .1f * offsetX;
             mVertices[i * length + 40] = .0f + .1f * offsetY;
             //position
-            float ran = i;
-            mVertices[i * length + 0] = -0.1f + 0.2f * ran;
-            mVertices[i * length + 1] = -0.1f + 0.2f * ran;
-            mVertices[i * length + 2] = 0.0f;
-            mVertices[i * length + 3] = 1.0f;
-            mVertices[i * length + 7] = 0.1f + 0.2f * ran;
-            mVertices[i * length + 8] = -0.1f + 0.2f * ran;
-            mVertices[i * length + 9] = 0.0f;
-            mVertices[i * length + 10] = 1.0f;
-            mVertices[i * length + 14] = 0.1f + 0.2f * ran;
-            mVertices[i * length + 15] = 0.1f + 0.2f * ran;
-            mVertices[i * length + 16] = 0.0f;
-            mVertices[i * length + 17] = 1.0f;
-            mVertices[i * length + 22] = 0.1f + 0.2f * ran;
-            mVertices[i * length + 21] = 0.1f + 0.2f * ran;
-            mVertices[i * length + 23] = 0.0f;
-            mVertices[i * length + 24] = 1.0f;
-            mVertices[i * length + 28] = -0.1f + 0.2f *ran;
-            mVertices[i * length + 29] = 0.1f + 0.2f * ran;
-            mVertices[i * length + 30] = 0.0f;
-            mVertices[i * length + 31] = 1.0f;
+            float ran = Utils.nextRandomInRange(100f,-100f);
+            mVertices[i * length +  0] = -0.1f + 0.2f * ran;
+            mVertices[i * length +  1] = -0.1f + 0.2f * ran;
+            mVertices[i * length +  7] =  0.1f + 0.2f * ran;
+            mVertices[i * length +  8] = -0.1f + 0.2f * ran;
+            mVertices[i * length + 14] =  0.1f + 0.2f * ran;
+            mVertices[i * length + 15] =  0.1f + 0.2f * ran;
+            mVertices[i * length + 22] =  0.1f + 0.2f * ran;
+            mVertices[i * length + 21] =  0.1f + 0.2f * ran;
+            mVertices[i * length + 28] = -0.1f + 0.2f * ran;
+            mVertices[i * length + 29] =  0.1f + 0.2f * ran;
             mVertices[i * length + 35] = -0.1f + 0.2f * ran;
             mVertices[i * length + 36] = -0.1f + 0.2f * ran;
+
+            mVertices[i * length +  2] = 0.0f;
+            mVertices[i * length +  3] = 1.0f;
+            mVertices[i * length +  9] = 0.0f;
+            mVertices[i * length + 10] = 1.0f;
+            mVertices[i * length + 16] = 0.0f;
+            mVertices[i * length + 17] = 1.0f;
+            mVertices[i * length + 23] = 0.0f;
+            mVertices[i * length + 24] = 1.0f;
+            mVertices[i * length + 30] = 0.0f;
+            mVertices[i * length + 31] = 1.0f;
             mVertices[i * length + 37] = 0.0f;
             mVertices[i * length + 38] = 1.0f;
             // scale
-            ran = Utils.nextRandomInRange(2f,-1f);
+            ran = Utils.nextRandomInRange(1.5f,-0.5f);
             mVertices[i * length + 6] = ran;//this.mOriginScale[i];
             mVertices[i * length + 13] = ran;//this.mOriginScale[i];
             mVertices[i * length + 20] = ran;//this.mOriginScale[i];

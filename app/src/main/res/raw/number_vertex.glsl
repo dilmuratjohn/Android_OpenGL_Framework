@@ -36,10 +36,10 @@ void main()
     0.0, 0.0, 0.0, 1.0
     );
 
-    vec4 position = aPosition;
-    position = uProjection * uView * selfScale * uniScale * rotate * position;
+    vec4 position = selfScale * aPosition;
     position.x += uTranslation.x;
     position.y -= uTranslation.y;
+    position = uProjection * uView * uniScale * rotate * position;
 
     gl_Position = position;
     vFragTexCoord = aTexCoord;
