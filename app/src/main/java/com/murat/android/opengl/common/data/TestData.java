@@ -17,7 +17,7 @@ public class TestData {
     public static final int[][] positions5 = new int[][]{{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}};
     public static final float[] scales5 = new float[]{1f, 1f, 1f, 1f, 1f, 1f};
 
-    public static final int[][] numbers3 = new int[][]{{0, 0}, {0, 0}, {0, 0}};
+    public static final int[][] numbers3 = new int[][]{{1, 0}, {1, 1}, {1, 2}};
     public static final int[][] positions3 = new int[][]{{0, 0}, {0, 0}, {0, 0}};
     public static final float[] scales3 = new float[]{1f, 1f, 1f};
 

@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     ViewGroup mGLFrame;
     OpenGLView mGLView;
-    Numbers mNumbers;
+    Number mNumber;
     Button mSmall, mBig, mUp, mDown, mRight, mLeft;
 
     @Override
@@ -45,8 +45,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRight.setOnClickListener(this);
         mGLView = new OpenGLView(getApplicationContext());
         mGLFrame.addView(mGLView);
-        mNumbers = new Numbers(this, R.drawable.number, TestData.numbers, TestData.positions, TestData.scales, TestData.threshold);
-        mGLView.add(mNumbers);
+        mNumber = new Number(this, R.drawable.number,
+                TestData.numbers,
+                TestData.positions,
+                TestData.scales,
+                TestData.threshold);
+        mGLView.add(mNumber);
         mGLView.start();
     }
 
@@ -76,27 +80,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void up() {
-        mNumbers.translate(0, 0.1f);
+        mNumber.translate(0, 0.1f);
     }
 
     private void down() {
-        mNumbers.translate(0, -0.1f);
+        mNumber.translate(0, -0.1f);
     }
 
     private void left() {
-        mNumbers.translate(-0.1f, 0);
+        mNumber.translate(-0.1f, 0);
     }
 
     private void right() {
-        mNumbers.translate(0.1f, 0);
+        mNumber.translate(0.1f, 0);
     }
 
     private void big() {
-        mNumbers.scale(0.1f);
+        mNumber.scale(0.1f);
     }
 
     private void small() {
-        mNumbers.scale(-0.1f);
+        mNumber.scale(-0.1f);
     }
 
 }

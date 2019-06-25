@@ -6,7 +6,7 @@ import com.murat.android.opengl.R;
 import com.murat.android.opengl.common.shader.Shader;
 
 
-class NumbersShader extends Shader {
+class NumberShader extends Shader {
 
 
     final int uTexture;
@@ -19,7 +19,7 @@ class NumbersShader extends Shader {
     final int aTexCoord;
     final int aScale;
 
-    NumbersShader(Context context) {
+    NumberShader(Context context) {
         super(context, R.raw.number_vertex, R.raw.number_fragment);
         uTexture = getUniformLocation("uTexture");
         uView = getUniformLocation("uView");

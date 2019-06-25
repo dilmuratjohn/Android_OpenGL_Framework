@@ -13,7 +13,7 @@ import com.murat.android.opengl.render.Renderable;
 import com.murat.android.opengl.render.Renderer;
 
 
-public class Numbers implements Renderable {
+public class Number implements Renderable {
 
     private Context mContext;
     private Renderer mRenderer;
@@ -24,7 +24,7 @@ public class Numbers implements Renderable {
     private VertexArray mVertexArray;
     private VertexAttributeArray mVertexAttributeArray;
     private Texture mTexture;
-    private NumbersShader mRectShader;
+    private NumberShader mRectShader;
     private int mResourceId;
     private float[] mVertices;
 
@@ -33,7 +33,7 @@ public class Numbers implements Renderable {
     private float[] mOriginScale;
     private float mScaleThreshold;
 
-    public Numbers(Context context, int resourceId, int[][] numbers, int[][] positions, float[] originScale, float scaleThreshold) {
+    public Number(Context context, int resourceId, int[][] numbers, int[][] positions, float[] originScale, float scaleThreshold) {
         mContext = context;
         mResourceId = resourceId;
         mNumbers = numbers;
@@ -49,7 +49,7 @@ public class Numbers implements Renderable {
     @Override
     public void init(Renderer renderer) {
         mRenderer = renderer;
-        mRectShader = new NumbersShader(mContext);
+        mRectShader = new NumberShader(mContext);
         mTexture = new Texture(mContext, mResourceId);
         initVertices();
         mVertexArray = new VertexArray(mVertices);
@@ -66,8 +66,8 @@ public class Numbers implements Renderable {
         int offsetY;
         int length = Vertices.Position4f_TexCoord2f_OriginSize1f.length;
         for (int i = 0; i < this.mNumbers.length; i++) {
-            offsetX = this.mNumbers[i][0];
-            offsetY = this.mNumbers[i][1];
+            offsetY = this.mNumbers[i][0];
+            offsetX = this.mNumbers[i][1];
             //offset
             mVertices[i * length + 4] = .0f + .1f * offsetX;
             mVertices[i * length + 5] = .0f + .1f * offsetY;
@@ -82,7 +82,7 @@ public class Numbers implements Renderable {
             mVertices[i * length + 39] = .0f + .1f * offsetX;
             mVertices[i * length + 40] = .0f + .1f * offsetY;
             //position
-            float ran = Utils.nextRandomInRange(-200f,200f);
+            float ran = i;
             mVertices[i * length + 0] = -0.1f + 0.2f * ran;
             mVertices[i * length + 1] = -0.1f + 0.2f * ran;
             mVertices[i * length + 2] = 0.0f;
@@ -108,7 +108,7 @@ public class Numbers implements Renderable {
             mVertices[i * length + 37] = 0.0f;
             mVertices[i * length + 38] = 1.0f;
             // scale
-            ran = Utils.nextRandomInRange(-2f,2f);
+            ran = Utils.nextRandomInRange(2f,-1f);
             mVertices[i * length + 6] = ran;//this.mOriginScale[i];
             mVertices[i * length + 13] = ran;//this.mOriginScale[i];
             mVertices[i * length + 20] = ran;//this.mOriginScale[i];

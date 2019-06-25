@@ -21,13 +21,6 @@ void main()
     0.0, 0.0, 0.0, 1.0
     );
 
-    mat4 rotate = mat4(
-    1.0, 0.0, 0.0, 0.0,
-    0.0, -1, 0.0, 0.0,
-    0.0, 0.0, -1, 0.0,
-    0.0, 0.0, 0.0, 1.0
-    );
-
     mat4 selfScale = mat4(
     aScale, 0.0, 0.0, 0.0,
     0.0, aScale, 0.0, 0.0,
@@ -35,10 +28,18 @@ void main()
     0.0, 0.0, 0.0, 1.0
     );
 
+    // flip image
+    mat4 rotate = mat4(
+    1.0, 0.0, 0.0, 0.0,
+    0.0, -1, 0.0, 0.0,
+    0.0, 0.0, -1, 0.0,
+    0.0, 0.0, 0.0, 1.0
+    );
+
     vec4 position = aPosition;
+    position = uProjection * uView * selfScale * uniScale * rotate * position;
     position.x += uTranslation.x;
     position.y -= uTranslation.y;
-    position = uProjection * uView * selfScale * uniScale * rotate * position;
 
     gl_Position = position;
     vFragTexCoord = aTexCoord;
